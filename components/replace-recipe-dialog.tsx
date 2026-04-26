@@ -49,20 +49,38 @@ export function ReplaceRecipeDialog({
   const [confirmError, setConfirmError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     if (!open) {
-      setCandidates(null);
-      setChosen(null);
-      setPreview(null);
-      setPreviewError(null);
-      setCandidatesError(null);
-      setConfirmError(null);
-      return;
+      const handle = setTimeout(() => {
+        if (cancelled) return;
+        setCandidates(null);
+        setChosen(null);
+        setPreview(null);
+        setPreviewError(null);
+        setCandidatesError(null);
+        setConfirmError(null);
+      }, 0);
+      return () => {
+        cancelled = true;
+        clearTimeout(handle);
+      };
     }
-    setLoadingCandidates(true);
-    loadReplacementCandidates(batchId, itemId)
-      .then(setCandidates)
-      .catch((err) => setCandidatesError((err as Error).message ?? "Erro."))
-      .finally(() => setLoadingCandidates(false));
+    const handle = setTimeout(async () => {
+      if (cancelled) return;
+      setLoadingCandidates(true);
+      try {
+        const c = await loadReplacementCandidates(batchId, itemId);
+        if (!cancelled) setCandidates(c);
+      } catch (err) {
+        if (!cancelled) setCandidatesError((err as Error).message ?? "Erro.");
+      } finally {
+        if (!cancelled) setLoadingCandidates(false);
+      }
+    }, 0);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
   }, [open, batchId, itemId]);
 
   function pick(recipe: Recipe) {

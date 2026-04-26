@@ -17,10 +17,6 @@ function normalizeKey(value: string): string {
     .trim();
 }
 
-function toDoc(ing: NormalizedIngredient): IngredientDoc {
-  return { ...ing, _id: normalizeKey(ing.canonicalName) };
-}
-
 function fromDoc(doc: IngredientDoc): NormalizedIngredient {
   const { _id: _ignored, ...rest } = doc;
   return normalizedIngredientSchema.parse(rest);

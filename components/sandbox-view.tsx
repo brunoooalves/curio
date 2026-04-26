@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   applyAsBatchAction,
@@ -57,14 +55,17 @@ export function SandboxView({
   const selectedIds = useMemo(() => Array.from(selected), [selected]);
 
   useEffect(() => {
-    if (selectedIds.length === 0) {
-      setPreview([]);
-      setPreviewError(null);
-      return;
-    }
     let cancelled = false;
-    setPreviewLoading(true);
     const handle = setTimeout(async () => {
+      if (selectedIds.length === 0) {
+        if (!cancelled) {
+          setPreview([]);
+          setPreviewError(null);
+          setPreviewLoading(false);
+        }
+        return;
+      }
+      setPreviewLoading(true);
       try {
         const result = await previewShoppingListAction(selectedIds);
         if (!cancelled) {
