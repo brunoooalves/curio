@@ -15,7 +15,14 @@ import {
 import { getCurrentState } from "@/lib/domain/user/userService";
 import { GenerateRecipesDialog } from "@/components/generate-recipes-dialog";
 import { listContexts } from "@/lib/domain/context/contextService";
-import { getDietaryContextRepository } from "@/lib/persistence/mongo/factories";
+import {
+  getBatchRepository,
+  getDietaryContextRepository,
+} from "@/lib/persistence/mongo/factories";
+import {
+  getActiveBatch,
+  nextSuggestion,
+} from "@/lib/domain/batch/batchService";
 import { CompleteModuleButton } from "@/components/complete-module-button";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
@@ -46,15 +53,25 @@ export default async function HomePage() {
 
   const recipeRepo = await getRecipeRepository();
   const ctxRepo = await getDietaryContextRepository();
+  const batchRepo = await getBatchRepository();
   const ctx = buildGenerationContext(userState.profile);
   const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod, ctx);
   const rejected = await recipeRepo.findByStatus("rejeitada", { moduleId: mod.id });
   const savedContexts = await listContexts(ctxRepo);
+  const activeBatch = await getActiveBatch({ batchRepository: batchRepo });
+  const next = activeBatch ? nextSuggestion(activeBatch) : null;
+  const nextRecipe = next ? await recipeRepo.findById(next.recipeId) : null;
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
       <ModuleHeader mod={mod} />
       <ProfileSummary profile={userState.profile} contextsCount={savedContexts.length} />
+      <BatchSummary
+        active={activeBatch !== null}
+        nextOrder={next?.suggestedOrder ?? null}
+        nextMealType={next?.mealType ?? null}
+        nextTitle={nextRecipe?.title ?? null}
+      />
       <CompleteModuleButton moduleId={mod.id} />
       <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
@@ -90,6 +107,52 @@ function ModuleHeader({ mod }: { mod: Module }) {
       <h1 className="text-3xl font-semibold leading-tight">{mod.title}</h1>
       <p className="text-base text-muted-foreground">{mod.description}</p>
     </header>
+  );
+}
+
+function BatchSummary({
+  active,
+  nextOrder,
+  nextMealType,
+  nextTitle,
+}: {
+  active: boolean;
+  nextOrder: number | null;
+  nextMealType: Recipe["mealType"] | null;
+  nextTitle: string | null;
+}) {
+  if (!active) {
+    return (
+      <div className="rounded-md border bg-muted/30 p-4 flex items-center justify-between gap-3">
+        <p className="text-sm">Sem lote em andamento.</p>
+        <Link href="/lote/novo" className="text-sm font-medium underline">
+          Criar lote
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-md border bg-muted/30 p-4 flex flex-col gap-2">
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">
+        Proxima sugestao
+      </p>
+      {nextOrder !== null && nextTitle ? (
+        <p className="text-base">
+          #{nextOrder} ·{" "}
+          {nextMealType ? MEAL_LABEL[nextMealType] : ""} · {nextTitle}
+        </p>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Lote em andamento sem itens a fazer no momento.
+        </p>
+      )}
+      <div className="flex items-center gap-3">
+        <Link href="/lote" className="text-sm font-medium underline">
+          Ver lote
+        </Link>
+      </div>
+    </div>
   );
 }
 
