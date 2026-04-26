@@ -140,7 +140,7 @@ function HistoryItem({ item }: { item: PracticeHistoryItem }) {
           {recipe && (
             <p className="text-muted-foreground">{MEAL_LABEL[recipe.mealType]}</p>
           )}
-          {event.reflection && <p className="italic">"{event.reflection}"</p>}
+          {event.reflection && <p className="italic">&ldquo;{event.reflection}&rdquo;</p>}
         </CardContent>
       )}
     </Card>

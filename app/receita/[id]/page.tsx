@@ -95,7 +95,7 @@ function CompletionSummary({ event }: { event: PracticeEvent }) {
         ✓ Concluida {formatRelativeTime(event.createdAt)}
       </p>
       {event.reflection && (
-        <p className="text-sm text-muted-foreground italic">"{event.reflection}"</p>
+        <p className="text-sm text-muted-foreground italic">&ldquo;{event.reflection}&rdquo;</p>
       )}
     </div>
   );
