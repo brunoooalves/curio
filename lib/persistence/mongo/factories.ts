@@ -5,6 +5,7 @@ import { createMongoPracticeEventRepository } from "@/lib/persistence/mongo/mong
 import { createMongoDietaryContextRepository } from "@/lib/persistence/mongo/mongoDietaryContextRepository";
 import { createMongoBatchRepository } from "@/lib/persistence/mongo/mongoBatchRepository";
 import { createMongoIngredientRepository } from "@/lib/persistence/mongo/mongoIngredientRepository";
+import { createNormalizer, type NormalizeIngredientsFn } from "@/lib/llm/normalizeIngredient";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
 import type { PracticeEventRepository } from "@/lib/persistence/repositories/practiceEventRepository";
@@ -32,6 +33,10 @@ export function getIngredientRepository(): Promise<IngredientRepository> {
     ingredientRepoPromise = (async () => createMongoIngredientRepository(await getDb()))();
   }
   return ingredientRepoPromise;
+}
+
+export async function getIngredientNormalizer(): Promise<NormalizeIngredientsFn> {
+  return createNormalizer(await getIngredientRepository());
 }
 
 export function getBatchRepository(): Promise<BatchRepository> {
