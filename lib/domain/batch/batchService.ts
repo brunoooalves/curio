@@ -41,6 +41,10 @@ export interface CreateBatchInput {
   generationContext: GenerationContext;
 }
 
+export interface BatchShoppingListHook {
+  recompute(batchId: string): Promise<unknown>;
+}
+
 export interface BatchServiceDeps {
   batchRepository: BatchRepository;
   recipeRepository: RecipeRepository;
@@ -50,6 +54,22 @@ export interface BatchServiceDeps {
   currentModuleId: string;
   completedModuleIds: string[];
   reviewRatio?: number;
+  shoppingListHook?: BatchShoppingListHook;
+}
+
+async function recomputeShoppingList(
+  hook: BatchShoppingListHook | undefined,
+  batchId: string,
+): Promise<void> {
+  if (!hook) return;
+  try {
+    await hook.recompute(batchId);
+  } catch (err) {
+    console.warn(
+      `[batchService] shopping list recompute failed for ${batchId}:`,
+      err,
+    );
+  }
 }
 
 function fillMealsByType(input: Partial<MealsByType>): MealsByType {
@@ -186,6 +206,7 @@ export async function createBatch(
   batch.mealsByType = actualByMeal;
 
   await deps.batchRepository.insert(batch);
+  await recomputeShoppingList(deps.shoppingListHook, batch.id);
   return batch;
 }
 
@@ -212,6 +233,7 @@ interface ItemMutationDeps {
   batchRepository: BatchRepository;
   recipeRepository: RecipeRepository;
   practiceEventRepository: PracticeEventRepository;
+  shoppingListHook?: BatchShoppingListHook;
 }
 
 async function findItem(
@@ -245,15 +267,17 @@ export async function markItemDone(
     "done",
     new Date().toISOString(),
   );
+  await recomputeShoppingList(deps.shoppingListHook, batchId);
 }
 
 export async function skipItem(
-  deps: Pick<BatchServiceDeps, "batchRepository">,
+  deps: Pick<BatchServiceDeps, "batchRepository" | "shoppingListHook">,
   batchId: string,
   itemId: string,
 ): Promise<void> {
   await findItem(deps, batchId, itemId);
   await deps.batchRepository.updateItemStatus(batchId, itemId, "skipped", null);
+  await recomputeShoppingList(deps.shoppingListHook, batchId);
 }
 
 export async function setItemPending(
@@ -275,37 +299,56 @@ export async function replaceItemRecipe(
   deps: ReplaceItemDeps,
   batchId: string,
   itemId: string,
+  candidateRecipeId?: string,
 ): Promise<void> {
   const { batch, item } = await findItem(deps, batchId, itemId);
   const usedIds = new Set(batch.items.map((i) => i.recipeId));
 
-  const candidates = await deps.recipeRepository.findByModuleId(
-    deps.currentModuleId,
-    { excludeStatuses: ["rejeitada"] },
-  );
-  let candidate = candidates.find(
-    (r) => r.mealType === item.mealType && !usedIds.has(r.id),
-  );
+  let chosenId: string | null = null;
 
-  if (!candidate) {
-    const ctx = batch.generationContextSnapshot;
-    if (!ctx) {
-      throw new Error("Lote sem contexto de geracao salvo; nao e possivel gerar substituta.");
+  if (candidateRecipeId) {
+    if (usedIds.has(candidateRecipeId) && candidateRecipeId !== item.recipeId) {
+      throw new Error("Receita ja esta em uso neste lote.");
     }
-    const currentModule = findModule(deps.curriculum, deps.currentModuleId);
-    const generated = await deps.recipeGenerator.generateRecipesForModule(
-      currentModule,
-      1,
-      ctx,
+    const candidate = await deps.recipeRepository.findById(candidateRecipeId);
+    if (!candidate) {
+      throw new Error(`Receita "${candidateRecipeId}" nao encontrada.`);
+    }
+    if (candidate.mealType !== item.mealType) {
+      throw new Error("Receita escolhida nao e do mesmo mealType.");
+    }
+    chosenId = candidate.id;
+  } else {
+    const candidates = await deps.recipeRepository.findByModuleId(
+      deps.currentModuleId,
+      { excludeStatuses: ["rejeitada"] },
     );
-    if (generated.length === 0) {
-      throw new Error("Nao foi possivel gerar receita substituta.");
+    const candidate = candidates.find(
+      (r) => r.mealType === item.mealType && !usedIds.has(r.id),
+    );
+    if (candidate) {
+      chosenId = candidate.id;
+    } else {
+      const ctx = batch.generationContextSnapshot;
+      if (!ctx) {
+        throw new Error("Lote sem contexto de geracao salvo; nao e possivel gerar substituta.");
+      }
+      const currentModule = findModule(deps.curriculum, deps.currentModuleId);
+      const generated = await deps.recipeGenerator.generateRecipesForModule(
+        currentModule,
+        1,
+        ctx,
+      );
+      if (generated.length === 0) {
+        throw new Error("Nao foi possivel gerar receita substituta.");
+      }
+      await deps.recipeRepository.insertMany(generated);
+      chosenId = generated[0]!.id;
     }
-    await deps.recipeRepository.insertMany(generated);
-    candidate = generated[0]!;
   }
 
-  await deps.batchRepository.replaceItemRecipe(batchId, itemId, candidate.id);
+  await deps.batchRepository.replaceItemRecipe(batchId, itemId, chosenId);
+  await recomputeShoppingList(deps.shoppingListHook, batchId);
 }
 
 export async function reorderItems(
@@ -316,6 +359,29 @@ export async function reorderItems(
   const batch = await deps.batchRepository.findById(batchId);
   if (!batch) throw new BatchNotFoundError(batchId);
   await deps.batchRepository.reorderItems(batchId, orderedItemIds);
+}
+
+export interface ListCandidatesDeps {
+  batchRepository: BatchRepository;
+  recipeRepository: RecipeRepository;
+  currentModuleId: string;
+}
+
+export async function listReplacementCandidates(
+  deps: ListCandidatesDeps,
+  batchId: string,
+  itemId: string,
+): Promise<import("@/lib/domain/recipe/types").Recipe[]> {
+  const { batch, item } = await findItem(deps, batchId, itemId);
+  const usedIds = new Set(batch.items.map((i) => i.recipeId));
+  usedIds.delete(item.recipeId);
+  const candidates = await deps.recipeRepository.findByModuleId(
+    deps.currentModuleId,
+    { excludeStatuses: ["rejeitada"] },
+  );
+  return candidates.filter(
+    (r) => r.mealType === item.mealType && !usedIds.has(r.id),
+  );
 }
 
 export function progressOf(batch: Batch): {

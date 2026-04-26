@@ -5,6 +5,7 @@ import {
   skipItem,
   replaceItemRecipe,
   reorderItems,
+  listReplacementCandidates,
   type BatchServiceDeps,
 } from "@/lib/domain/batch/batchService";
 import type { Batch, BatchItem } from "@/lib/domain/batch/types";
@@ -376,6 +377,110 @@ describe("replaceItemRecipe", () => {
     expect(generator.generateRecipesForModule).toHaveBeenCalledTimes(1);
     const stored = batchRepo._store.get(batch.id)!;
     expect(stored.items[0]?.recipeId).toMatch(/^gen-/);
+  });
+});
+
+describe("shoppingListHook", () => {
+  it("recomputes after createBatch / done / skip / replace, but NOT after reorder", async () => {
+    const recipes = [
+      recipe("a1", "almoco"),
+      recipe("a2", "almoco"),
+      recipe("a3", "almoco"),
+    ];
+    const recipeRepo = fakeRecipeRepo(recipes);
+    const batchRepo = fakeBatchRepo();
+    const eventRepo = fakePracticeEventRepo();
+    const generator = fakeGenerator(() => []);
+    const hook = { recompute: vi.fn(async () => undefined) };
+    const deps = makeDeps({
+      batchRepository: batchRepo,
+      recipeRepository: recipeRepo,
+      practiceEventRepository: eventRepo,
+      recipeGenerator: generator,
+      shoppingListHook: hook,
+    });
+
+    const batch = await createBatch(deps, {
+      mealsByType: { almoco: 2 },
+      generationContext: ctx,
+    });
+    expect(hook.recompute).toHaveBeenCalledTimes(1);
+
+    const fullDeps = {
+      batchRepository: batchRepo,
+      recipeRepository: recipeRepo,
+      practiceEventRepository: eventRepo,
+      recipeGenerator: generator,
+      curriculum,
+      currentModuleId: "m1",
+      shoppingListHook: hook,
+    };
+
+    await markItemDone(fullDeps, batch.id, batch.items[0]!.id, null);
+    expect(hook.recompute).toHaveBeenCalledTimes(2);
+
+    await skipItem(fullDeps, batch.id, batch.items[1]!.id);
+    expect(hook.recompute).toHaveBeenCalledTimes(3);
+
+    await replaceItemRecipe(fullDeps, batch.id, batch.items[0]!.id);
+    expect(hook.recompute).toHaveBeenCalledTimes(4);
+
+    const reversed = [...batch.items].reverse().map((i) => i.id);
+    await reorderItems(fullDeps, batch.id, reversed);
+    expect(hook.recompute).toHaveBeenCalledTimes(4);
+  });
+
+  it("logs but does not throw when hook recompute fails", async () => {
+    const recipes = [recipe("a1", "almoco")];
+    const recipeRepo = fakeRecipeRepo(recipes);
+    const generator = fakeGenerator(() => []);
+    const hook = { recompute: vi.fn(async () => { throw new Error("boom"); }) };
+    const deps = makeDeps({
+      recipeRepository: recipeRepo,
+      recipeGenerator: generator,
+      shoppingListHook: hook,
+    });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      await expect(
+        createBatch(deps, {
+          mealsByType: { almoco: 1 },
+          generationContext: ctx,
+        }),
+      ).resolves.not.toThrow();
+      expect(warn).toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
+  });
+});
+
+describe("listReplacementCandidates", () => {
+  it("returns same-mealType, non-used recipes from the current module", async () => {
+    const recipes = [
+      recipe("a1", "almoco"),
+      recipe("a2", "almoco"),
+      recipe("a3", "almoco"),
+      recipe("j1", "jantar"),
+    ];
+    const recipeRepo = fakeRecipeRepo(recipes);
+    const batchRepo = fakeBatchRepo();
+    const deps = makeDeps({ batchRepository: batchRepo, recipeRepository: recipeRepo });
+    const batch = await createBatch(deps, {
+      mealsByType: { almoco: 2 },
+      generationContext: ctx,
+    });
+
+    const target = batch.items[0]!;
+    const candidates = await listReplacementCandidates(
+      { batchRepository: batchRepo, recipeRepository: recipeRepo, currentModuleId: "m1" },
+      batch.id,
+      target.id,
+    );
+    expect(candidates.every((r) => r.mealType === "almoco")).toBe(true);
+    const otherUsed = batch.items.find((i) => i.id !== target.id)!.recipeId;
+    expect(candidates.find((r) => r.id === otherUsed)).toBeUndefined();
+    expect(candidates.find((r) => r.id === target.recipeId)).toBeDefined();
   });
 });
 
