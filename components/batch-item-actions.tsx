@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import {
   markBatchItemDone,
-  replaceBatchItemRecipe,
   skipBatchItem,
 } from "@/app/actions/batchActions";
+import { ReplaceRecipeDialog } from "@/components/replace-recipe-dialog";
 
 export function BatchItemActions({
   batchId,
@@ -28,6 +28,7 @@ export function BatchItemActions({
   recipeTitle: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [replaceOpen, setReplaceOpen] = useState(false);
   const [reflection, setReflection] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -56,15 +57,9 @@ export function BatchItemActions({
     });
   }
 
-  function handleReplace() {
+  function openReplace() {
     setError(null);
-    startTransition(async () => {
-      try {
-        await replaceBatchItemRecipe(batchId, itemId);
-      } catch (err) {
-        setError((err as Error).message ?? "Erro ao trocar.");
-      }
-    });
+    setReplaceOpen(true);
   }
 
   return (
@@ -86,13 +81,20 @@ export function BatchItemActions({
           type="button"
           size="sm"
           variant="outline"
-          onClick={handleReplace}
+          onClick={openReplace}
           disabled={pending}
         >
           Trocar
         </Button>
       </div>
       {error && <p className="text-xs text-destructive">{error}</p>}
+
+      <ReplaceRecipeDialog
+        batchId={batchId}
+        itemId={itemId}
+        open={replaceOpen}
+        onOpenChange={setReplaceOpen}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

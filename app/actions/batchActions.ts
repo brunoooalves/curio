@@ -93,9 +93,10 @@ export async function skipBatchItem(batchId: string, itemId: string): Promise<vo
 export async function replaceBatchItemRecipe(
   batchId: string,
   itemId: string,
+  candidateRecipeId?: string,
 ): Promise<void> {
   const deps = await buildBatchDeps();
-  await replaceItemRecipe(deps, batchId, itemId);
+  await replaceItemRecipe(deps, batchId, itemId, candidateRecipeId);
   revalidateAll(batchId);
 }
 
