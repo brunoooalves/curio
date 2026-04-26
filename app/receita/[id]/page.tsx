@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { getRecipeRepository } from "@/lib/persistence/mongo/factories";
+import {
+  getPracticeEventRepository,
+  getRecipeRepository,
+} from "@/lib/persistence/mongo/factories";
+import { RecipeActions } from "@/components/recipe-actions";
+import { formatRelativeTime } from "@/lib/domain/practice/formatRelativeTime";
 import type { Recipe } from "@/lib/domain/recipe/types";
+import type { PracticeEvent } from "@/lib/domain/practice/types";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +19,23 @@ const MEAL_LABEL: Record<Recipe["mealType"], string> = {
   lanche: "Lanche",
 };
 
+const STATUS_LABEL: Record<Recipe["status"], string> = {
+  sugerida: "Sugerida",
+  feita: "Concluida",
+  rejeitada: "Rejeitada",
+};
+
 export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const repository = await getRecipeRepository();
-  const recipe = await repository.findById(id);
+  const recipeRepo = await getRecipeRepository();
+  const recipe = await recipeRepo.findById(id);
   if (!recipe) {
     notFound();
   }
+
+  const eventRepo = await getPracticeEventRepository();
+  const events = await eventRepo.listByRecipeId(recipe.id);
+  const lastCompletion = events.find((e) => e.type === "completed") ?? null;
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
@@ -34,8 +50,16 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <Badge variant="outline">Dif. {recipe.difficulty}</Badge>
           <Badge variant="outline">~{recipe.estimatedMinutes} min</Badge>
           <Badge variant="outline">{recipe.servings} porc.</Badge>
+          <Badge variant={recipe.status === "rejeitada" ? "destructive" : "default"}>
+            {STATUS_LABEL[recipe.status]}
+          </Badge>
         </div>
+        {recipe.status === "feita" && lastCompletion && (
+          <CompletionSummary event={lastCompletion} />
+        )}
       </header>
+
+      <RecipeActions recipeId={recipe.id} status={recipe.status} />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-medium">Ingredientes</h2>
@@ -61,5 +85,18 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
         </ol>
       </section>
     </main>
+  );
+}
+
+function CompletionSummary({ event }: { event: PracticeEvent }) {
+  return (
+    <div className="rounded-md border border-muted-foreground/20 bg-muted/30 p-3 flex flex-col gap-1">
+      <p className="text-sm">
+        ✓ Concluida {formatRelativeTime(event.createdAt)}
+      </p>
+      {event.reflection && (
+        <p className="text-sm text-muted-foreground italic">"{event.reflection}"</p>
+      )}
+    </div>
   );
 }
