@@ -4,11 +4,13 @@ import { createMongoUserStateRepository } from "@/lib/persistence/mongo/mongoUse
 import { createMongoPracticeEventRepository } from "@/lib/persistence/mongo/mongoPracticeEventRepository";
 import { createMongoDietaryContextRepository } from "@/lib/persistence/mongo/mongoDietaryContextRepository";
 import { createMongoBatchRepository } from "@/lib/persistence/mongo/mongoBatchRepository";
+import { createMongoIngredientRepository } from "@/lib/persistence/mongo/mongoIngredientRepository";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
 import type { PracticeEventRepository } from "@/lib/persistence/repositories/practiceEventRepository";
 import type { DietaryContextRepository } from "@/lib/persistence/repositories/dietaryContextRepository";
 import type { BatchRepository } from "@/lib/persistence/repositories/batchRepository";
+import type { IngredientRepository } from "@/lib/persistence/repositories/ingredientRepository";
 import { getGastronomiaCurriculum } from "@/lib/domain/curriculum/loadGastronomia";
 
 let recipeRepoPromise: Promise<RecipeRepository> | null = null;
@@ -16,12 +18,20 @@ let userStateRepoPromise: Promise<UserStateRepository> | null = null;
 let practiceEventRepoPromise: Promise<PracticeEventRepository> | null = null;
 let dietaryContextRepoPromise: Promise<DietaryContextRepository> | null = null;
 let batchRepoPromise: Promise<BatchRepository> | null = null;
+let ingredientRepoPromise: Promise<IngredientRepository> | null = null;
 
 export function getRecipeRepository(): Promise<RecipeRepository> {
   if (!recipeRepoPromise) {
     recipeRepoPromise = (async () => createMongoRecipeRepository(await getDb()))();
   }
   return recipeRepoPromise;
+}
+
+export function getIngredientRepository(): Promise<IngredientRepository> {
+  if (!ingredientRepoPromise) {
+    ingredientRepoPromise = (async () => createMongoIngredientRepository(await getDb()))();
+  }
+  return ingredientRepoPromise;
 }
 
 export function getBatchRepository(): Promise<BatchRepository> {
