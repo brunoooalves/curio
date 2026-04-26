@@ -5,6 +5,7 @@ import { createMongoPracticeEventRepository } from "@/lib/persistence/mongo/mong
 import { createMongoDietaryContextRepository } from "@/lib/persistence/mongo/mongoDietaryContextRepository";
 import { createMongoBatchRepository } from "@/lib/persistence/mongo/mongoBatchRepository";
 import { createMongoIngredientRepository } from "@/lib/persistence/mongo/mongoIngredientRepository";
+import { createMongoShoppingListRepository } from "@/lib/persistence/mongo/mongoShoppingListRepository";
 import { createNormalizer, type NormalizeIngredientsFn } from "@/lib/llm/normalizeIngredient";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
@@ -12,6 +13,7 @@ import type { PracticeEventRepository } from "@/lib/persistence/repositories/pra
 import type { DietaryContextRepository } from "@/lib/persistence/repositories/dietaryContextRepository";
 import type { BatchRepository } from "@/lib/persistence/repositories/batchRepository";
 import type { IngredientRepository } from "@/lib/persistence/repositories/ingredientRepository";
+import type { ShoppingListRepository } from "@/lib/persistence/repositories/shoppingListRepository";
 import { getGastronomiaCurriculum } from "@/lib/domain/curriculum/loadGastronomia";
 
 let recipeRepoPromise: Promise<RecipeRepository> | null = null;
@@ -20,6 +22,7 @@ let practiceEventRepoPromise: Promise<PracticeEventRepository> | null = null;
 let dietaryContextRepoPromise: Promise<DietaryContextRepository> | null = null;
 let batchRepoPromise: Promise<BatchRepository> | null = null;
 let ingredientRepoPromise: Promise<IngredientRepository> | null = null;
+let shoppingListRepoPromise: Promise<ShoppingListRepository> | null = null;
 
 export function getRecipeRepository(): Promise<RecipeRepository> {
   if (!recipeRepoPromise) {
@@ -37,6 +40,14 @@ export function getIngredientRepository(): Promise<IngredientRepository> {
 
 export async function getIngredientNormalizer(): Promise<NormalizeIngredientsFn> {
   return createNormalizer(await getIngredientRepository());
+}
+
+export function getShoppingListRepository(): Promise<ShoppingListRepository> {
+  if (!shoppingListRepoPromise) {
+    shoppingListRepoPromise = (async () =>
+      createMongoShoppingListRepository(await getDb()))();
+  }
+  return shoppingListRepoPromise;
 }
 
 export function getBatchRepository(): Promise<BatchRepository> {
