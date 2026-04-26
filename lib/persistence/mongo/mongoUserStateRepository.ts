@@ -14,8 +14,7 @@ function toDoc(state: UserState): UserStateDoc {
 }
 
 function fromDoc(doc: UserStateDoc): UserState {
-  const { _id, ...rest } = doc;
-  void _id;
+  const { _id: _ignored, ...rest } = doc;
   return userStateSchema.parse(rest);
 }
 
