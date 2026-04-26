@@ -42,6 +42,7 @@ export default async function HomePage() {
 
   const recipeRepo = await getRecipeRepository();
   const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod);
+  const rejected = await recipeRepo.findByStatus("rejeitada", { moduleId: mod.id });
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
@@ -50,6 +51,14 @@ export default async function HomePage() {
       <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
       <GenerateMoreButton moduleId={mod.id} />
+      {rejected.length > 0 && (
+        <Link
+          href="/receitas/rejeitadas"
+          className="text-center text-sm text-muted-foreground hover:underline"
+        >
+          Ver receitas rejeitadas ({rejected.length})
+        </Link>
+      )}
       <Link
         href="/modulos"
         className="text-center text-sm text-muted-foreground hover:underline"
