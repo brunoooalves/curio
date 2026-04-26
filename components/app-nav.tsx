@@ -4,6 +4,8 @@ const links = [
   { href: "/", label: "Hoje" },
   { href: "/modulos", label: "Modulos" },
   { href: "/historico", label: "Historico" },
+  { href: "/perfil", label: "Perfil" },
+  { href: "/contextos", label: "Contextos" },
 ] as const;
 
 export function AppNav() {

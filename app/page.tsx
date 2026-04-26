@@ -19,6 +19,7 @@ import { getDietaryContextRepository } from "@/lib/persistence/mongo/factories";
 import { CompleteModuleButton } from "@/components/complete-module-button";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
+import type { UserProfile } from "@/lib/domain/user/types";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,7 @@ export default async function HomePage() {
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
       <ModuleHeader mod={mod} />
+      <ProfileSummary profile={userState.profile} contextsCount={savedContexts.length} />
       <CompleteModuleButton moduleId={mod.id} />
       <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
@@ -88,6 +90,52 @@ function ModuleHeader({ mod }: { mod: Module }) {
       <h1 className="text-3xl font-semibold leading-tight">{mod.title}</h1>
       <p className="text-base text-muted-foreground">{mod.description}</p>
     </header>
+  );
+}
+
+function ProfileSummary({
+  profile,
+  contextsCount,
+}: {
+  profile: UserProfile;
+  contextsCount: number;
+}) {
+  const totalProfileTags =
+    profile.restrictions.length +
+    profile.dislikes.length +
+    profile.preferences.length +
+    profile.abundantIngredients.length;
+
+  if (totalProfileTags === 0 && contextsCount === 0) {
+    return (
+      <div className="rounded-md border border-dashed border-muted-foreground/30 p-3 text-sm text-muted-foreground flex flex-col gap-1">
+        <p>Sem perfil ou contextos configurados ainda.</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/perfil" className="underline">
+            Configurar perfil
+          </Link>
+          <Link href="/contextos" className="underline">
+            Criar contexto
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span>
+        Perfil: {profile.restrictions.length} restricoes, {profile.preferences.length}{" "}
+        preferencias
+      </span>
+      <Link href="/perfil" className="underline">
+        editar
+      </Link>
+      <span aria-hidden>·</span>
+      <Link href="/contextos" className="underline">
+        Contextos salvos ({contextsCount})
+      </Link>
+    </p>
   );
 }
 
