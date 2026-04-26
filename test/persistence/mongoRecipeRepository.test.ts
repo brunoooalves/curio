@@ -103,4 +103,41 @@ describe("mongoRecipeRepository", () => {
     expect(found).not.toBeNull();
     expect(found && Object.prototype.hasOwnProperty.call(found, "_id")).toBe(false);
   });
+
+  it("findByModuleId excludeStatuses removes matching documents", async () => {
+    const sugerida = makeRecipe({ moduleId: "m1", title: "S", status: "sugerida" });
+    const feita = makeRecipe({ moduleId: "m1", title: "F", status: "feita" });
+    const rejeitada = makeRecipe({ moduleId: "m1", title: "R", status: "rejeitada" });
+    await repo.insertMany([sugerida, feita, rejeitada]);
+
+    const visible = await repo.findByModuleId("m1", { excludeStatuses: ["rejeitada"] });
+    expect(visible.map((r) => r.title).sort()).toEqual(["F", "S"]);
+
+    const all = await repo.findByModuleId("m1");
+    expect(all).toHaveLength(3);
+  });
+
+  it("findByStatus filters and optionally narrows by module", async () => {
+    await repo.insertMany([
+      makeRecipe({ moduleId: "m1", title: "A", status: "rejeitada" }),
+      makeRecipe({ moduleId: "m1", title: "B", status: "sugerida" }),
+      makeRecipe({ moduleId: "m2", title: "C", status: "rejeitada" }),
+    ]);
+
+    const allRejected = await repo.findByStatus("rejeitada");
+    expect(allRejected.map((r) => r.title).sort()).toEqual(["A", "C"]);
+
+    const m1Rejected = await repo.findByStatus("rejeitada", { moduleId: "m1" });
+    expect(m1Rejected.map((r) => r.title)).toEqual(["A"]);
+  });
+
+  it("updateStatus bumps updatedAt and persists status", async () => {
+    const r = makeRecipe({ status: "sugerida" });
+    await repo.insertMany([r]);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await repo.updateStatus(r.id, "feita");
+    const after = await repo.findById(r.id);
+    expect(after?.status).toBe("feita");
+    expect(after?.updatedAt).not.toBe(r.updatedAt);
+  });
 });

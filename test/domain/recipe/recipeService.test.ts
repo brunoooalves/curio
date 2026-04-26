@@ -44,8 +44,14 @@ function fakeRepo(initial: Recipe[] = []): RecipeRepository & { _store: Recipe[]
   const store: Recipe[] = [...initial];
   return {
     _store: store,
-    findByModuleId: vi.fn(async (moduleId: string) =>
-      store.filter((r) => r.moduleId === moduleId),
+    findByModuleId: vi.fn(async (moduleId: string, options) => {
+      const exclude = new Set(options?.excludeStatuses ?? []);
+      return store.filter((r) => r.moduleId === moduleId && !exclude.has(r.status));
+    }),
+    findByStatus: vi.fn(async (status, options) =>
+      store.filter(
+        (r) => r.status === status && (!options?.moduleId || r.moduleId === options.moduleId),
+      ),
     ),
     findById: vi.fn(async (id: string) => store.find((r) => r.id === id) ?? null),
     insertMany: vi.fn(async (recipes: Recipe[]) => {
