@@ -1,18 +1,29 @@
 import { getDb } from "@/lib/persistence/mongo/client";
 import { createMongoRecipeRepository } from "@/lib/persistence/mongo/mongoRecipeRepository";
 import { createMongoUserStateRepository } from "@/lib/persistence/mongo/mongoUserStateRepository";
+import { createMongoPracticeEventRepository } from "@/lib/persistence/mongo/mongoPracticeEventRepository";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
+import type { PracticeEventRepository } from "@/lib/persistence/repositories/practiceEventRepository";
 import { getGastronomiaCurriculum } from "@/lib/domain/curriculum/loadGastronomia";
 
 let recipeRepoPromise: Promise<RecipeRepository> | null = null;
 let userStateRepoPromise: Promise<UserStateRepository> | null = null;
+let practiceEventRepoPromise: Promise<PracticeEventRepository> | null = null;
 
 export function getRecipeRepository(): Promise<RecipeRepository> {
   if (!recipeRepoPromise) {
     recipeRepoPromise = (async () => createMongoRecipeRepository(await getDb()))();
   }
   return recipeRepoPromise;
+}
+
+export function getPracticeEventRepository(): Promise<PracticeEventRepository> {
+  if (!practiceEventRepoPromise) {
+    practiceEventRepoPromise = (async () =>
+      createMongoPracticeEventRepository(await getDb()))();
+  }
+  return practiceEventRepoPromise;
 }
 
 export function getUserStateRepository(): Promise<UserStateRepository> {
