@@ -14,6 +14,19 @@ App de aprendizado baseado em grade curricular. Primeiro domínio é gastronomia
 - App gera lista de compras consolidada do plano.
 - No mercado, foto da nota fiscal vai pra Claude com vision; itens são extraídos, normalizados e persistidos para estimativa de custo de planos futuros.
 
+## Filosofia de uso
+
+Curio é guia, não agenda. O usuário cozinha quando quer, no ritmo dele. A modelagem reflete isso:
+
+- **Sem datas em items.** Lotes (`Batch`) e seus items (`BatchItem`) não têm campo de data ou prazo. Só `createdAt` (auditoria) e `doneAt` (quando concluído).
+- **Sem noção de "vencido".** Não existe estado "atrasado", "expirado" ou "deveria ter feito hoje". O único estado temporal é "feito" vs "não feito".
+- **Ordem sugerida ≠ ordem obrigatória.** `suggestedOrder` é dica (perecíveis primeiro, depois dificuldade, depois tempo). Usuário pode cozinhar fora de ordem ou reordenar à vontade.
+- **Linguagem da UI.** Use "sugestão", "a fazer", "próxima sugestão". **Nunca** use "atrasado", "vencido", "deveria", "prazo", "urgente", "pendente há X dias", "hoje você precisa".
+- **Status simples.** `pending` / `done` / `skipped`. Sem `overdue`, sem `expired`.
+- **Pular não é falha.** "Pular" um item é uma ação válida e gratuita; não há penalidade nem destaque visual de culpa.
+
+Quando em dúvida sobre o tom de uma string nova, pergunte: isso pressionaria o usuário sobre tempo? Se sim, reescreva.
+
 ## Princípios arquiteturais
 
 1. **Currículo é YAML versionado, estrutura pedagógica estável.** Nunca gerar grade curricular em runtime via LLM.
