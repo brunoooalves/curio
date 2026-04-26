@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Curio
 
-## Getting Started
+App de aprendizado baseado em grade curricular. Primeiro domínio: gastronomia. Mobile-first / PWA.
 
-First, run the development server:
+Veja [`CLAUDE.md`](./CLAUDE.md) para visão completa, princípios arquiteturais e convenções.
+
+## Pré-requisitos
+
+- Node.js 20+
+- Conta no MongoDB Atlas (free tier serve)
+- Chave da API Anthropic
+
+## MongoDB Atlas (free tier)
+
+1. Crie conta em https://www.mongodb.com/cloud/atlas/register
+2. Crie um cluster **M0 (free)**.
+3. Em **Database Access**, crie um usuário com senha.
+4. Em **Network Access**, libere seu IP (ou `0.0.0.0/0` em dev).
+5. **Connect → Drivers**, copie a connection string `mongodb+srv://...` e coloque em `MONGODB_URI`.
+
+## Setup
 
 ```bash
+cp .env.example .env.local
+# preencha ANTHROPIC_API_KEY e MONGODB_URI
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script              | O quê                                       |
+| ------------------- | ------------------------------------------- |
+| `npm run dev`       | dev server                                  |
+| `npm run build`     | build de produção                           |
+| `npm start`         | serve build de produção                     |
+| `npm run lint`      | ESLint                                      |
+| `npm run typecheck` | `tsc --noEmit`                              |
+| `npm test`          | Vitest (uma rodada)                         |
+| `npm run test:watch`| Vitest em watch                             |
+| `npm run test:ui`   | Vitest UI                                   |
+| `npm run format`    | Prettier (escreve)                          |
 
-## Learn More
+## Variáveis de ambiente
 
-To learn more about Next.js, take a look at the following resources:
+Veja `.env.example`. Resumo:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `ANTHROPIC_API_KEY` — chave da API Anthropic.
+- `MONGODB_URI` — connection string do Atlas.
+- `MONGODB_DB_NAME` — nome do banco (default `curio`).

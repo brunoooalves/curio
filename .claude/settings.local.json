@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(npm -v)",
-      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --eslint --src-dir false --import-alias \"@/*\" --use-npm --no-turbopack --yes)"
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --eslint --src-dir false --import-alias \"@/*\" --use-npm --no-turbopack --yes)",
+      "Bash(npm install *)",
+      "Bash(npx --yes shadcn@latest init --yes --base-color neutral)",
+      "Bash(npx --yes shadcn@latest init --help)",
+      "Bash(npx --yes shadcn@latest init --defaults --force --yes)",
+      "Bash(mkdir -p lib/domain/curriculum/domains lib/domain/recipe lib/domain/user lib/domain/planner lib/llm/prompts lib/ocr lib/persistence/mongo lib/persistence/repositories lib/yaml curriculums test)",
+      "Bash(touch __TRACKED_VAR__/.gitkeep)",
+      "Bash(npx tsc *)",
+      "Bash(git add *)"
     ]
   }
 }
