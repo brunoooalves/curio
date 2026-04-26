@@ -52,7 +52,7 @@ describe("mongoDietaryContextRepository", () => {
   it("list orders by updatedAt desc", async () => {
     const a = await repo.create({ ...baseInput, name: "A" });
     await new Promise((resolve) => setTimeout(resolve, 5));
-    const b = await repo.create({ ...baseInput, name: "B" });
+    await repo.create({ ...baseInput, name: "B" });
     await new Promise((resolve) => setTimeout(resolve, 5));
     await repo.update(a.id, { ...baseInput, name: "A renamed" });
 
