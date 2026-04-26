@@ -1,0 +1,7 @@
+import type { UserState } from "@/lib/domain/user/types";
+
+export interface UserStateRepository {
+  get(): Promise<UserState>;
+  setCurrentModule(moduleId: string): Promise<void>;
+  markCompleted(moduleId: string): Promise<void>;
+}
