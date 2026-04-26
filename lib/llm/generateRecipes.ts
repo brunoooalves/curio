@@ -1,14 +1,12 @@
 import { z } from "zod";
 import { generateObject } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
 import { randomUUID } from "node:crypto";
 import { difficultySchema } from "@/lib/domain/curriculum/schema";
 import { ingredientSchema, mealTypeSchema } from "@/lib/domain/recipe/schema";
 import type { Module } from "@/lib/domain/curriculum/types";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import { buildGenerateRecipesPrompt } from "@/lib/llm/prompts/generateRecipes";
-
-const RECIPE_MODEL = "claude-sonnet-4-5";
+import { getRichModel } from "@/lib/llm/provider";
 
 const generatedRecipeSchema = z.object({
   title: z.string().min(1),
@@ -42,7 +40,7 @@ export async function generateRecipesForModule(
   const prompt = buildGenerateRecipesPrompt(module, count);
 
   const { object } = await generateObject({
-    model: anthropic(RECIPE_MODEL),
+    model: getRichModel(),
     schema: responseSchema,
     prompt,
   });

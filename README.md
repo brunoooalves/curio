@@ -8,7 +8,7 @@ Veja [`CLAUDE.md`](./CLAUDE.md) para visão completa, princípios arquiteturais 
 
 - Node.js 20+
 - Conta no MongoDB Atlas (free tier serve)
-- Chave da API Anthropic
+- Chave da API do provedor LLM (OpenAI por default, ou Anthropic)
 
 ## MongoDB Atlas (free tier)
 
@@ -47,6 +47,8 @@ Abra http://localhost:3000.
 
 Veja `.env.example`. Resumo:
 
-- `ANTHROPIC_API_KEY` — chave da API Anthropic.
+- `LLM_PROVIDER` — `openai` (default) ou `anthropic`.
+- `OPENAI_API_KEY` — necessário se `LLM_PROVIDER=openai`.
+- `ANTHROPIC_API_KEY` — necessário se `LLM_PROVIDER=anthropic`.
 - `MONGODB_URI` — connection string do Atlas.
 - `MONGODB_DB_NAME` — nome do banco (default `curio`).
