@@ -7,14 +7,17 @@ import {
 } from "@/lib/domain/curriculum/loadGastronomia";
 import { getRecipesForModule } from "@/lib/domain/recipe/recipeService";
 import { recipeGenerator } from "@/lib/llm/generateRecipes";
-import { getRecipeRepository } from "@/lib/persistence/mongo/factories";
+import {
+  getRecipeRepository,
+  getUserStateRepository,
+} from "@/lib/persistence/mongo/factories";
+import { getCurrentState } from "@/lib/domain/user/userService";
 import { GenerateMoreButton } from "@/components/generate-more-button";
+import { CompleteModuleButton } from "@/components/complete-module-button";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
 
 export const dynamic = "force-dynamic";
-
-const CURRENT_MODULE_ID = "m1";
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
   cafe: "Cafe da manha",
@@ -25,24 +28,34 @@ const MEAL_LABEL: Record<Recipe["mealType"], string> = {
 
 export default async function HomePage() {
   const curriculum = getGastronomiaCurriculum();
-  const mod = findModuleById(curriculum, CURRENT_MODULE_ID);
+  const userStateRepo = await getUserStateRepository();
+  const userState = await getCurrentState(userStateRepo);
+
+  const mod = findModuleById(curriculum, userState.currentModuleId);
   if (!mod) {
     return (
       <main className="p-6">
-        <p>Modulo &quot;{CURRENT_MODULE_ID}&quot; nao encontrado no curriculo.</p>
+        <p>Modulo &quot;{userState.currentModuleId}&quot; nao encontrado no curriculo.</p>
       </main>
     );
   }
 
-  const repository = await getRecipeRepository();
-  const recipes = await getRecipesForModule(repository, recipeGenerator, mod);
+  const recipeRepo = await getRecipeRepository();
+  const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod);
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
       <ModuleHeader mod={mod} />
+      <CompleteModuleButton moduleId={mod.id} />
       <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
       <GenerateMoreButton moduleId={mod.id} />
+      <Link
+        href="/modulos"
+        className="text-center text-sm text-muted-foreground hover:underline"
+      >
+        Ver todos os modulos →
+      </Link>
     </main>
   );
 }
