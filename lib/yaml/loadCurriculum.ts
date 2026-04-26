@@ -65,20 +65,20 @@ function formatZodIssues(error: import("zod").ZodError): string {
 
 function assertUniqueIds(curriculum: Curriculum, filePath: string): void {
   const moduleIds = new Set<string>();
-  for (const module of curriculum.modules) {
-    if (moduleIds.has(module.id)) {
+  for (const mod of curriculum.modules) {
+    if (moduleIds.has(mod.id)) {
       throw new CurriculumLoadError(
-        `Duplicate module id "${module.id}" in ${filePath}`,
+        `Duplicate module id "${mod.id}" in ${filePath}`,
         filePath,
       );
     }
-    moduleIds.add(module.id);
+    moduleIds.add(mod.id);
 
     const conceptIds = new Set<string>();
-    for (const concept of module.concepts) {
+    for (const concept of mod.concepts) {
       if (conceptIds.has(concept.id)) {
         throw new CurriculumLoadError(
-          `Duplicate concept id "${concept.id}" in module "${module.id}" of ${filePath}`,
+          `Duplicate concept id "${concept.id}" in module "${mod.id}" of ${filePath}`,
           filePath,
         );
       }

@@ -25,8 +25,8 @@ const MEAL_LABEL: Record<Recipe["mealType"], string> = {
 
 export default async function HomePage() {
   const curriculum = getGastronomiaCurriculum();
-  const module = findModuleById(curriculum, CURRENT_MODULE_ID);
-  if (!module) {
+  const mod = findModuleById(curriculum, CURRENT_MODULE_ID);
+  if (!mod) {
     return (
       <main className="p-6">
         <p>Modulo &quot;{CURRENT_MODULE_ID}&quot; nao encontrado no curriculo.</p>
@@ -35,26 +35,26 @@ export default async function HomePage() {
   }
 
   const repository = await getRecipeRepository();
-  const recipes = await getRecipesForModule(repository, recipeGenerator, module);
+  const recipes = await getRecipesForModule(repository, recipeGenerator, mod);
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
-      <ModuleHeader module={module} />
-      <ConceptsList concepts={module.concepts} />
+      <ModuleHeader mod={mod} />
+      <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
-      <GenerateMoreButton moduleId={module.id} />
+      <GenerateMoreButton moduleId={mod.id} />
     </main>
   );
 }
 
-function ModuleHeader({ module }: { module: Module }) {
+function ModuleHeader({ mod }: { mod: Module }) {
   return (
     <header className="flex flex-col gap-2">
       <p className="text-sm uppercase tracking-wider text-muted-foreground">
-        Semana {module.weekNumber}
+        Semana {mod.weekNumber}
       </p>
-      <h1 className="text-3xl font-semibold leading-tight">{module.title}</h1>
-      <p className="text-base text-muted-foreground">{module.description}</p>
+      <h1 className="text-3xl font-semibold leading-tight">{mod.title}</h1>
+      <p className="text-base text-muted-foreground">{mod.description}</p>
     </header>
   );
 }

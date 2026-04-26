@@ -14,7 +14,8 @@ function toDoc(recipe: Recipe): RecipeDoc {
 }
 
 function fromDoc(doc: RecipeDoc): Recipe {
-  const { _id: _ignored, ...rest } = doc;
+  const { _id, ...rest } = doc;
+  void _id;
   return recipeSchema.parse(rest);
 }
 

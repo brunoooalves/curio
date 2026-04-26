@@ -10,12 +10,12 @@ const DEFAULT_BATCH = 4;
 
 export async function generateMoreRecipes(moduleId: string, count: number = DEFAULT_BATCH): Promise<void> {
   const curriculum = getGastronomiaCurriculum();
-  const module = findModuleById(curriculum, moduleId);
-  if (!module) {
+  const mod = findModuleById(curriculum, moduleId);
+  if (!mod) {
     throw new Error(`Unknown module id: ${moduleId}`);
   }
 
   const repository = await getRecipeRepository();
-  await generateAdditionalRecipes(repository, recipeGenerator, module, count);
+  await generateAdditionalRecipes(repository, recipeGenerator, mod, count);
   revalidatePath("/");
 }
