@@ -3,22 +3,32 @@ import { createMongoRecipeRepository } from "@/lib/persistence/mongo/mongoRecipe
 import { createMongoUserStateRepository } from "@/lib/persistence/mongo/mongoUserStateRepository";
 import { createMongoPracticeEventRepository } from "@/lib/persistence/mongo/mongoPracticeEventRepository";
 import { createMongoDietaryContextRepository } from "@/lib/persistence/mongo/mongoDietaryContextRepository";
+import { createMongoBatchRepository } from "@/lib/persistence/mongo/mongoBatchRepository";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
 import type { PracticeEventRepository } from "@/lib/persistence/repositories/practiceEventRepository";
 import type { DietaryContextRepository } from "@/lib/persistence/repositories/dietaryContextRepository";
+import type { BatchRepository } from "@/lib/persistence/repositories/batchRepository";
 import { getGastronomiaCurriculum } from "@/lib/domain/curriculum/loadGastronomia";
 
 let recipeRepoPromise: Promise<RecipeRepository> | null = null;
 let userStateRepoPromise: Promise<UserStateRepository> | null = null;
 let practiceEventRepoPromise: Promise<PracticeEventRepository> | null = null;
 let dietaryContextRepoPromise: Promise<DietaryContextRepository> | null = null;
+let batchRepoPromise: Promise<BatchRepository> | null = null;
 
 export function getRecipeRepository(): Promise<RecipeRepository> {
   if (!recipeRepoPromise) {
     recipeRepoPromise = (async () => createMongoRecipeRepository(await getDb()))();
   }
   return recipeRepoPromise;
+}
+
+export function getBatchRepository(): Promise<BatchRepository> {
+  if (!batchRepoPromise) {
+    batchRepoPromise = (async () => createMongoBatchRepository(await getDb()))();
+  }
+  return batchRepoPromise;
 }
 
 export function getDietaryContextRepository(): Promise<DietaryContextRepository> {
