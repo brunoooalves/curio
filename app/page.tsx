@@ -13,7 +13,9 @@ import {
   getUserStateRepository,
 } from "@/lib/persistence/mongo/factories";
 import { getCurrentState } from "@/lib/domain/user/userService";
-import { GenerateMoreButton } from "@/components/generate-more-button";
+import { GenerateRecipesDialog } from "@/components/generate-recipes-dialog";
+import { listContexts } from "@/lib/domain/context/contextService";
+import { getDietaryContextRepository } from "@/lib/persistence/mongo/factories";
 import { CompleteModuleButton } from "@/components/complete-module-button";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
@@ -42,9 +44,11 @@ export default async function HomePage() {
   }
 
   const recipeRepo = await getRecipeRepository();
+  const ctxRepo = await getDietaryContextRepository();
   const ctx = buildGenerationContext(userState.profile);
   const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod, ctx);
   const rejected = await recipeRepo.findByStatus("rejeitada", { moduleId: mod.id });
+  const savedContexts = await listContexts(ctxRepo);
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
@@ -52,7 +56,11 @@ export default async function HomePage() {
       <CompleteModuleButton moduleId={mod.id} />
       <ConceptsList concepts={mod.concepts} />
       <RecipesList recipes={recipes} />
-      <GenerateMoreButton moduleId={mod.id} />
+      <GenerateRecipesDialog
+        moduleId={mod.id}
+        profile={userState.profile}
+        contexts={savedContexts}
+      />
       {rejected.length > 0 && (
         <Link
           href="/receitas/rejeitadas"
