@@ -10,7 +10,25 @@ Veja [`CLAUDE.md`](./CLAUDE.md) para visão completa, princípios arquiteturais 
 - Conta no MongoDB Atlas (free tier serve)
 - Chave da API do provedor LLM (OpenAI por default, ou Anthropic)
 
-## MongoDB Atlas (free tier)
+## MongoDB
+
+Duas opções — escolha uma e copie o `MONGODB_URI` correspondente para `.env.local`.
+
+### Opção 1: Docker local (recomendado para dev)
+
+```bash
+docker compose up -d
+```
+
+Sobe um Mongo 7 em `localhost:27017` com usuário `curio` / senha `curio` e volume nomeado para persistir os dados. Connection string:
+
+```
+MONGODB_URI=mongodb://curio:curio@localhost:27017/curio?authSource=admin
+```
+
+Para parar: `docker compose down`. Para zerar tudo (apaga o volume): `docker compose down -v`.
+
+### Opção 2: MongoDB Atlas (free tier)
 
 1. Crie conta em https://www.mongodb.com/cloud/atlas/register
 2. Crie um cluster **M0 (free)**.
