@@ -3,6 +3,8 @@ import Link from "next/link";
 const links = [
   { href: "/", label: "Hoje" },
   { href: "/lote", label: "Lote" },
+  { href: "/lista", label: "Lista" },
+  { href: "/simular", label: "Simular" },
   { href: "/lotes", label: "Lotes" },
   { href: "/modulos", label: "Modulos" },
   { href: "/historico", label: "Historico" },
@@ -13,7 +15,7 @@ const links = [
 export function AppNav() {
   return (
     <nav className="border-b">
-      <div className="max-w-2xl mx-auto px-4 py-3 flex gap-4 text-sm">
+      <div className="max-w-2xl mx-auto px-4 py-3 flex gap-4 text-sm overflow-x-auto whitespace-nowrap">
         {links.map((link) => (
           <Link
             key={link.href}
