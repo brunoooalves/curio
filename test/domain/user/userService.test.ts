@@ -3,6 +3,7 @@ import {
   getCurrentState,
   switchModule,
   markModuleCompleted,
+  updateProfile,
   ModuleSwitchBlockedError,
 } from "@/lib/domain/user/userService";
 import type { UserState } from "@/lib/domain/user/types";
@@ -47,6 +48,10 @@ function fakeRepo(initial: UserState): UserStateRepository & { _state: UserState
         obj._state = state;
       }
     }),
+    updateProfile: vi.fn(async (profile) => {
+      state = { ...state, profile, updatedAt: new Date().toISOString() };
+      obj._state = state;
+    }),
   };
   return obj;
 }
@@ -57,6 +62,13 @@ function state(currentModuleId: string, completed: string[] = []): UserState {
     id: "default",
     currentModuleId,
     completedModuleIds: completed,
+    profile: {
+      restrictions: [],
+      dislikes: [],
+      preferences: [],
+      abundantIngredients: [],
+      servingsDefault: 2,
+    },
     createdAt: now,
     updatedAt: now,
   };
@@ -140,5 +152,35 @@ describe("markModuleCompleted", () => {
     await expect(markModuleCompleted(repo, curriculum, "ghost")).rejects.toThrowError(
       /nao existe/i,
     );
+  });
+});
+
+describe("updateProfile", () => {
+  it("dedups, trims and persists the profile", async () => {
+    const repo = fakeRepo(state("m1"));
+    await updateProfile(repo, {
+      restrictions: [" sem gluten ", "sem gluten", ""],
+      dislikes: [" coentro ", "coentro"],
+      preferences: ["mediterranea"],
+      abundantIngredients: ["abobrinha"],
+      servingsDefault: 4,
+    });
+    expect(repo.updateProfile).toHaveBeenCalledTimes(1);
+    expect(repo._state.profile.restrictions).toEqual(["sem gluten"]);
+    expect(repo._state.profile.dislikes).toEqual(["coentro"]);
+    expect(repo._state.profile.servingsDefault).toBe(4);
+  });
+
+  it("rejects non-positive servingsDefault", async () => {
+    const repo = fakeRepo(state("m1"));
+    await expect(
+      updateProfile(repo, {
+        restrictions: [],
+        dislikes: [],
+        preferences: [],
+        abundantIngredients: [],
+        servingsDefault: 0,
+      }),
+    ).rejects.toThrowError(/servingsDefault/);
   });
 });

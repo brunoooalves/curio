@@ -1,5 +1,5 @@
 import type { Curriculum } from "@/lib/domain/curriculum/types";
-import type { UserState } from "./types";
+import type { UserProfile, UserState } from "./types";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
 import { canSwitchTo, findNextAvailableModule } from "./progression";
 
@@ -14,6 +14,39 @@ export async function getCurrentState(
   repository: UserStateRepository,
 ): Promise<UserState> {
   return repository.get();
+}
+
+function dedupTrim(values: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of values) {
+    const v = raw.trim();
+    if (!v || seen.has(v)) continue;
+    seen.add(v);
+    out.push(v);
+  }
+  return out;
+}
+
+export function normalizeProfile(profile: UserProfile): UserProfile {
+  if (!Number.isInteger(profile.servingsDefault) || profile.servingsDefault <= 0) {
+    throw new Error("servingsDefault deve ser um inteiro positivo.");
+  }
+  return {
+    restrictions: dedupTrim(profile.restrictions),
+    dislikes: dedupTrim(profile.dislikes),
+    preferences: dedupTrim(profile.preferences),
+    abundantIngredients: dedupTrim(profile.abundantIngredients),
+    servingsDefault: profile.servingsDefault,
+  };
+}
+
+export async function updateProfile(
+  repository: UserStateRepository,
+  profile: UserProfile,
+): Promise<void> {
+  const normalized = normalizeProfile(profile);
+  await repository.updateProfile(normalized);
 }
 
 export async function switchModule(

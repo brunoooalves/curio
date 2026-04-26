@@ -32,8 +32,50 @@ describe("mongoUserStateRepository", () => {
     expect(state.id).toBe("default");
     expect(state.currentModuleId).toBe("m1");
     expect(state.completedModuleIds).toEqual([]);
+    expect(state.profile.servingsDefault).toBe(2);
+    expect(state.profile.restrictions).toEqual([]);
     expect(state.createdAt).toBeTruthy();
     expect(state.updatedAt).toBeTruthy();
+  });
+
+  it("migrates a legacy document missing profile, persisting the default", async () => {
+    const now = new Date().toISOString();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (db.collection("user_state") as any).insertOne({
+      _id: "default",
+      id: "default",
+      currentModuleId: "m2",
+      completedModuleIds: ["m1"],
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const state = await repo.get();
+    expect(state.profile.servingsDefault).toBe(2);
+    expect(state.currentModuleId).toBe("m2");
+    expect(state.completedModuleIds).toEqual(["m1"]);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const persisted = (await (db.collection("user_state") as any).findOne({
+      _id: "default",
+    })) as { profile?: { servingsDefault?: number } } | null;
+    expect(persisted?.profile?.servingsDefault).toBe(2);
+  });
+
+  it("updateProfile persists the new profile and bumps updatedAt", async () => {
+    const before = await repo.get();
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await repo.updateProfile({
+      restrictions: ["sem gluten"],
+      dislikes: ["coentro"],
+      preferences: ["mediterranea"],
+      abundantIngredients: ["abobrinha"],
+      servingsDefault: 4,
+    });
+    const after = await repo.get();
+    expect(after.profile.restrictions).toEqual(["sem gluten"]);
+    expect(after.profile.servingsDefault).toBe(4);
+    expect(after.updatedAt).not.toBe(before.updatedAt);
   });
 
   it("get() is idempotent — calling twice returns the same id", async () => {

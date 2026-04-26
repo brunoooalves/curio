@@ -38,6 +38,13 @@ function state(currentModuleId: string, completed: string[] = []): UserState {
     id: "default",
     currentModuleId,
     completedModuleIds: completed,
+    profile: {
+      restrictions: [],
+      dislikes: [],
+      preferences: [],
+      abundantIngredients: [],
+      servingsDefault: 2,
+    },
     createdAt: now,
     updatedAt: now,
   };
