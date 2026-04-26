@@ -75,7 +75,7 @@ describe("getRecipesForModule", () => {
       throw new Error("should not be called");
     });
 
-    const result = await getRecipesForModule(repo, gen, mod, 6);
+    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
     expect(result).toHaveLength(6);
     expect(gen.generateRecipesForModule).not.toHaveBeenCalled();
   });
@@ -87,7 +87,7 @@ describe("getRecipesForModule", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`new-${i}`)),
     );
 
-    const result = await getRecipesForModule(repo, gen, mod, 6);
+    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
     expect(result).toHaveLength(6);
     expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4);
     expect(repo.insertMany).toHaveBeenCalledTimes(1);
@@ -100,7 +100,7 @@ describe("getRecipesForModule", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`first-${i}`)),
     );
 
-    const result = await getRecipesForModule(repo, gen, mod, 6);
+    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
     expect(result).toHaveLength(6);
     expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 6);
   });
@@ -109,9 +109,26 @@ describe("getRecipesForModule", () => {
     const repo = fakeRepo([makeRecipe("only")]);
     const gen = fakeGenerator(() => []);
 
-    const result = await getRecipesForModule(repo, gen, mod, 6);
+    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
     expect(result).toHaveLength(1);
     expect(repo.insertMany).not.toHaveBeenCalled();
+  });
+
+  it("excludes rejected recipes by default — both from output and from the threshold check", async () => {
+    const existing = [
+      makeRecipe("ok-1", { status: "sugerida" }),
+      makeRecipe("ok-2", { status: "feita" }),
+      ...Array.from({ length: 4 }, (_, i) => makeRecipe(`x-${i}`, { status: "rejeitada" })),
+    ];
+    const repo = fakeRepo(existing);
+    const gen = fakeGenerator((count) =>
+      Array.from({ length: count }, (_, i) => makeRecipe(`gen-${i}`)),
+    );
+
+    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    expect(result.find((r) => r.status === "rejeitada")).toBeUndefined();
+    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4);
+    expect(result).toHaveLength(6);
   });
 });
 

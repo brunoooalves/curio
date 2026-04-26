@@ -1,17 +1,26 @@
 import type { Module } from "@/lib/domain/curriculum/types";
-import type { Recipe } from "@/lib/domain/recipe/types";
+import type { Recipe, RecipeStatus } from "@/lib/domain/recipe/types";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { RecipeGenerator } from "@/lib/llm/generateRecipes";
 
 export const DEFAULT_MIN_RECIPES_PER_MODULE = 6;
+export const DEFAULT_EXCLUDED_STATUSES: RecipeStatus[] = ["rejeitada"];
+
+export interface GetRecipesForModuleOptions {
+  minCount?: number;
+  excludeStatuses?: RecipeStatus[];
+}
 
 export async function getRecipesForModule(
   repository: RecipeRepository,
   generator: RecipeGenerator,
   module: Module,
-  minCount: number = DEFAULT_MIN_RECIPES_PER_MODULE,
+  options: GetRecipesForModuleOptions = {},
 ): Promise<Recipe[]> {
-  const existing = await repository.findByModuleId(module.id);
+  const minCount = options.minCount ?? DEFAULT_MIN_RECIPES_PER_MODULE;
+  const excludeStatuses = options.excludeStatuses ?? DEFAULT_EXCLUDED_STATUSES;
+
+  const existing = await repository.findByModuleId(module.id, { excludeStatuses });
   if (existing.length >= minCount) return existing;
 
   const missing = minCount - existing.length;
