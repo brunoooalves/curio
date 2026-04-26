@@ -67,6 +67,14 @@ function fakeGenerator(produce: (count: number) => Recipe[]): RecipeGenerator {
   };
 }
 
+const ctx = {
+  restrictions: [],
+  dislikes: [],
+  preferences: [],
+  abundantIngredients: [],
+  servings: 2,
+};
+
 describe("getRecipesForModule", () => {
   it("returns existing recipes when there are already enough", async () => {
     const existing = Array.from({ length: 6 }, (_, i) => makeRecipe(`R${i}`));
@@ -75,7 +83,7 @@ describe("getRecipesForModule", () => {
       throw new Error("should not be called");
     });
 
-    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    const result = await getRecipesForModule(repo, gen, mod, ctx, { minCount: 6 });
     expect(result).toHaveLength(6);
     expect(gen.generateRecipesForModule).not.toHaveBeenCalled();
   });
@@ -87,9 +95,9 @@ describe("getRecipesForModule", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`new-${i}`)),
     );
 
-    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    const result = await getRecipesForModule(repo, gen, mod, ctx, { minCount: 6 });
     expect(result).toHaveLength(6);
-    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4);
+    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4, ctx);
     expect(repo.insertMany).toHaveBeenCalledTimes(1);
     expect(repo._store).toHaveLength(6);
   });
@@ -100,16 +108,16 @@ describe("getRecipesForModule", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`first-${i}`)),
     );
 
-    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    const result = await getRecipesForModule(repo, gen, mod, ctx, { minCount: 6 });
     expect(result).toHaveLength(6);
-    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 6);
+    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 6, ctx);
   });
 
   it("does not call insertMany when generator returns empty", async () => {
     const repo = fakeRepo([makeRecipe("only")]);
     const gen = fakeGenerator(() => []);
 
-    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    const result = await getRecipesForModule(repo, gen, mod, ctx, { minCount: 6 });
     expect(result).toHaveLength(1);
     expect(repo.insertMany).not.toHaveBeenCalled();
   });
@@ -125,9 +133,9 @@ describe("getRecipesForModule", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`gen-${i}`)),
     );
 
-    const result = await getRecipesForModule(repo, gen, mod, { minCount: 6 });
+    const result = await getRecipesForModule(repo, gen, mod, ctx, { minCount: 6 });
     expect(result.find((r) => r.status === "rejeitada")).toBeUndefined();
-    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4);
+    expect(gen.generateRecipesForModule).toHaveBeenCalledWith(mod, 4, ctx);
     expect(result).toHaveLength(6);
   });
 });
@@ -139,7 +147,7 @@ describe("generateAdditionalRecipes", () => {
       Array.from({ length: count }, (_, i) => makeRecipe(`extra-${i}`)),
     );
 
-    const result = await generateAdditionalRecipes(repo, gen, mod, 3);
+    const result = await generateAdditionalRecipes(repo, gen, mod, 3, ctx);
     expect(result).toHaveLength(3);
     expect(repo.insertMany).toHaveBeenCalledTimes(1);
     expect(repo._store).toHaveLength(3);
@@ -151,7 +159,7 @@ describe("generateAdditionalRecipes", () => {
       throw new Error("should not be called");
     });
 
-    await expect(generateAdditionalRecipes(repo, gen, mod, 0)).resolves.toEqual([]);
+    await expect(generateAdditionalRecipes(repo, gen, mod, 0, ctx)).resolves.toEqual([]);
     expect(gen.generateRecipesForModule).not.toHaveBeenCalled();
   });
 });

@@ -7,6 +7,7 @@ import {
 } from "@/lib/domain/curriculum/loadGastronomia";
 import { getRecipesForModule } from "@/lib/domain/recipe/recipeService";
 import { recipeGenerator } from "@/lib/llm/generateRecipes";
+import { buildGenerationContext } from "@/lib/domain/generation/buildGenerationContext";
 import {
   getRecipeRepository,
   getUserStateRepository,
@@ -41,7 +42,8 @@ export default async function HomePage() {
   }
 
   const recipeRepo = await getRecipeRepository();
-  const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod);
+  const ctx = buildGenerationContext(userState.profile);
+  const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod, ctx);
   const rejected = await recipeRepo.findByStatus("rejeitada", { moduleId: mod.id });
 
   return (

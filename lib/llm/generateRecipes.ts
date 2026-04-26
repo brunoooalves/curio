@@ -5,6 +5,7 @@ import { difficultySchema } from "@/lib/domain/curriculum/schema";
 import { ingredientSchema, mealTypeSchema } from "@/lib/domain/recipe/schema";
 import type { Module } from "@/lib/domain/curriculum/types";
 import type { Recipe } from "@/lib/domain/recipe/types";
+import type { GenerationContext } from "@/lib/domain/generation/types";
 import { buildGenerateRecipesPrompt } from "@/lib/llm/prompts/generateRecipes";
 import { getRichModel } from "@/lib/llm/provider";
 
@@ -24,7 +25,11 @@ const responseSchema = z.object({
 });
 
 export interface RecipeGenerator {
-  generateRecipesForModule(module: Module, count: number): Promise<Recipe[]>;
+  generateRecipesForModule(
+    module: Module,
+    count: number,
+    ctx: GenerationContext,
+  ): Promise<Recipe[]>;
 }
 
 export const recipeGenerator: RecipeGenerator = {
@@ -34,10 +39,11 @@ export const recipeGenerator: RecipeGenerator = {
 export async function generateRecipesForModule(
   module: Module,
   count: number,
+  ctx: GenerationContext,
 ): Promise<Recipe[]> {
   if (count <= 0) return [];
 
-  const prompt = buildGenerateRecipesPrompt(module, count);
+  const prompt = buildGenerateRecipesPrompt(module, count, ctx);
 
   const { object } = await generateObject({
     model: getRichModel(),
