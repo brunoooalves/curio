@@ -1,0 +1,125 @@
+id: gastronomia-v1
+title: Gastronomia — Fundamentos
+description: >-
+  Trilha de quatro semanas cobrindo os pilares da cozinha clássica:
+  organização, fundos, molhos-mãe e técnicas de cocção. Cada módulo
+  introduz conceitos que serão praticados via receitas geradas sob demanda.
+domain: gastronomia
+
+modules:
+  - id: m1
+    weekNumber: 1
+    title: Cortes e mise en place
+    description: >-
+      Antes de qualquer cocção, organização. Esta semana cobre a postura
+      básica na cozinha, segurança no manejo da faca e os cortes
+      fundamentais que aparecem em quase toda receita clássica.
+    prerequisites: []
+    concepts:
+      - id: c1.1
+        title: Mise en place
+        description: >-
+          Preparar e organizar todos os ingredientes e utensílios antes de
+          começar a cozinhar. Reduz erros, acelera execução e é a base
+          da cozinha profissional.
+        difficulty: 1
+      - id: c1.2
+        title: Segurança e ergonomia com faca
+        description: >-
+          Pegada da faca, posição da mão guia ("garra"), afiação básica
+          e cuidados para evitar acidentes durante cortes repetitivos.
+        difficulty: 2
+      - id: c1.3
+        title: Cortes clássicos
+        description: >-
+          Brunoise, julienne, mirepoix e chiffonade. Conhecer os cortes
+          padroniza tempos de cocção e apresentação do prato.
+        difficulty: 3
+
+  - id: m2
+    weekNumber: 2
+    title: Fundos e caldos
+    description: >-
+      Fundos são a base líquida da cozinha clássica. Esta semana cobre
+      como extrair sabor de ossos, vegetais e aromáticos, e como
+      armazenar para uso posterior em sopas, molhos e cocções.
+    prerequisites:
+      - m1
+    concepts:
+      - id: c2.1
+        title: Fundo claro de ave
+        description: >-
+          Cocção lenta de ossos crus com mirepoix e bouquet garni.
+          Não dourar nada — o objetivo é um líquido translúcido e
+          neutro que sirva de base para muitos pratos.
+        difficulty: 2
+      - id: c2.2
+        title: Fundo escuro
+        description: >-
+          Ossos e vegetais previamente assados ou tostados antes da
+          cocção, gerando reações de Maillard e um caldo encorpado e
+          aromático para molhos densos.
+        difficulty: 3
+
+  - id: m3
+    weekNumber: 3
+    title: Molhos-mãe
+    description: >-
+      Os cinco molhos-mãe da cozinha clássica francesa são pontos de
+      partida para dezenas de variações. Esta semana introduz béchamel,
+      velouté e espanhol; o tomate e o holandês ficam para o próximo ciclo.
+    prerequisites:
+      - m2
+    concepts:
+      - id: c3.1
+        title: Roux
+        description: >-
+          Mistura de gordura e farinha cozida que serve de espessante
+          para molhos. Branco, dourado ou escuro — a cor define o
+          sabor final e que molho vai resultar.
+        difficulty: 2
+      - id: c3.2
+        title: Béchamel
+        description: >-
+          Molho à base de leite engrossado com roux branco. Base de
+          gratinados e do molho mornay. Atenção a grumos e ao ponto
+          do leite.
+        difficulty: 3
+      - id: c3.3
+        title: Velouté e espanhol
+        description: >-
+          Molhos construídos sobre fundos (claro para velouté, escuro
+          para espanhol) e roux. Demonstram que o mesmo gesto técnico
+          gera resultados muito diferentes dependendo do líquido base.
+        difficulty: 4
+
+  - id: m4
+    weekNumber: 4
+    title: Técnicas de cocção
+    description: >-
+      Esta semana sistematiza as principais técnicas de cocção e
+      quando aplicar cada uma. O objetivo é reconhecer, em qualquer
+      receita, qual método está sendo empregado e por quê.
+    prerequisites:
+      - m1
+    concepts:
+      - id: c4.1
+        title: Calor seco — saltear e assar
+        description: >-
+          Cocção em frigideira quente com pouca gordura ou em forno.
+          Promove Maillard, crocância e concentração de sabor.
+        difficulty: 2
+      - id: c4.2
+        title: Calor úmido — pochê e brasear
+        description: >-
+          Cocção em líquido em temperaturas controladas. Mantém
+          umidade, amacia tecidos conjuntivos e é ideal para cortes
+          mais rígidos ou alimentos delicados.
+        difficulty: 3
+      - id: c4.3
+        title: Confit e cocção em gordura
+        description: >-
+          Cocção lenta submersa em gordura a baixa temperatura.
+          Conserva, amacia e perfuma. Demanda paciência e controle
+          térmico.
+        difficulty: 4
