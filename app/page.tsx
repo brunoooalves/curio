@@ -1,29 +1,25 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   findModuleById,
   getGastronomiaCurriculum,
 } from "@/lib/domain/curriculum/loadGastronomia";
-import { getRecipesForModule } from "@/lib/domain/recipe/recipeService";
-import { recipeGenerator } from "@/lib/llm/generateRecipes";
-import { buildGenerationContext } from "@/lib/domain/generation/buildGenerationContext";
 import {
   getRecipeRepository,
   getUserStateRepository,
-} from "@/lib/persistence/mongo/factories";
-import { getCurrentState } from "@/lib/domain/user/userService";
-import { GenerateRecipesDialog } from "@/components/generate-recipes-dialog";
-import { listContexts } from "@/lib/domain/context/contextService";
-import {
   getBatchRepository,
   getDietaryContextRepository,
 } from "@/lib/persistence/mongo/factories";
+import { getCurrentState } from "@/lib/domain/user/userService";
+import { listContexts } from "@/lib/domain/context/contextService";
 import {
   getActiveBatch,
   nextSuggestion,
 } from "@/lib/domain/batch/batchService";
-import { CompleteModuleButton } from "@/components/complete-module-button";
+import { findNextAvailableModule } from "@/lib/domain/user/progression";
+import { AdvanceWeekDialog } from "@/components/advance-week-dialog";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
 import type { UserProfile } from "@/lib/domain/user/types";
@@ -55,46 +51,48 @@ export default async function HomePage() {
   const recipeRepo = await getRecipeRepository();
   const ctxRepo = await getDietaryContextRepository();
   const batchRepo = await getBatchRepository();
-  const ctx = buildGenerationContext(userState.profile);
-  const recipes = await getRecipesForModule(recipeRepo, recipeGenerator, mod, ctx);
-  const rejected = await recipeRepo.findByStatus("rejeitada", { moduleId: mod.id });
   const savedContexts = await listContexts(ctxRepo);
   const activeBatch = await getActiveBatch({ batchRepository: batchRepo });
   const next = activeBatch ? nextSuggestion(activeBatch) : null;
   const nextRecipe = next ? await recipeRepo.findById(next.recipeId) : null;
+  const totalItems = activeBatch?.items.length ?? 0;
+  const doneItems =
+    activeBatch?.items.filter((i) => i.status === "done").length ?? 0;
+  const nextModule = findNextAvailableModule(
+    userState,
+    curriculum,
+    mod.weekNumber,
+  );
 
   return (
-    <main className="flex flex-1 flex-col gap-8 px-4 py-6 max-w-2xl mx-auto w-full">
+    <main className="flex flex-1 flex-col gap-7 px-4 py-6 max-w-2xl mx-auto w-full">
       <ModuleHeader mod={mod} />
-      <ProfileSummary profile={userState.profile} contextsCount={savedContexts.length} />
-      <BatchSummary
-        active={activeBatch !== null}
-        nextOrder={next?.suggestedOrder ?? null}
-        nextMealType={next?.mealType ?? null}
-        nextTitle={nextRecipe?.title ?? null}
-      />
-      <CompleteModuleButton moduleId={mod.id} />
-      <ConceptsList concepts={mod.concepts} />
-      <RecipesList recipes={recipes} />
-      <GenerateRecipesDialog
-        moduleId={mod.id}
-        profile={userState.profile}
-        contexts={savedContexts}
-      />
-      {rejected.length > 0 && (
-        <Link
-          href="/receitas/rejeitadas"
-          className="text-center text-sm text-muted-foreground hover:underline"
-        >
-          Ver receitas rejeitadas ({rejected.length})
-        </Link>
+
+      {activeBatch && next && nextRecipe ? (
+        <ActiveBatchCard
+          nextOrder={next.suggestedOrder}
+          nextMealType={next.mealType}
+          nextRecipe={nextRecipe}
+          done={doneItems}
+          total={totalItems}
+        />
+      ) : (
+        <EmptyBatchCard />
       )}
-      <Link
-        href="/modulos"
-        className="text-center text-sm text-muted-foreground hover:underline"
-      >
-        Ver todos os módulos →
-      </Link>
+
+      <ConceptsList concepts={mod.concepts} />
+
+      <AdvanceWeekDialog
+        moduleId={mod.id}
+        weekNumber={mod.weekNumber}
+        moduleTitle={mod.title}
+        hasNextModule={nextModule !== null}
+      />
+
+      <ProfileSummary
+        profile={userState.profile}
+        contextsCount={savedContexts.length}
+      />
     </main>
   );
 }
@@ -103,7 +101,7 @@ function ModuleHeader({ mod }: { mod: Module }) {
   return (
     <header className="flex flex-col gap-2">
       <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
-        Semana {mod.weekNumber}
+        Semana {mod.weekNumber} · Gastronomia
       </p>
       <h1 className="text-3xl font-semibold leading-tight">{mod.title}</h1>
       <p className="text-base text-muted-foreground">{mod.description}</p>
@@ -111,49 +109,85 @@ function ModuleHeader({ mod }: { mod: Module }) {
   );
 }
 
-function BatchSummary({
-  active,
+function EmptyBatchCard() {
+  return (
+    <Card>
+      <CardContent className="flex flex-col gap-3 py-5">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl shrink-0" aria-hidden>🥕</span>
+          <div className="flex flex-col">
+            <p className="font-medium">Comece um lote desta semana</p>
+            <p className="text-sm text-muted-foreground">
+              Diga quantas refeições; o app monta a lista de compras.
+            </p>
+          </div>
+        </div>
+        <Link href="/lote/novo" className="contents">
+          <Button type="button" className="w-full">Criar lote</Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ActiveBatchCard({
   nextOrder,
   nextMealType,
-  nextTitle,
+  nextRecipe,
+  done,
+  total,
 }: {
-  active: boolean;
-  nextOrder: number | null;
-  nextMealType: Recipe["mealType"] | null;
-  nextTitle: string | null;
+  nextOrder: number;
+  nextMealType: Recipe["mealType"];
+  nextRecipe: Recipe;
+  done: number;
+  total: number;
 }) {
-  if (!active) {
-    return (
-      <div className="rounded-md border bg-muted/30 p-4 flex items-center justify-between gap-3">
-        <p className="text-sm">Sem lote em andamento.</p>
-        <Link href="/lote/novo" className="text-sm font-medium underline">
-          Criar lote
-        </Link>
-      </div>
-    );
-  }
-
+  const progress = total > 0 ? (done / total) * 100 : 0;
   return (
-    <div className="rounded-md border bg-muted/30 p-4 flex flex-col gap-2">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
-        Próxima sugestão
-      </p>
-      {nextOrder !== null && nextTitle ? (
-        <p className="text-base">
-          #{nextOrder} ·{" "}
-          {nextMealType ? MEAL_LABEL[nextMealType] : ""} · {nextTitle}
-        </p>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          Lote em andamento sem itens a fazer no momento.
-        </p>
-      )}
-      <div className="flex items-center gap-3">
-        <Link href="/lote" className="text-sm font-medium underline">
-          Ver lote
-        </Link>
-      </div>
-    </div>
+    <Card>
+      <CardContent className="flex flex-col gap-4 py-5">
+        <div className="flex items-center justify-between">
+          <Badge variant="secondary">Lote em andamento</Badge>
+          <span className="text-sm text-muted-foreground">
+            {done} de {total} feitos
+          </span>
+        </div>
+        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-foreground transition-[width]"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+            Próxima sugestão
+          </p>
+          <p className="font-medium">
+            #{nextOrder} · {MEAL_LABEL[nextMealType]} · {nextRecipe.title}
+          </p>
+          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mt-1">
+            <span>⏱ {nextRecipe.estimatedMinutes} min</span>
+            <span>
+              👥 {nextRecipe.servings}{" "}
+              {nextRecipe.servings === 1 ? "porção" : "porções"}
+            </span>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/lote" className="flex-1">
+            <Button type="button" className="w-full">
+              Continuar lote
+            </Button>
+          </Link>
+          <Link href="/lista">
+            <Button type="button" variant="outline">
+              Lista
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -189,7 +223,8 @@ function ProfileSummary({
   return (
     <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
       <span>
-        Perfil: {plural(profile.restrictions.length, "restrição", "restrições")},{" "}
+        Perfil:{" "}
+        {plural(profile.restrictions.length, "restrição", "restrições")},{" "}
         {plural(profile.preferences.length, "preferência", "preferências")}
       </span>
       <Link href="/perfil" className="underline">
@@ -205,9 +240,17 @@ function ProfileSummary({
 
 function ConceptsList({ concepts }: { concepts: Concept[] }) {
   return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-lg font-medium">Conceitos da semana</h2>
-      <ul className="flex flex-col gap-3">
+    <details className="group" open>
+      <summary className="flex cursor-pointer items-center justify-between list-none">
+        <h2 className="text-lg font-medium">Conceitos da semana</h2>
+        <span className="text-sm text-muted-foreground">
+          {concepts.length}{" "}
+          <span aria-hidden className="ml-1 transition-transform group-open:rotate-180 inline-block">
+            ⌄
+          </span>
+        </span>
+      </summary>
+      <ul className="flex flex-col gap-3 mt-3">
         {concepts.map((concept) => (
           <Card key={concept.id}>
             <CardHeader className="flex flex-row items-start justify-between gap-3">
@@ -220,39 +263,6 @@ function ConceptsList({ concepts }: { concepts: Concept[] }) {
           </Card>
         ))}
       </ul>
-    </section>
-  );
-}
-
-function RecipesList({ recipes }: { recipes: Recipe[] }) {
-  return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-lg font-medium">Receitas sugeridas ({recipes.length})</h2>
-      {recipes.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Ainda nao ha receitas. Use o botao abaixo para gerar.
-        </p>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {recipes.map((recipe) => (
-            <li key={recipe.id}>
-              <Link href={`/receita/${recipe.id}`} className="block">
-                <Card className="transition-colors hover:bg-accent/40">
-                  <CardHeader className="flex flex-row items-start justify-between gap-3">
-                    <CardTitle className="text-base">{recipe.title}</CardTitle>
-                    <Badge variant="outline">Dif. {recipe.difficulty}</Badge>
-                  </CardHeader>
-                  <CardContent className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                    <Badge variant="secondary">{MEAL_LABEL[recipe.mealType]}</Badge>
-                    <span>~{recipe.estimatedMinutes} min</span>
-                    <span>{plural(recipe.servings, "porção", "porções")}</span>
-                  </CardContent>
-                </Card>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+    </details>
   );
 }

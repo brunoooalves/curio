@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { BatchItemActions } from "@/components/batch-item-actions";
 import { BatchReorder } from "@/components/batch-reorder";
 import type { Batch, BatchItem } from "@/lib/domain/batch/types";
+import type { EnrichedBatchItem } from "@/lib/domain/batch/enrichBatch";
+import { cn } from "@/lib/utils";
 
 const MEAL_LABEL: Record<BatchItem["mealType"], string> = {
   cafe: "Café da manhã",
@@ -22,9 +24,15 @@ const STATUS_LABEL: Record<BatchItem["status"], string> = {
   skipped: "Pulado",
 };
 
-export interface BatchViewItem extends BatchItem {
-  recipeTitle: string;
-}
+const DIFFICULTY_LABEL: Record<number, string> = {
+  1: "Fácil",
+  2: "Médio",
+  3: "Médio",
+  4: "Difícil",
+  5: "Difícil",
+};
+
+export type BatchViewItem = EnrichedBatchItem;
 
 export function BatchView({ batch, items }: { batch: Batch; items: BatchViewItem[] }) {
   const [reordering, setReordering] = useState(false);
@@ -38,6 +46,7 @@ export function BatchView({ batch, items }: { batch: Batch; items: BatchViewItem
   const progress = counts.total > 0 ? (counts.done / counts.total) * 100 : 0;
 
   const sorted = [...items].sort((a, b) => a.suggestedOrder - b.suggestedOrder);
+  const nextPendingId = sorted.find((i) => i.status === "pending")?.id ?? null;
 
   if (reordering) {
     return (
@@ -60,7 +69,7 @@ export function BatchView({ batch, items }: { batch: Batch; items: BatchViewItem
           <Button
             type="button"
             variant="ghost"
-            size="sm"
+            size="compact"
             onClick={() => setReordering(true)}
             disabled={counts.total === 0}
           >
@@ -78,7 +87,11 @@ export function BatchView({ batch, items }: { batch: Batch; items: BatchViewItem
       <ul className="flex flex-col gap-3">
         {sorted.map((item) => (
           <li key={item.id}>
-            <ItemCard batchId={batch.id} item={item} />
+            <ItemCard
+              batchId={batch.id}
+              item={item}
+              isNext={item.id === nextPendingId}
+            />
           </li>
         ))}
       </ul>
@@ -86,19 +99,46 @@ export function BatchView({ batch, items }: { batch: Batch; items: BatchViewItem
   );
 }
 
-function ItemCard({ batchId, item }: { batchId: string; item: BatchViewItem }) {
+function DifficultyDots({ difficulty }: { difficulty: number }) {
+  const filled = Math.max(1, Math.min(3, Math.ceil(difficulty / 2)));
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground" aria-label={`Dificuldade: ${DIFFICULTY_LABEL[difficulty] ?? difficulty}`}>
+      <span className="font-mono tracking-tighter" aria-hidden>
+        {"●".repeat(filled)}
+        <span className="opacity-30">{"○".repeat(3 - filled)}</span>
+      </span>
+      {DIFFICULTY_LABEL[difficulty] ?? `Nível ${difficulty}`}
+    </span>
+  );
+}
+
+function ItemCard({
+  batchId,
+  item,
+  isNext,
+}: {
+  batchId: string;
+  item: BatchViewItem;
+  isNext: boolean;
+}) {
   const isDone = item.status === "done";
   const isSkipped = item.status === "skipped";
 
   return (
-    <Card className={isDone ? "opacity-60" : ""}>
+    <Card
+      className={cn(
+        isDone && "opacity-60",
+        isNext && "border-2 border-foreground",
+      )}
+    >
       <CardHeader className="flex flex-row items-start justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">#{item.suggestedOrder}</Badge>
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={isNext ? "default" : "outline"}>#{item.suggestedOrder}</Badge>
             <span className="text-xs text-muted-foreground">
               {MEAL_LABEL[item.mealType]}
             </span>
+            {isNext && <Badge variant="secondary">Próximo</Badge>}
           </div>
           <CardTitle className="text-base">
             <Link
@@ -108,6 +148,20 @@ function ItemCard({ batchId, item }: { batchId: string; item: BatchViewItem }) {
               {item.recipeTitle}
             </Link>
           </CardTitle>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            {item.recipeEstimatedMinutes !== null && (
+              <span>⏱ {item.recipeEstimatedMinutes} min</span>
+            )}
+            {item.recipeServings !== null && (
+              <span>
+                👥 {item.recipeServings}{" "}
+                {item.recipeServings === 1 ? "porção" : "porções"}
+              </span>
+            )}
+            {item.recipeDifficulty !== null && (
+              <DifficultyDots difficulty={item.recipeDifficulty} />
+            )}
+          </div>
         </div>
         {item.status !== "pending" && (
           <Badge variant={isDone ? "secondary" : "outline"}>
@@ -121,6 +175,7 @@ function ItemCard({ batchId, item }: { batchId: string; item: BatchViewItem }) {
             batchId={batchId}
             itemId={item.id}
             recipeTitle={item.recipeTitle}
+            primary={isNext}
           />
         </CardContent>
       )}

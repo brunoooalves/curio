@@ -10,6 +10,9 @@ export interface EnrichedBatchItem {
   status: Batch["items"][number]["status"];
   doneAt: string | null;
   recipeTitle: string;
+  recipeDifficulty: number | null;
+  recipeEstimatedMinutes: number | null;
+  recipeServings: number | null;
 }
 
 export async function enrichBatchItems(
@@ -22,8 +25,14 @@ export async function enrichBatchItems(
     const r = await recipeRepo.findById(id);
     if (r) recipes.set(id, r);
   }
-  return batch.items.map((item) => ({
-    ...item,
-    recipeTitle: recipes.get(item.recipeId)?.title ?? "(receita removida)",
-  }));
+  return batch.items.map((item) => {
+    const recipe = recipes.get(item.recipeId) ?? null;
+    return {
+      ...item,
+      recipeTitle: recipe?.title ?? "(receita removida)",
+      recipeDifficulty: recipe?.difficulty ?? null,
+      recipeEstimatedMinutes: recipe?.estimatedMinutes ?? null,
+      recipeServings: recipe?.servings ?? null,
+    };
+  });
 }

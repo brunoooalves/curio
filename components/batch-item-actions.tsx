@@ -22,10 +22,12 @@ export function BatchItemActions({
   batchId,
   itemId,
   recipeTitle,
+  primary = false,
 }: {
   batchId: string;
   itemId: string;
   recipeTitle: string;
+  primary?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [replaceOpen, setReplaceOpen] = useState(false);
@@ -65,13 +67,18 @@ export function BatchItemActions({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap gap-2">
-        <Button type="button" size="sm" onClick={() => setOpen(true)} disabled={pending}>
-          Feito
+        <Button
+          type="button"
+          variant={primary ? "default" : "secondary"}
+          className={primary ? "flex-1 min-w-[140px]" : undefined}
+          onClick={() => setOpen(true)}
+          disabled={pending}
+        >
+          {primary ? "Marcar feito" : "Feito"}
         </Button>
         <Button
           type="button"
-          size="sm"
-          variant="outline"
+          variant={primary ? "outline" : "ghost"}
           onClick={handleSkip}
           disabled={pending}
         >
@@ -79,8 +86,7 @@ export function BatchItemActions({
         </Button>
         <Button
           type="button"
-          size="sm"
-          variant="outline"
+          variant={primary ? "outline" : "ghost"}
           onClick={openReplace}
           disabled={pending}
         >
