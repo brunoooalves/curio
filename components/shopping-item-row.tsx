@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { markShoppingItem } from "@/app/actions/shoppingActions";
-import { formatQuantity } from "@/lib/domain/shopping/formatQuantity";
+import { describeQuantity } from "@/lib/domain/shopping/describeQuantity";
 import { formatCents } from "@/lib/domain/format/money";
 import { cn } from "@/lib/utils";
 import type { ShoppingItem, ShoppingItemStatus } from "@/lib/domain/shopping/types";
@@ -54,6 +54,7 @@ export function ShoppingItemRow({
 
   const dimmed = item.status !== "pending";
   const priceLabel = estimateLabel(estimate ?? null);
+  const described = describeQuantity(item.aggregatedQuantity);
 
   return (
     <li
@@ -74,15 +75,19 @@ export function ShoppingItemRow({
           >
             {item.canonicalName}
           </span>
-          <span className="text-xs text-muted-foreground">
-            {formatQuantity(item.aggregatedQuantity)}
-            {item.sourceRecipeIds.length > 0 && (
-              <>
-                {" · em "}
-                {item.sourceRecipeIds.length}{" "}
-                {item.sourceRecipeIds.length === 1 ? "receita" : "receitas"}
-              </>
+          <span className="text-sm">
+            <strong className="font-medium">{described.display}</strong>
+            {described.packaging && (
+              <span className="text-muted-foreground">
+                {" · "}
+                {described.packaging}
+              </span>
             )}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {described.raw && <>soma de {described.raw} · </>}
+            em {item.sourceRecipeIds.length}{" "}
+            {item.sourceRecipeIds.length === 1 ? "receita" : "receitas"}
             {priceLabel && <span className="ml-1 italic">{priceLabel}</span>}
           </span>
         </div>

@@ -9,7 +9,7 @@ import {
   estimateForLinesAction,
   previewShoppingListAction,
 } from "@/app/actions/shoppingActions";
-import { formatQuantity } from "@/lib/domain/shopping/formatQuantity";
+import { describeQuantity } from "@/lib/domain/shopping/describeQuantity";
 import { formatCents } from "@/lib/domain/format/money";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { ShoppingLine } from "@/lib/domain/shopping/aggregate";
@@ -193,21 +193,34 @@ export function SandboxView({
                 ? e.basis === "last"
                   ? `≈ ${formatCents(e.estimated)} (último)`
                   : `≈ ${formatCents(e.estimated)} (média)`
-                : "sem histórico";
+                : null;
+              const described = describeQuantity(line.aggregatedQuantity);
               return (
                 <li
                   key={line.canonicalName}
                   className="flex justify-between gap-4 py-2 border-b text-sm"
                 >
-                  <div className="flex flex-col">
-                    <span className="font-medium">{line.canonicalName}</span>
-                    <span className="text-xs text-muted-foreground italic">
-                      {estimateLabel}
-                    </span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-medium truncate">{line.canonicalName}</span>
+                    {described.raw && (
+                      <span className="text-xs text-muted-foreground">
+                        soma de {described.raw}
+                      </span>
+                    )}
+                    {estimateLabel && (
+                      <span className="text-xs text-muted-foreground italic">
+                        {estimateLabel}
+                      </span>
+                    )}
                   </div>
-                  <span className="text-muted-foreground">
-                    {formatQuantity(line.aggregatedQuantity)}
-                  </span>
+                  <div className="flex flex-col items-end">
+                    <span className="font-medium">{described.display}</span>
+                    {described.packaging && (
+                      <span className="text-xs text-muted-foreground">
+                        {described.packaging}
+                      </span>
+                    )}
+                  </div>
                 </li>
               );
             })}

@@ -11,12 +11,14 @@ describe("buildNormalizeIngredientsPrompt", () => {
 
   it("instructs the model to keep order identical", () => {
     const out = buildNormalizeIngredientsPrompt(["sal"]);
-    expect(out).toContain("ordem da resposta DEVE ser identica");
+    expect(out).toContain("ordem da resposta DEVE ser idêntica");
   });
 
-  it("hints the unit selection rules", () => {
-    const out = buildNormalizeIngredientsPrompt(["coentro"]);
-    expect(out).toMatch(/tempero\/erva/);
-    expect(out).toMatch(/liquido/);
+  it("biases toward market-friendly units (ml/g/unidade)", () => {
+    const out = buildNormalizeIngredientsPrompt(["azeite"]);
+    expect(out).toMatch(/MERCADO/);
+    expect(out).toMatch(/Prefira "ml" e "g"/);
+    expect(out).toMatch(/Líquidos.*"ml"/);
+    expect(out).toMatch(/contáveis no mercado/);
   });
 });
