@@ -109,6 +109,12 @@ export default async function ListaPage() {
           </p>
           <RecomputeListButton batchId={batch.id} />
         </div>
+        <Link
+          href={`/lote/novo?modo=avancado&fromBatch=${batch.id}`}
+          className="text-sm text-muted-foreground hover:underline w-fit"
+        >
+          Editar receitas (modo avançado) →
+        </Link>
         {pendingItems.length > 0 && hasPriceData && (
           <div className="rounded-md border bg-muted/30 p-3 text-sm">
             Estimativa: <strong>{formatCents(estimate.total)}</strong>{" "}

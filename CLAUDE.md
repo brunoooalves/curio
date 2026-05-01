@@ -22,7 +22,7 @@ Curio é guia, não agenda. O usuário cozinha quando quer, no ritmo dele. A mod
 - **Sem noção de "vencido".** Não existe estado "atrasado", "expirado" ou "deveria ter feito hoje". O único estado temporal é "feito" vs "não feito".
 - **Ordem sugerida ≠ ordem obrigatória.** `suggestedOrder` é dica (perecíveis primeiro, depois dificuldade, depois tempo). Usuário pode cozinhar fora de ordem ou reordenar à vontade.
 - **Linguagem da UI.** Use "sugestão", "a fazer", "próxima sugestão". **Nunca** use "atrasado", "vencido", "deveria", "prazo", "urgente", "pendente há X dias", "hoje você precisa".
-- **Status simples.** `pending` / `done` / `skipped`. Sem `overdue`, sem `expired`.
+- **Status simples.** `BatchItem.status` é `pending` / `done` / `skipped`. Sem `overdue`, sem `expired`. (O log de prática — `PracticeEvent` — tem um quarto tipo, `reverted`, que registra "estava feito e voltou a pendente"; isso é um evento de auditoria, não um estado do item, e aparece em /historico como filtro derivado.)
 - **Pular não é falha.** "Pular" um item é uma ação válida e gratuita; não há penalidade nem destaque visual de culpa.
 
 Quando em dúvida sobre o tom de uma string nova, pergunte: isso pressionaria o usuário sobre tempo? Se sim, reescreva.
