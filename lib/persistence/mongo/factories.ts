@@ -6,6 +6,7 @@ import { createMongoDietaryContextRepository } from "@/lib/persistence/mongo/mon
 import { createMongoBatchRepository } from "@/lib/persistence/mongo/mongoBatchRepository";
 import { createMongoIngredientRepository } from "@/lib/persistence/mongo/mongoIngredientRepository";
 import { createMongoShoppingListRepository } from "@/lib/persistence/mongo/mongoShoppingListRepository";
+import { createMongoReceiptRepository } from "@/lib/persistence/mongo/mongoReceiptRepository";
 import { createNormalizer, type NormalizeIngredientsFn } from "@/lib/llm/normalizeIngredient";
 import type { RecipeRepository } from "@/lib/persistence/repositories/recipeRepository";
 import type { UserStateRepository } from "@/lib/persistence/repositories/userStateRepository";
@@ -14,6 +15,7 @@ import type { DietaryContextRepository } from "@/lib/persistence/repositories/di
 import type { BatchRepository } from "@/lib/persistence/repositories/batchRepository";
 import type { IngredientRepository } from "@/lib/persistence/repositories/ingredientRepository";
 import type { ShoppingListRepository } from "@/lib/persistence/repositories/shoppingListRepository";
+import type { ReceiptRepository } from "@/lib/persistence/repositories/receiptRepository";
 import { getGastronomiaCurriculum } from "@/lib/domain/curriculum/loadGastronomia";
 
 let recipeRepoPromise: Promise<RecipeRepository> | null = null;
@@ -23,6 +25,7 @@ let dietaryContextRepoPromise: Promise<DietaryContextRepository> | null = null;
 let batchRepoPromise: Promise<BatchRepository> | null = null;
 let ingredientRepoPromise: Promise<IngredientRepository> | null = null;
 let shoppingListRepoPromise: Promise<ShoppingListRepository> | null = null;
+let receiptRepoPromise: Promise<ReceiptRepository> | null = null;
 
 export function getRecipeRepository(): Promise<RecipeRepository> {
   if (!recipeRepoPromise) {
@@ -48,6 +51,13 @@ export function getShoppingListRepository(): Promise<ShoppingListRepository> {
       createMongoShoppingListRepository(await getDb()))();
   }
   return shoppingListRepoPromise;
+}
+
+export function getReceiptRepository(): Promise<ReceiptRepository> {
+  if (!receiptRepoPromise) {
+    receiptRepoPromise = (async () => createMongoReceiptRepository(await getDb()))();
+  }
+  return receiptRepoPromise;
 }
 
 export function getBatchRepository(): Promise<BatchRepository> {
