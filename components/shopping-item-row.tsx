@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { markShoppingItem } from "@/app/actions/shoppingActions";
 import { formatQuantity } from "@/lib/domain/shopping/formatQuantity";
 import { formatCents } from "@/lib/domain/format/money";
+import { cn } from "@/lib/utils";
 import type { ShoppingItem, ShoppingItemStatus } from "@/lib/domain/shopping/types";
 import type { EstimateLine } from "@/lib/domain/receipt/priceService";
 
@@ -16,12 +15,17 @@ const STATUS_LABEL: Record<ShoppingItemStatus, string> = {
   ignored: "Ignorar",
 };
 
-const NEXT_STATUSES: ShoppingItemStatus[] = ["pending", "bought", "have_at_home", "ignored"];
+const STATUSES: ShoppingItemStatus[] = [
+  "pending",
+  "bought",
+  "have_at_home",
+  "ignored",
+];
 
 function estimateLabel(estimate: EstimateLine | null): string | null {
   if (!estimate) return null;
-  if (estimate.basis === "unknown" || estimate.estimated === null) return "sem histórico";
-  if (estimate.basis === "last") return `≈ ${formatCents(estimate.estimated)} (último preço)`;
+  if (estimate.basis === "unknown" || estimate.estimated === null) return null;
+  if (estimate.basis === "last") return `≈ ${formatCents(estimate.estimated)} (último)`;
   return `≈ ${formatCents(estimate.estimated)} (média)`;
 }
 
@@ -49,44 +53,54 @@ export function ShoppingItemRow({
   }
 
   const dimmed = item.status !== "pending";
+  const priceLabel = estimateLabel(estimate ?? null);
 
   return (
-    <li className={dimmed ? "opacity-60" : ""}>
-      <div className="flex items-start justify-between gap-3 py-2 border-b">
-        <div className="flex flex-col gap-1 flex-1">
-          <span className="text-base font-medium">{item.canonicalName}</span>
-          <span className="text-sm text-muted-foreground">
-            {formatQuantity(item.aggregatedQuantity)} ·{" "}
-            usado em {item.sourceRecipeIds.length}{" "}
-            {item.sourceRecipeIds.length === 1 ? "receita" : "receitas"}
+    <li
+      className={cn(
+        "border-b last:border-b-0",
+        item.status === "ignored" && "opacity-50",
+        item.status === "have_at_home" && "opacity-70",
+        item.status === "bought" && "opacity-60",
+      )}
+    >
+      <div className="flex items-center gap-3 py-3">
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+          <span
+            className={cn(
+              "text-base font-medium truncate",
+              dimmed && "line-through",
+            )}
+          >
+            {item.canonicalName}
           </span>
-          {estimateLabel(estimate ?? null) && (
-            <span className="text-xs text-muted-foreground italic">
-              {estimateLabel(estimate ?? null)}
-            </span>
-          )}
+          <span className="text-xs text-muted-foreground">
+            {formatQuantity(item.aggregatedQuantity)}
+            {item.sourceRecipeIds.length > 0 && (
+              <>
+                {" · em "}
+                {item.sourceRecipeIds.length}{" "}
+                {item.sourceRecipeIds.length === 1 ? "receita" : "receitas"}
+              </>
+            )}
+            {priceLabel && <span className="ml-1 italic">{priceLabel}</span>}
+          </span>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          <div className="flex flex-wrap gap-1 justify-end">
-            {NEXT_STATUSES.map((status) => (
-              <Button
-                key={status}
-                type="button"
-                variant={item.status === status ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatus(status)}
-                disabled={pending}
-              >
-                {STATUS_LABEL[status]}
-              </Button>
-            ))}
-          </div>
-          <Badge variant="secondary" className="text-xs">
-            {STATUS_LABEL[item.status]}
-          </Badge>
-          {error && <p className="text-xs text-destructive">{error}</p>}
-        </div>
+        <select
+          aria-label={`Status de ${item.canonicalName}`}
+          className="h-11 min-w-[140px] rounded-md border bg-background px-2 text-sm font-medium"
+          value={item.status}
+          disabled={pending}
+          onChange={(e) => setStatus(e.target.value as ShoppingItemStatus)}
+        >
+          {STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {STATUS_LABEL[status]}
+            </option>
+          ))}
+        </select>
       </div>
+      {error && <p className="text-xs text-destructive pb-2">{error}</p>}
     </li>
   );
 }

@@ -41,17 +41,12 @@ export default async function ListaPage() {
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-semibold leading-tight">Lista de compras</h1>
           <p className="text-sm text-muted-foreground">
-            Sem lote em andamento. Crie um lote ou simule sem persistir.
+            Sem lote em andamento. Crie um lote para gerar a lista.
           </p>
         </header>
-        <div className="flex flex-col gap-3 items-start">
-          <Link href="/lote/novo">
-            <Button type="button">Criar lote</Button>
-          </Link>
-          <Link href="/simular" className="text-sm text-muted-foreground hover:underline">
-            Ou simule sem lote →
-          </Link>
-        </div>
+        <Link href="/lote/novo">
+          <Button type="button">Criar lote</Button>
+        </Link>
       </main>
     );
   }
@@ -100,38 +95,34 @@ export default async function ListaPage() {
   const knownCount = estimate.perLine.filter((e) => e.estimated !== null).length;
   const unknownCount = estimate.perLine.length - knownCount;
 
+  const hasPriceData = knownCount > 0;
+
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold leading-tight">Lista de compras</h1>
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
-            {counts.pending} pendentes · {counts.bought} comprados
+            {counts.pending} {counts.pending === 1 ? "pendente" : "pendentes"}
+            {" · "}
+            {counts.bought} {counts.bought === 1 ? "comprado" : "comprados"}
           </p>
           <RecomputeListButton batchId={batch.id} />
         </div>
-        <Link
-          href={`/simular?fromBatch=${batch.id}`}
-          className="text-sm text-muted-foreground hover:underline w-fit"
-        >
-          Simular variações →
-        </Link>
-        {pendingItems.length > 0 && (
-          <div className="rounded-md border bg-muted/30 p-3 text-sm flex flex-col gap-1">
-            <p>
-              Estimativa: <strong>{formatCents(estimate.total)}</strong>{" "}
-              <span className="text-xs text-muted-foreground">
-                baseada em {knownCount}{" "}
-                {knownCount === 1 ? "item com histórico" : "itens com histórico"}
-              </span>
-            </p>
-            {unknownCount > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {unknownCount}{" "}
-                {unknownCount === 1 ? "item sem histórico" : "itens sem histórico"}
-              </p>
-            )}
+        {pendingItems.length > 0 && hasPriceData && (
+          <div className="rounded-md border bg-muted/30 p-3 text-sm">
+            Estimativa: <strong>{formatCents(estimate.total)}</strong>{" "}
+            <span className="text-xs text-muted-foreground">
+              baseada em {knownCount} de {estimate.perLine.length}{" "}
+              {estimate.perLine.length === 1 ? "item" : "itens"}
+            </span>
           </div>
+        )}
+        {pendingItems.length > 0 && !hasPriceData && (
+          <p className="text-xs text-muted-foreground">
+            Estimativa de custo aparece quando houver pelo menos uma nota
+            processada em <Link href="/mercado" className="underline">Mercado</Link>.
+          </p>
         )}
       </header>
 

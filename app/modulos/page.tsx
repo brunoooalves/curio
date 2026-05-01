@@ -11,28 +11,25 @@ import {
 } from "@/lib/domain/user/progression";
 import { SwitchModuleButton } from "@/components/switch-module-button";
 import type { Module } from "@/lib/domain/curriculum/types";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 const STATUS_LABEL: Record<ModuleStatus, string> = {
-  completed: "Concluído",
+  completed: "Concluída",
   current: "Atual",
   available: "Disponível",
-  locked: "Bloqueado",
+  locked: "Bloqueada",
 };
 
-const STATUS_VARIANT: Record<ModuleStatus, "default" | "secondary" | "outline" | "destructive"> = {
+const STATUS_VARIANT: Record<
+  ModuleStatus,
+  "default" | "secondary" | "outline" | "destructive"
+> = {
   completed: "secondary",
   current: "default",
   available: "outline",
-  locked: "destructive",
-};
-
-const STATUS_BORDER: Record<ModuleStatus, string> = {
-  completed: "border-muted",
-  current: "border-foreground",
-  available: "border-border",
-  locked: "border-dashed border-muted-foreground/30",
+  locked: "outline",
 };
 
 export default async function ModulosPage() {
@@ -45,13 +42,11 @@ export default async function ModulosPage() {
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <Link href="/" className="text-sm text-muted-foreground hover:underline">
-          ← Voltar
+        <Link href="/mais" className="text-sm text-muted-foreground hover:underline">
+          ← Mais
         </Link>
         <h1 className="text-3xl font-semibold leading-tight">Todos os módulos</h1>
-        <p className="text-sm text-muted-foreground">
-          {curriculum.title}
-        </p>
+        <p className="text-sm text-muted-foreground">{curriculum.title}</p>
       </header>
 
       <ul className="flex flex-col gap-3">
@@ -79,9 +74,13 @@ function ModuleCard({
   status: ModuleStatus;
   missing: Module[];
 }) {
-  const showSwitch = status === "available" || status === "completed";
   return (
-    <Card className={`border-2 ${STATUS_BORDER[status]}`}>
+    <Card
+      className={cn(
+        status === "current" && "border-2 border-foreground",
+        status === "locked" && "border-dashed opacity-70",
+      )}
+    >
       <CardHeader className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col">
@@ -90,18 +89,33 @@ function ModuleCard({
             </p>
             <CardTitle className="text-base">{mod.title}</CardTitle>
           </div>
-          <Badge variant={STATUS_VARIANT[status]}>{STATUS_LABEL[status]}</Badge>
+          <Badge variant={STATUS_VARIANT[status]}>
+            {status === "locked" && <span aria-hidden className="mr-1">🔒</span>}
+            {STATUS_LABEL[status]}
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">{mod.description}</p>
+
         {status === "locked" && missing.length > 0 && (
           <p className="text-xs text-muted-foreground">
-            Pré-requisitos pendentes:{" "}
+            Pré-requisito{missing.length === 1 ? "" : "s"}:{" "}
             {missing.map((m) => `Semana ${m.weekNumber} — ${m.title}`).join("; ")}.
           </p>
         )}
-        {showSwitch && <SwitchModuleButton moduleId={mod.id} />}
+
+        {status === "current" && (
+          <p className="text-sm">Você está praticando esta semana.</p>
+        )}
+
+        {status === "completed" && (
+          <SwitchModuleButton moduleId={mod.id} label="Revisar semana" />
+        )}
+
+        {status === "available" && (
+          <SwitchModuleButton moduleId={mod.id} label="Ir para esta semana" />
+        )}
       </CardContent>
     </Card>
   );
