@@ -1,0 +1,1759 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curio — Proposta de Identidade Visual v0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" />
+<style>
+  /* =========================================
+     PROPOSTA V0 — Cozinha como Ofício
+     Estética que mistura cozinha profissional
+     com acessibilidade do aprendizado caseiro
+  ========================================= */
+  
+  :root {
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+    --leading-body: 1.6;
+    --leading-tight: 1.2;
+    --base-size: 15px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+
+  /* =========================================
+     PALETA PROPOSTA — Terracota & Oliva
+  ========================================= */
+  [data-palette="proposta"] {
+    --bg: #FAF8F5;
+    --bg-card: #FFFFFF;
+    --ink: #1C1917;
+    --ink-soft: #57534E;
+    --ink-muted: #A8A29E;
+    --line: #E7E5E4;
+    --line-strong: #D6D3D1;
+    --accent: #C2410C;
+    --accent-soft: #FDBA74;
+    --accent-fg: #FFFFFF;
+    --olive: #4D7C0F;
+    --olive-soft: #BEF264;
+    --olive-fg: #FFFFFF;
+    --pop: #C2410C;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+  }
+
+  [data-palette="proposta"][data-mode="cooking"] {
+    --bg: #1C1917;
+    --bg-card: #292524;
+    --ink: #FAF8F5;
+    --ink-soft: #A8A29E;
+    --ink-muted: #78716C;
+    --line: #44403C;
+    --line-strong: #57534E;
+  }
+
+  /* =========================================
+     PALETA ATUAL (para comparação)
+  ========================================= */
+  [data-palette="atual"] {
+    --bg: #f5f1e8;
+    --bg-card: #ffffff;
+    --ink: #1f2a2e;
+    --ink-soft: #5d6a6e;
+    --ink-muted: #8a9498;
+    --line: #e0dccf;
+    --line-strong: #c5beac;
+    --accent: #7c8a78;
+    --accent-soft: #b5c2b1;
+    --accent-fg: #ffffff;
+    --olive: #6f7d6b;
+    --olive-soft: #a8b5a4;
+    --olive-fg: #ffffff;
+    --pop: #b15c3d;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 16px 30px -16px rgba(31, 42, 46, 0.2);
+  }
+
+  /* =========================================
+     Página de apresentação
+  ========================================= */
+  html, body { 
+    background: #E7E5E4; 
+    font-family: var(--sans); 
+    color: #1C1917;
+    margin: 0;
+  }
+  body { padding: 32px 20px 100px; }
+  
+  .page { max-width: 1400px; margin: 0 auto; }
+  
+  .page > header {
+    margin-bottom: 48px;
+  }
+  .page > header .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #78716C;
+    margin-bottom: 12px;
+  }
+  .page > header h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.1;
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+    color: #1C1917;
+  }
+  .page > header p { 
+    margin: 0 0 8px; 
+    color: #57534E; 
+    max-width: 720px; 
+    line-height: 1.65;
+    font-size: 16px;
+  }
+
+  /* =========================================
+     Seções
+  ========================================= */
+  .section {
+    margin-top: 64px;
+  }
+  .section-header {
+    margin-bottom: 32px;
+  }
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .section-header p {
+    color: #57534E;
+    margin: 0;
+    font-size: 15px;
+  }
+
+  /* =========================================
+     Paleta de cores visual
+  ========================================= */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .color-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .color-card .swatch {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+  }
+  .color-card .swatch span {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 6px;
+    color: #1C1917;
+  }
+  .color-card .info {
+    padding: 12px 14px;
+  }
+  .color-card .info .name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .color-card .info .use {
+    font-size: 12px;
+    color: #78716C;
+  }
+
+  /* =========================================
+     Toggle de modo
+  ========================================= */
+  .toggle-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(231, 229, 228, 0.95);
+    backdrop-filter: blur(12px);
+    margin: 0 -20px 32px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #D6D3D1;
+  }
+  .toggle-bar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .toggle-bar p { 
+    margin: 0; 
+    font-size: 14px; 
+    color: #57534E;
+  }
+  .toggle-bar p strong {
+    color: #1C1917;
+  }
+  .toggle {
+    display: inline-flex;
+    padding: 4px;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid #D6D3D1;
+    gap: 4px;
+  }
+  .toggle button {
+    border: none;
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font: 500 13px/1 var(--sans);
+    color: #57534E;
+    transition: all 0.15s ease;
+  }
+  .toggle button:hover {
+    background: #F5F5F4;
+  }
+  .toggle button.on { 
+    background: #1C1917; 
+    color: #FAF8F5;
+  }
+
+  /* =========================================
+     Grid de comparação
+  ========================================= */
+  .compare-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  }
+
+  /* =========================================
+     Variant card (container do mockup)
+  ========================================= */
+  .variant {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .variant-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .variant-label {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: #1C1917;
+  }
+  .tag {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid #D6D3D1;
+    color: #57534E;
+  }
+  .tag.new {
+    background: #C2410C;
+    border-color: #C2410C;
+    color: white;
+  }
+  .variant-note {
+    font-size: 14px;
+    color: #57534E;
+    line-height: 1.5;
+    max-width: 360px;
+  }
+
+  /* =========================================
+     Frame do telefone
+  ========================================= */
+  .frame-bezel {
+    background: #1C1917;
+    padding: 12px 12px 18px;
+    border-radius: 44px;
+    box-shadow: var(--shadow-lg);
+    align-self: flex-start;
+  }
+  .frame {
+    width: 375px;
+    height: 720px;
+    overflow: hidden;
+    border-radius: 34px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--base-size);
+    line-height: var(--leading-body);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .frame .scroll {
+    overflow-y: auto;
+    flex: 1;
+    padding: 20px 20px 100px;
+  }
+
+  /* =========================================
+     Tipografia interna
+  ========================================= */
+  .frame h1, .frame h2, .frame h3 {
+    font-family: var(--serif);
+    line-height: var(--leading-tight);
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .frame h1 { font-size: 26px; font-weight: 600; }
+  .frame h2 { font-size: 18px; font-weight: 600; }
+  .frame h3 { font-size: 15px; font-weight: 600; font-family: var(--sans); }
+  .frame p { margin: 0; }
+
+  .label-cap {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* =========================================
+     Componentes UI
+  ========================================= */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--line);
+    color: var(--ink-soft);
+  }
+  .pill.olive { 
+    background: var(--olive); 
+    color: var(--olive-fg);
+  }
+  .pill.accent { 
+    background: var(--accent); 
+    color: var(--accent-fg);
+  }
+  .pill.outline {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font: 600 14px/1 var(--sans);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-accent {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  /* =========================================
+     Bottom Navigation
+  ========================================= */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    padding-bottom: env(safe-area-inset-bottom, 8px);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .nav-item.active {
+    color: var(--ink);
+  }
+  .nav-item svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.5;
+  }
+  .nav-item.active svg {
+    stroke-width: 2;
+  }
+
+  /* =========================================
+     Tela: Hoje (Home)
+  ========================================= */
+  .screen-hoje .greeting {
+    margin-bottom: 24px;
+  }
+  .screen-hoje .greeting .label-cap {
+    margin-bottom: 4px;
+  }
+  .screen-hoje .greeting h1 {
+    margin-bottom: 6px;
+  }
+  .screen-hoje .greeting .subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .screen-hoje .module-card {
+    margin-bottom: 20px;
+  }
+  .screen-hoje .module-card .module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .screen-hoje .module-card .week-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .screen-hoje .module-card h2 {
+    font-size: 20px;
+  }
+  .screen-hoje .module-card .progress-bar {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .screen-hoje .module-card .progress-fill {
+    height: 100%;
+    background: var(--olive);
+    border-radius: 999px;
+  }
+  .screen-hoje .module-card .stats {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .screen-hoje .module-card .stats strong {
+    color: var(--ink);
+    font-feature-settings: "tnum";
+  }
+
+  .screen-hoje .lote-card {
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .screen-hoje .lote-card .lote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .screen-hoje .lote-card h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .screen-hoje .lote-card .lote-meta {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .screen-hoje .lote-card .lote-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .screen-hoje .lote-card .btn {
+    flex: 1;
+    padding: 12px;
+  }
+
+  .screen-hoje .concepts-section {
+    margin-top: 28px;
+  }
+  .screen-hoje .concepts-section .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .screen-hoje .concepts-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .screen-hoje .concepts-section .see-all {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .screen-hoje .concept-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* =========================================
+     Tela: Lista de Compras
+  ========================================= */
+  .screen-lista .lista-header {
+    margin-bottom: 24px;
+  }
+  .screen-lista .lista-header h1 {
+    margin-bottom: 8px;
+  }
+  .screen-lista .lista-summary {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .screen-lista .summary-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .screen-lista .summary-pill strong {
+    font-feature-settings: "tnum";
+  }
+  .screen-lista .category {
+    margin-bottom: 24px;
+  }
+  .screen-lista .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .screen-lista .category-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+  .screen-lista .category-header .count {
+    background: var(--line);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .screen-lista .item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .screen-lista .item:last-child {
+    border-bottom: none;
+  }
+  .screen-lista .item .checkbox {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--line-strong);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .screen-lista .item .checkbox.checked {
+    background: var(--olive);
+    border-color: var(--olive);
+    color: white;
+  }
+  .screen-lista .item .item-info {
+    flex: 1;
+  }
+  .screen-lista .item .item-name {
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .screen-lista .item .item-name.checked {
+    text-decoration: line-through;
+    color: var(--ink-muted);
+  }
+  .screen-lista .item .item-qty {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-feature-settings: "tnum";
+  }
+
+  /* =========================================
+     Tela: Modulos
+  ========================================= */
+  .screen-modulos .modulos-header {
+    margin-bottom: 24px;
+  }
+  .screen-modulos .modulos-header h1 {
+    margin-bottom: 4px;
+  }
+  .screen-modulos .modulos-header .subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .screen-modulos .module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .screen-modulos .module-item {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+  }
+  .screen-modulos .module-item.current {
+    border: 2px solid var(--olive);
+  }
+  .screen-modulos .module-item.locked {
+    opacity: 0.5;
+  }
+  .screen-modulos .module-number {
+    width: 40px;
+    height: 40px;
+    background: var(--line);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .screen-modulos .module-item.current .module-number {
+    background: var(--olive);
+    color: var(--olive-fg);
+  }
+  .screen-modulos .module-item.completed .module-number {
+    background: var(--olive);
+    color: var(--olive-fg);
+  }
+  .screen-modulos .module-content {
+    flex: 1;
+  }
+  .screen-modulos .module-content h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .screen-modulos .module-content .description {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .screen-modulos .module-content .meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  /* =========================================
+     Tela: Perfil
+  ========================================= */
+  .screen-perfil .perfil-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .screen-perfil .avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--olive), var(--accent));
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+  }
+  .screen-perfil .perfil-header h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .screen-perfil .perfil-header .member-since {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .screen-perfil .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .screen-perfil .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    text-align: center;
+  }
+  .screen-perfil .stat-card .number {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .screen-perfil .stat-card .label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .screen-perfil .menu-section {
+    margin-bottom: 20px;
+  }
+  .screen-perfil .menu-section h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+  .screen-perfil .menu-list {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .screen-perfil .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .screen-perfil .menu-item:last-child {
+    border-bottom: none;
+  }
+  .screen-perfil .menu-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--ink-soft);
+  }
+  .screen-perfil .menu-item .chevron {
+    margin-left: auto;
+    color: var(--ink-muted);
+  }
+
+  /* =========================================
+     Tela: Lote
+  ========================================= */
+  .screen-lote .lote-header {
+    margin-bottom: 24px;
+  }
+  .screen-lote .lote-header h1 {
+    margin-bottom: 8px;
+  }
+  .screen-lote .lote-header .subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .screen-lote .lote-progress {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .screen-lote .lote-progress .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .screen-lote .lote-progress h3 {
+    font-size: 15px;
+  }
+  .screen-lote .lote-progress .progress-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-feature-settings: "tnum";
+  }
+  .screen-lote .lote-progress .progress-bar {
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .screen-lote .lote-progress .progress-fill {
+    height: 100%;
+    background: var(--olive);
+    border-radius: 999px;
+  }
+  .screen-lote .recipe-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .screen-lote .recipe-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .screen-lote .recipe-card.current {
+    border: 2px solid var(--accent);
+  }
+  .screen-lote .recipe-card.done {
+    opacity: 0.6;
+  }
+  .screen-lote .recipe-status {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--line);
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .screen-lote .recipe-card.current .recipe-status {
+    background: var(--accent);
+    color: white;
+  }
+  .screen-lote .recipe-card.done .recipe-status {
+    background: var(--olive);
+    color: white;
+  }
+  .screen-lote .recipe-info {
+    flex: 1;
+  }
+  .screen-lote .recipe-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .screen-lote .recipe-info .meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 10px;
+  }
+
+  /* =========================================
+     Tabela de comparacao
+  ========================================= */
+  .comparison-table {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-top: 48px;
+    box-shadow: var(--shadow-md);
+  }
+  .comparison-table h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 24px;
+  }
+  .comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .comparison-table th,
+  .comparison-table td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid #E7E5E4;
+    vertical-align: top;
+  }
+  .comparison-table th {
+    font-weight: 600;
+    font-size: 12px;
+    color: #78716C;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .comparison-table td:first-child {
+    font-weight: 600;
+    width: 160px;
+    color: #1C1917;
+  }
+  .comparison-table .highlight {
+    background: #FEF3C7;
+  }
+
+  .recommendation-box {
+    margin-top: 28px;
+    padding: 20px;
+    background: #ECFCCB;
+    border: 1px solid #BEF264;
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    color: #365314;
+  }
+  .recommendation-box strong {
+    color: #1A2E05;
+  }
+
+  /* =========================================
+     Responsive
+  ========================================= */
+  @media (max-width: 840px) {
+    .compare-grid {
+      grid-template-columns: 1fr;
+    }
+    .frame-bezel {
+      margin: 0 auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header>
+  <p class="label">CURIO - PROPOSTA DE IDENTIDADE VISUAL</p>
+  <h1>Cozinha como Oficio</h1>
+  <p>Uma nova direcao visual que mistura o calor de uma cozinha profissional com a acessibilidade do aprendizado caseiro. Cores mais definidas, hierarquia clara, e uma identidade que transmite dominio e prazer em cozinhar.</p>
+  <p>Use o toggle abaixo para alternar entre modo Aprendizado e Cozinha.</p>
+</header>
+
+<div class="toggle-bar">
+  <div class="toggle-bar-inner">
+    <p>Modo do app: <strong id="current-mode">Aprendizado</strong></p>
+    <div class="toggle" role="tablist">
+      <button class="on" data-set-mode="learning">Aprendizado</button>
+      <button data-set-mode="cooking">Cozinha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============= SECAO: PALETA DE CORES ============= -->
+<section class="section">
+  <div class="section-header">
+    <h2>Paleta de Cores</h2>
+    <p>4 cores principais + neutrals derivados. Terracota como acento de acao, Oliva para progresso e sucesso.</p>
+  </div>
+  
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="swatch" style="background: #FAF8F5;"><span>#FAF8F5</span></div>
+      <div class="info">
+        <div class="name">Linho</div>
+        <div class="use">Background principal</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="swatch" style="background: #1C1917; color: white;"><span style="color: white; background: rgba(0,0,0,0.3);">#1C1917</span></div>
+      <div class="info">
+        <div class="name">Carvao</div>
+        <div class="use">Texto principal</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="swatch" style="background: #C2410C;"><span>#C2410C</span></div>
+      <div class="info">
+        <div class="name">Terracota</div>
+        <div class="use">CTAs, destaques ativos</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="swatch" style="background: #4D7C0F;"><span>#4D7C0F</span></div>
+      <div class="info">
+        <div class="name">Oliva</div>
+        <div class="use">Sucesso, progresso</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="swatch" style="background: #E7E5E4;"><span>#E7E5E4</span></div>
+      <div class="info">
+        <div class="name">Pedra Clara</div>
+        <div class="use">Bordas, dividers</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="swatch" style="background: #57534E; color: white;"><span style="color: white; background: rgba(0,0,0,0.3);">#57534E</span></div>
+      <div class="info">
+        <div class="name">Pedra Escura</div>
+        <div class="use">Texto secundario</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SECAO: TELA HOJE ============= -->
+<section class="section">
+  <div class="section-header">
+    <h2>Tela: Hoje (Home)</h2>
+    <p>A tela principal mostra o modulo atual, lote em andamento e conceitos da semana.</p>
+  </div>
+
+  <div class="compare-grid">
+    <!-- PROPOSTA -->
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Proposta</span>
+        <span class="tag new">NOVA</span>
+      </div>
+      <p class="variant-note">Hierarquia mais clara, cores de acao mais vibrantes, cards mais limpos com sombras sutis.</p>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-hoje" data-palette="proposta">
+          <div class="scroll">
+            <div class="greeting">
+              <p class="label-cap">SEGUNDA-FEIRA, 28 ABR</p>
+              <h1>Bom dia, Bruno</h1>
+              <p class="subtitle">Semana 1 de Cortes e mise en place</p>
+            </div>
+
+            <div class="card module-card">
+              <div class="module-header">
+                <div class="week-info">
+                  <p class="label-cap">MODULO ATUAL</p>
+                  <h2>Cortes e mise en place</h2>
+                </div>
+                <span class="pill olive">Semana 1</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 35%;"></div>
+              </div>
+              <div class="stats">
+                <span><strong>2</strong> de 6 receitas</span>
+                <span><strong>4</strong> conceitos aprendidos</span>
+              </div>
+            </div>
+
+            <div class="lote-card">
+              <div class="lote-header">
+                <span class="pill accent">Lote em andamento</span>
+              </div>
+              <h3>Almoco de Domingo</h3>
+              <p class="lote-meta">3 receitas - proxima: Salada Mediterranea</p>
+              <div class="lote-actions">
+                <button class="btn btn-primary">Continuar lote</button>
+                <button class="btn btn-secondary">Lista</button>
+              </div>
+            </div>
+
+            <div class="concepts-section">
+              <div class="section-title">
+                <h3>Conceitos da semana</h3>
+                <a href="#" class="see-all">Ver todos</a>
+              </div>
+              <div class="concept-chips">
+                <span class="pill olive">Julienne</span>
+                <span class="pill">Brunoise</span>
+                <span class="pill">Mise en place</span>
+                <span class="pill">Chiffonade</span>
+              </div>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATUAL -->
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Atual (Variante C)</span>
+        <span class="tag">ATUAL</span>
+      </div>
+      <p class="variant-note">Tons mais frios, sage como acento, menos contraste nas acoes.</p>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-hoje" data-palette="atual">
+          <div class="scroll">
+            <div class="greeting">
+              <p class="label-cap">SEGUNDA-FEIRA, 28 ABR</p>
+              <h1>Bom dia, Bruno</h1>
+              <p class="subtitle">Semana 1 de Cortes e mise en place</p>
+            </div>
+
+            <div class="card module-card">
+              <div class="module-header">
+                <div class="week-info">
+                  <p class="label-cap">MODULO ATUAL</p>
+                  <h2>Cortes e mise en place</h2>
+                </div>
+                <span class="pill olive">Semana 1</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 35%;"></div>
+              </div>
+              <div class="stats">
+                <span><strong>2</strong> de 6 receitas</span>
+                <span><strong>4</strong> conceitos aprendidos</span>
+              </div>
+            </div>
+
+            <div class="lote-card" style="border-color: var(--pop);">
+              <div class="lote-header">
+                <span class="pill" style="background: var(--pop); color: white;">Lote em andamento</span>
+              </div>
+              <h3>Almoco de Domingo</h3>
+              <p class="lote-meta">3 receitas - proxima: Salada Mediterranea</p>
+              <div class="lote-actions">
+                <button class="btn btn-primary">Continuar lote</button>
+                <button class="btn btn-secondary">Lista</button>
+              </div>
+            </div>
+
+            <div class="concepts-section">
+              <div class="section-title">
+                <h3>Conceitos da semana</h3>
+                <a href="#" class="see-all" style="color: var(--pop);">Ver todos</a>
+              </div>
+              <div class="concept-chips">
+                <span class="pill olive">Julienne</span>
+                <span class="pill">Brunoise</span>
+                <span class="pill">Mise en place</span>
+                <span class="pill">Chiffonade</span>
+              </div>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SECAO: TELA LISTA ============= -->
+<section class="section">
+  <div class="section-header">
+    <h2>Tela: Lista de Compras</h2>
+    <p>Lista organizada por categoria com checkboxes e quantidades.</p>
+  </div>
+
+  <div class="compare-grid">
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Proposta</span>
+        <span class="tag new">NOVA</span>
+      </div>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-lista" data-palette="proposta">
+          <div class="scroll">
+            <div class="lista-header">
+              <p class="label-cap">LOTE: ALMOCO DE DOMINGO</p>
+              <h1>Lista de Compras</h1>
+            </div>
+
+            <div class="lista-summary">
+              <div class="summary-pill">
+                <strong>12</strong> itens
+              </div>
+              <div class="summary-pill">
+                <strong>3</strong> categorias
+              </div>
+              <div class="summary-pill" style="background: #ECFCCB; border-color: #BEF264;">
+                <strong>4</strong> comprados
+              </div>
+            </div>
+
+            <div class="category">
+              <div class="category-header">
+                <h3>Hortifruti</h3>
+                <span class="count">5</span>
+              </div>
+              
+              <div class="item">
+                <div class="checkbox checked">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="item-info">
+                  <div class="item-name checked">Abobrinha</div>
+                  <div class="item-qty">3 unidades</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="checkbox checked">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="item-info">
+                  <div class="item-name checked">Limao siciliano</div>
+                  <div class="item-qty">2 unidades</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="checkbox"></div>
+                <div class="item-info">
+                  <div class="item-name">Manjericao fresco</div>
+                  <div class="item-qty">1 maco</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="checkbox"></div>
+                <div class="item-info">
+                  <div class="item-name">Tomate italiano</div>
+                  <div class="item-qty">500g</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="checkbox"></div>
+                <div class="item-info">
+                  <div class="item-name">Cebola roxa</div>
+                  <div class="item-qty">2 unidades</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="category">
+              <div class="category-header">
+                <h3>Mercearia</h3>
+                <span class="count">4</span>
+              </div>
+              
+              <div class="item">
+                <div class="checkbox checked">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="item-info">
+                  <div class="item-name checked">Azeite de oliva</div>
+                  <div class="item-qty">~200ml</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="checkbox"></div>
+                <div class="item-info">
+                  <div class="item-name">Massa penne</div>
+                  <div class="item-qty">500g</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA LOTE -->
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Tela: Lote</span>
+        <span class="tag new">NOVA</span>
+      </div>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-lote" data-palette="proposta">
+          <div class="scroll">
+            <div class="lote-header">
+              <p class="label-cap">BATCH COOKING</p>
+              <h1>Almoco de Domingo</h1>
+              <p class="subtitle">Prepare 3 receitas de uma vez</p>
+            </div>
+
+            <div class="lote-progress">
+              <div class="progress-header">
+                <h3>Progresso do lote</h3>
+                <span class="progress-text">1 de 3 receitas</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 33%;"></div>
+              </div>
+            </div>
+
+            <div class="recipe-list">
+              <div class="recipe-card done">
+                <div class="recipe-status">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="recipe-info">
+                  <h4>Molho de tomate</h4>
+                  <div class="meta">
+                    <span>25 min</span>
+                    <span>4 porcoes</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="recipe-card current">
+                <div class="recipe-status">2</div>
+                <div class="recipe-info">
+                  <h4>Salada Mediterranea</h4>
+                  <div class="meta">
+                    <span>30 min</span>
+                    <span>4 porcoes</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="recipe-card">
+                <div class="recipe-status">3</div>
+                <div class="recipe-info">
+                  <h4>Penne ao molho</h4>
+                  <div class="meta">
+                    <span>20 min</span>
+                    <span>4 porcoes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <button class="btn btn-accent" style="width: 100%;">Continuar: Salada Mediterranea</button>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SECAO: MODULOS E PERFIL ============= -->
+<section class="section">
+  <div class="section-header">
+    <h2>Telas: Modulos e Perfil</h2>
+    <p>Curriculo de aprendizado e configuracoes do usuario.</p>
+  </div>
+
+  <div class="compare-grid">
+    <!-- MODULOS -->
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Modulos</span>
+        <span class="tag new">NOVA</span>
+      </div>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-modulos" data-palette="proposta">
+          <div class="scroll">
+            <div class="modulos-header">
+              <h1>Modulos</h1>
+              <p class="subtitle">Seu curriculo de gastronomia</p>
+            </div>
+
+            <div class="module-list">
+              <div class="module-item completed">
+                <div class="module-number">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="module-content">
+                  <h3>Introducao a Cozinha</h3>
+                  <p class="description">Equipamentos, seguranca e higiene basica</p>
+                  <div class="meta">
+                    <span>4 receitas</span>
+                    <span>Completo</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="module-item current">
+                <div class="module-number">1</div>
+                <div class="module-content">
+                  <h3>Cortes e mise en place</h3>
+                  <p class="description">Tecnicas fundamentais de corte e organizacao</p>
+                  <div class="meta">
+                    <span>6 receitas</span>
+                    <span>2/6 completas</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="module-item">
+                <div class="module-number">2</div>
+                <div class="module-content">
+                  <h3>Coccao basica</h3>
+                  <p class="description">Grelhar, assar, refogar e saltear</p>
+                  <div class="meta">
+                    <span>8 receitas</span>
+                    <span>Bloqueado</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="module-item locked">
+                <div class="module-number">3</div>
+                <div class="module-content">
+                  <h3>Molhos basicos</h3>
+                  <p class="description">Os 5 molhos-mae da cozinha classica</p>
+                  <div class="meta">
+                    <span>6 receitas</span>
+                    <span>Bloqueado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="variant">
+      <div class="variant-header">
+        <span class="variant-label">Perfil</span>
+        <span class="tag new">NOVA</span>
+      </div>
+      
+      <div class="frame-bezel">
+        <div class="frame screen-perfil" data-palette="proposta">
+          <div class="scroll">
+            <div class="perfil-header">
+              <div class="avatar">B</div>
+              <h1>Bruno Alves</h1>
+              <p class="member-since">Membro desde Janeiro 2024</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="number">12</div>
+                <div class="label">Receitas</div>
+              </div>
+              <div class="stat-card">
+                <div class="number">8</div>
+                <div class="label">Conceitos</div>
+              </div>
+              <div class="stat-card">
+                <div class="number">3</div>
+                <div class="label">Lotes</div>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <h3>Configuracoes</h3>
+              <div class="menu-list">
+                <div class="menu-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <span>Preferencias</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="menu-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <span>Notificacoes</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="menu-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>Privacidade</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <h3>Suporte</h3>
+              <div class="menu-list">
+                <div class="menu-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>Ajuda</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="menu-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <span>Contato</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <nav class="bottom-nav">
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Hoje</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <span>Lote</span>
+            </a>
+            <a class="nav-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Lista</span>
+            </a>
+            <a class="nav-item active" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+              <span>Perfil</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= TABELA DE COMPARACAO ============= -->
+<div class="comparison-table">
+  <h2>Comparacao: Atual vs. Proposta</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Aspecto</th>
+        <th>Atual (Variante C)</th>
+        <th>Proposta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td>#f5f1e8 (linho frio)</td>
+        <td class="highlight">#FAF8F5 (linho quente)</td>
+      </tr>
+      <tr>
+        <td>Texto</td>
+        <td>#1f2a2e (azulado)</td>
+        <td class="highlight">#1C1917 (preto quente)</td>
+      </tr>
+      <tr>
+        <td>Acento primario</td>
+        <td>#7c8a78 (sage)</td>
+        <td class="highlight">#C2410C (terracota)</td>
+      </tr>
+      <tr>
+        <td>Sucesso/Progresso</td>
+        <td>#6f7d6b (sage escuro)</td>
+        <td class="highlight">#4D7C0F (oliva vibrante)</td>
+      </tr>
+      <tr>
+        <td>Contraste CTAs</td>
+        <td>Baixo (sage sobre bege)</td>
+        <td class="highlight">Alto (terracota vibrante)</td>
+      </tr>
+      <tr>
+        <td>Fonte body</td>
+        <td>Geist Sans</td>
+        <td class="highlight">Inter (mais calorosa)</td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>14-18px</td>
+        <td class="highlight">8-16px (mais moderno)</td>
+      </tr>
+      <tr>
+        <td>Sombras</td>
+        <td>Mais fortes</td>
+        <td class="highlight">Mais sutis</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="recommendation-box">
+    <strong>Recomendacao:</strong> A proposta mantem a essencia mediterranea do projeto, mas adiciona mais energia e clareza visual. O terracota como acento de acao cria hierarquia mais clara, e o oliva vibrante recompensa melhor o progresso do usuario. A paleta de neutrals (stone) e mais coesa que os tons azulados atuais.
+  </div>
+</div>
+
+</div>
+
+<script>
+// Toggle de modo
+const buttons = document.querySelectorAll('[data-set-mode]');
+const frames = document.querySelectorAll('.frame');
+const currentModeEl = document.getElementById('current-mode');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.setMode;
+    
+    // Update buttons
+    buttons.forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    
+    // Update frames
+    frames.forEach(frame => {
+      frame.dataset.mode = mode;
+    });
+    
+    // Update label
+    currentModeEl.textContent = mode === 'learning' ? 'Aprendizado' : 'Cozinha';
+  });
+});
+
+// Set initial mode
+frames.forEach(frame => {
+  frame.dataset.mode = 'learning';
+});
+</script>
+
+</body>
+</html>
