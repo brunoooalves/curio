@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curio — Identidade visual (3 variantes × 2 modos)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600&display=swap" />
+<style>
+  /* =========================================
+     VARIANTE A — Mediterrâneo quente
+     Saturada, calorosa, vibe bistrô italiano
+  ========================================= */
+  [data-palette="A"] {
+    --bg: #f0e3c7;
+    --bg-card: #faf2dc;
+    --ink: #2c1d10;
+    --ink-soft: #6a503a;
+    --line: #d8c69e;
+    --line-strong: #b89e6e;
+    --accent: #8a4a25;
+    --accent-fg: #faf2dc;
+    --olive: #5e6a2e;
+    --pop: #a85726;
+    --shadow: 0 16px 30px -16px rgba(60, 32, 10, 0.25);
+  }
+  [data-palette="A"][data-mode="cooking"] {
+    --bg: #e9dab8;
+    --bg-card: #fbf0d2;
+    --ink: #1c1208;
+  }
+
+  /* =========================================
+     VARIANTE B — Caiado neutro (recomendação)
+     Bege caiado de Mediterrâneo, casa do campo
+  ========================================= */
+  [data-palette="B"] {
+    --bg: #f4ecdc;
+    --bg-card: #faf6ec;
+    --ink: #2a221a;
+    --ink-soft: #5b4f3e;
+    --line: #e2d6bb;
+    --line-strong: #cdc0a2;
+    --accent: #6b7a3a;
+    --accent-fg: #faf6ec;
+    --olive: #6b7a3a;
+    --pop: #a8633a;
+    --shadow: 0 16px 30px -16px rgba(50, 38, 22, 0.18);
+  }
+  [data-palette="B"][data-mode="cooking"] {
+    --bg: #ece2cc;
+    --bg-card: #fbf7ed;
+    --ink: #1c1610;
+  }
+
+  /* =========================================
+     VARIANTE C — Provence linho
+     Mais frio, linho claro, sage, manhã toscana
+  ========================================= */
+  [data-palette="C"] {
+    --bg: #f5f1e8;
+    --bg-card: #ffffff;
+    --ink: #1f2a2e;
+    --ink-soft: #5d6a6e;
+    --line: #e0dccf;
+    --line-strong: #c5beac;
+    --accent: #7c8a78;
+    --accent-fg: #ffffff;
+    --olive: #6f7d6b;
+    --pop: #b15c3d;
+    --shadow: 0 16px 30px -16px rgba(31, 42, 46, 0.2);
+  }
+  [data-palette="C"][data-mode="cooking"] {
+    --bg: #ece8db;
+    --bg-card: #ffffff;
+    --ink: #161e22;
+  }
+
+  /* =========================================
+     Tipografia compartilhada (muda por modo)
+  ========================================= */
+  :root {
+    --serif: "Fraunces", "Newsreader", Georgia, serif;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+    --leading-body: 1.65;
+    --leading-tight: 1.25;
+    --base-size: 16px;
+  }
+  [data-mode="cooking"] {
+    --leading-body: 1.5;
+    --base-size: 17px;
+  }
+
+  /* =========================================
+     Página de apresentação (não faz parte do app)
+  ========================================= */
+  html, body { background: #ddd5c8; font-family: var(--sans); color: #2a221a; }
+  body { margin: 0; padding: 28px 16px 80px; }
+  .page { max-width: 1200px; margin: 0 auto; }
+  .page > header h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1.1;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .page > header p { margin: 0 0 6px; color: #5b4f3e; max-width: 720px; line-height: 1.6; }
+  .toggle-bar {
+    position: sticky; top: 0; z-index: 50;
+    margin: 24px 0 32px;
+    background: rgba(221, 213, 200, 0.92);
+    backdrop-filter: blur(8px);
+    padding: 12px 16px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+  }
+  .toggle-bar p { margin: 0; font-size: 13px; color: #5b4f3e; }
+  .toggle {
+    display: inline-flex; padding: 4px; background: white; border-radius: 12px;
+    border: 1px solid #cdc0a2;
+  }
+  .toggle button {
+    border: none; background: transparent; padding: 10px 18px;
+    border-radius: 8px; cursor: pointer; font: 500 13px/1 var(--sans);
+    color: #5b4f3e;
+  }
+  .toggle button.on { background: #2a221a; color: #faf6ec; }
+  .toggle button:focus-visible { outline: 2px solid #6b7a3a; outline-offset: 1px; }
+
+  .grid {
+    display: grid; gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  }
+
+  /* =========================================
+     Frame de telefone (renderiza a paleta dentro)
+  ========================================= */
+  .variant {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .variant-label {
+    font-family: var(--serif);
+    font-size: 18px; font-weight: 600;
+    color: #2a221a;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .variant-label .tag {
+    font-family: var(--sans); font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em; color: #5b4f3e;
+    padding: 3px 8px; background: white; border-radius: 999px; border: 1px solid #cdc0a2;
+  }
+  .variant-note {
+    font-size: 13px; color: #5b4f3e; line-height: 1.5; max-width: 320px;
+  }
+  .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+  .swatch {
+    width: 28px; height: 28px; border-radius: 6px;
+    border: 1px solid rgba(0,0,0,.1);
+  }
+
+  .frame-bezel {
+    background: #1a1410;
+    padding: 12px 12px 18px;
+    border-radius: 38px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.3);
+    align-self: flex-start;
+  }
+  .frame {
+    width: 340px; height: 700px; overflow: hidden;
+    border-radius: 28px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--base-size);
+    line-height: var(--leading-body);
+    display: flex; flex-direction: column;
+  }
+  .frame .scroll { overflow: hidden; flex: 1; padding: 18px 18px 64px; }
+
+  /* Tipografia interna respeita o modo */
+  .frame h1, .frame h2, .frame h3 {
+    font-family: var(--serif);
+    line-height: var(--leading-tight);
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .frame h1 { font-size: 28px; font-weight: 600; }
+  .frame h2 { font-size: 18px; font-weight: 600; }
+  .frame h3 { font-size: 15px; font-weight: 600; font-family: var(--sans); letter-spacing: 0; }
+  .frame p { margin: 0; }
+  .label-cap {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 500;
+    background: var(--bg-card); color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .pill.olive { background: var(--olive); color: var(--accent-fg); border-color: transparent; }
+  .pill.pop { background: var(--pop); color: var(--accent-fg); border-color: transparent; }
+  .card-mod {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  /* =========================================
+     Modo Aprendizado — leitura, espaço, serif
+  ========================================= */
+  [data-mode="learning"] .frame .scroll { padding: 22px 20px 64px; }
+  [data-mode="learning"] .hero-image {
+    aspect-ratio: 16/10;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), transparent 50%),
+      linear-gradient(135deg, var(--olive), var(--pop));
+    border-radius: 14px; margin-bottom: 16px;
+    display: flex; align-items: flex-end; padding: 12px;
+    color: white; font-family: var(--serif); font-size: 22px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.3);
+  }
+  [data-mode="learning"] .frame h1 { font-size: 30px; font-style: italic; font-weight: 500; }
+  [data-mode="learning"] .meta-line {
+    display: flex; gap: 8px; font-size: 12px; color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  [data-mode="learning"] .history {
+    margin-top: 16px;
+    font-family: var(--serif); font-size: 16px; line-height: 1.7;
+    color: var(--ink);
+  }
+  [data-mode="learning"] .history .lead::first-letter {
+    font-family: var(--serif); font-size: 48px; line-height: 0.9; float: left;
+    margin: 4px 8px 0 0; color: var(--accent); font-weight: 500;
+  }
+  [data-mode="learning"] .concept-tags {
+    margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  [data-mode="learning"] .ingredients-section {
+    margin-top: 22px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  [data-mode="learning"] .ingredients-section h2 {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    margin-bottom: 10px;
+  }
+  [data-mode="learning"] .ingredients-list {
+    list-style: none; padding: 0; margin: 0;
+    font-size: 14px; color: var(--ink);
+  }
+  [data-mode="learning"] .ingredients-list li {
+    display: flex; justify-content: space-between; padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  [data-mode="learning"] .ingredients-list li:last-child { border: none; }
+  [data-mode="learning"] .ingredients-list .qty {
+    color: var(--ink-soft); font-feature-settings: "tnum";
+  }
+  [data-mode="learning"] .cta-cooking {
+    display: none;
+  }
+  [data-mode="learning"] .step-list { display: none; }
+
+  /* =========================================
+     Modo Cozinha — execução, números grandes, contraste
+  ========================================= */
+  [data-mode="cooking"] .frame .scroll { padding: 18px 18px 64px; }
+  [data-mode="cooking"] .hero-image { display: none; }
+  [data-mode="cooking"] .history { display: none; }
+  [data-mode="cooking"] .ingredients-section { display: none; }
+  [data-mode="cooking"] .concept-tags { display: none; }
+  [data-mode="cooking"] .frame h1 { font-size: 22px; font-weight: 600; font-style: normal; }
+  [data-mode="cooking"] .meta-line {
+    display: flex; gap: 14px; margin-top: 8px;
+    font-size: 13px; color: var(--ink-soft);
+  }
+  [data-mode="cooking"] .meta-line strong {
+    color: var(--ink); font-feature-settings: "tnum"; font-weight: 600;
+  }
+  [data-mode="cooking"] .step-list {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 18px;
+  }
+  [data-mode="cooking"] .step-list li {
+    list-style: none;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 14px 14px 56px;
+    position: relative;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  [data-mode="cooking"] .step-list li::before {
+    content: attr(data-step);
+    position: absolute; left: 14px; top: 13px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--ink); color: var(--bg-card);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 16px; font-weight: 600;
+    font-feature-settings: "tnum";
+  }
+  [data-mode="cooking"] .step-list li.current {
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent);
+  }
+  [data-mode="cooking"] .step-list li.current::before {
+    background: var(--accent); color: var(--accent-fg);
+  }
+  [data-mode="cooking"] .step-list .timer {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px; font-size: 13px;
+    color: var(--ink-soft); font-feature-settings: "tnum";
+  }
+  [data-mode="cooking"] .cta-cooking {
+    margin-top: 18px;
+    display: flex; gap: 8px;
+  }
+  [data-mode="cooking"] .cta-cooking button {
+    flex: 1; height: 48px; border-radius: 14px;
+    font: 500 14px/1 var(--sans); cursor: pointer;
+  }
+  [data-mode="cooking"] .cta-cooking .primary {
+    background: var(--ink); color: var(--bg-card); border: none;
+  }
+  [data-mode="cooking"] .cta-cooking .secondary {
+    background: transparent; color: var(--ink); border: 1px solid var(--line-strong);
+  }
+
+  /* =========================================
+     Tabela de tradeoffs no rodapé
+  ========================================= */
+  .breakdown {
+    margin-top: 64px;
+    background: white; border-radius: 16px; padding: 28px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04);
+  }
+  .breakdown h2 {
+    font-family: var(--serif); font-size: 24px; font-weight: 600;
+    margin: 0 0 18px;
+  }
+  .breakdown table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .breakdown th, .breakdown td {
+    text-align: left; padding: 12px 14px; vertical-align: top;
+    border-bottom: 1px solid #e7e2da;
+  }
+  .breakdown th {
+    font-weight: 500; font-size: 12px; color: #6f6f6f;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .breakdown td:first-child {
+    font-family: var(--serif); font-weight: 600; width: 130px;
+  }
+  .recommendation {
+    margin-top: 22px; padding: 16px;
+    background: #fff7e6; border: 1px solid #f0d99a;
+    border-radius: 12px; font-size: 14px; color: #5a3a08;
+  }
+  .recommendation b { color: #2c1c00; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header>
+  <p class="label-cap" style="letter-spacing: 0.18em; font-size: 11px; color: #5b4f3e;">CURIO · IDENTIDADE VISUAL</p>
+  <h1>Três variantes da mesma direção, dois modos de uso</h1>
+  <p>Toda a vibe vem das suas referências: bege caiado de Mediterrâneo, madeira clara, verde-oliva discreto, terracota só pontual. As três variantes se diferem em <em>quanto</em> de cor: A é mais quente, B é o meio (recomendação), C é mais fria/linho. Use o toggle pra ver como cada uma muda entre <b>Aprendizado</b> (lendo a história do prato) e <b>Cozinha</b> (executando passo a passo).</p>
+</header>
+
+<div class="toggle-bar">
+  <p>Modo do app — <span id="current-mode">Aprendizado</span></p>
+  <div class="toggle" role="tablist">
+    <button class="on" data-set-mode="learning">📖 Aprendizado</button>
+    <button data-set-mode="cooking">🔥 Cozinha</button>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- ============= VARIANTE A ============= -->
+  <section class="variant">
+    <div class="variant-label">
+      Mediterrâneo quente
+      <span class="tag">Variante A</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch" style="background:#f0e3c7" title="bg"></div>
+      <div class="swatch" style="background:#faf2dc" title="card"></div>
+      <div class="swatch" style="background:#2c1d10" title="ink"></div>
+      <div class="swatch" style="background:#8a4a25" title="accent"></div>
+      <div class="swatch" style="background:#5e6a2e" title="olive"></div>
+      <div class="swatch" style="background:#a85726" title="pop"></div>
+    </div>
+    <p class="variant-note">Bistrô italiano à noite — bege puxa pra amarelo, acento em terracota saturada. Vibe mais intensa, comida quente.</p>
+
+    <div class="frame-bezel">
+      <div class="frame" data-palette="A">
+        <div class="scroll">
+          <p class="label-cap">SEMANA 1 · CORTES</p>
+          <h1>Salada Mediterrânea de Abobrinha</h1>
+          <div class="meta-line">
+            <span>🍴 <strong>Almoço</strong></span>
+            <span>⏱ <strong>30 min</strong></span>
+            <span>👥 <strong>4 porções</strong></span>
+          </div>
+
+          <div class="hero-image">Abobrinha em julienne</div>
+
+          <div class="history">
+            <p class="lead">A julienne nasceu na cozinha clássica francesa do século XVIII como técnica para padronizar tempos de cocção. No Mediterrâneo, ganhou variação crua — abobrinhas finíssimas curtidas em limão e azeite, transformando o legume em algo entre salada e ceviche vegetal.</p>
+          </div>
+
+          <div class="concept-tags">
+            <span class="pill olive">Julienne</span>
+            <span class="pill">Mise en place</span>
+            <span class="pill">Mediterrânea</span>
+          </div>
+
+          <div class="ingredients-section">
+            <h2>Ingredientes</h2>
+            <ul class="ingredients-list">
+              <li><span>Abobrinha</span><span class="qty">3 unidades</span></li>
+              <li><span>Limão siciliano</span><span class="qty">1 unidade</span></li>
+              <li><span>Azeite de oliva</span><span class="qty">~60 ml</span></li>
+              <li><span>Manjericão fresco</span><span class="qty">1 maço</span></li>
+              <li><span>Sal e pimenta-do-reino</span><span class="qty">a gosto</span></li>
+            </ul>
+          </div>
+
+          <ol class="step-list">
+            <li data-step="1">Lave e seque as abobrinhas. Corte em julienne fina (3mm × 6cm).<span class="timer">⏱ 8 min</span></li>
+            <li data-step="2" class="current">Tempere com sumo de limão, sal e azeite. Deixe descansar.<span class="timer">⏱ 10 min</span></li>
+            <li data-step="3">Rasgue as folhas de manjericão e finalize com pimenta-do-reino.<span class="timer">⏱ 2 min</span></li>
+          </ol>
+
+          <div class="cta-cooking">
+            <button class="primary">✓ Passo 2 feito</button>
+            <button class="secondary">Pular</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= VARIANTE B ============= -->
+  <section class="variant">
+    <div class="variant-label">
+      Caiado neutro
+      <span class="tag" style="background:#fff7e6;border-color:#f0d99a;color:#5a3a08">RECOMENDAÇÃO</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch" style="background:#f4ecdc" title="bg"></div>
+      <div class="swatch" style="background:#faf6ec" title="card"></div>
+      <div class="swatch" style="background:#2a221a" title="ink"></div>
+      <div class="swatch" style="background:#6b7a3a" title="accent"></div>
+      <div class="swatch" style="background:#a8633a" title="pop"></div>
+    </div>
+    <p class="variant-note">Casa do campo de tarde — bege caiado mediterrâneo, verde-oliva como acento principal, terracota só pra "atual"/"ativo". Mais respiração, menos saturação.</p>
+
+    <div class="frame-bezel">
+      <div class="frame" data-palette="B">
+        <div class="scroll">
+          <p class="label-cap">SEMANA 1 · CORTES</p>
+          <h1>Salada Mediterrânea de Abobrinha</h1>
+          <div class="meta-line">
+            <span>🍴 <strong>Almoço</strong></span>
+            <span>⏱ <strong>30 min</strong></span>
+            <span>👥 <strong>4 porções</strong></span>
+          </div>
+
+          <div class="hero-image">Abobrinha em julienne</div>
+
+          <div class="history">
+            <p class="lead">A julienne nasceu na cozinha clássica francesa do século XVIII como técnica para padronizar tempos de cocção. No Mediterrâneo, ganhou variação crua — abobrinhas finíssimas curtidas em limão e azeite, transformando o legume em algo entre salada e ceviche vegetal.</p>
+          </div>
+
+          <div class="concept-tags">
+            <span class="pill olive">Julienne</span>
+            <span class="pill">Mise en place</span>
+            <span class="pill">Mediterrânea</span>
+          </div>
+
+          <div class="ingredients-section">
+            <h2>Ingredientes</h2>
+            <ul class="ingredients-list">
+              <li><span>Abobrinha</span><span class="qty">3 unidades</span></li>
+              <li><span>Limão siciliano</span><span class="qty">1 unidade</span></li>
+              <li><span>Azeite de oliva</span><span class="qty">~60 ml</span></li>
+              <li><span>Manjericão fresco</span><span class="qty">1 maço</span></li>
+              <li><span>Sal e pimenta-do-reino</span><span class="qty">a gosto</span></li>
+            </ul>
+          </div>
+
+          <ol class="step-list">
+            <li data-step="1">Lave e seque as abobrinhas. Corte em julienne fina (3mm × 6cm).<span class="timer">⏱ 8 min</span></li>
+            <li data-step="2" class="current">Tempere com sumo de limão, sal e azeite. Deixe descansar.<span class="timer">⏱ 10 min</span></li>
+            <li data-step="3">Rasgue as folhas de manjericão e finalize com pimenta-do-reino.<span class="timer">⏱ 2 min</span></li>
+          </ol>
+
+          <div class="cta-cooking">
+            <button class="primary">✓ Passo 2 feito</button>
+            <button class="secondary">Pular</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= VARIANTE C ============= -->
+  <section class="variant">
+    <div class="variant-label">
+      Provence linho
+      <span class="tag">Variante C</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch" style="background:#f5f1e8" title="bg"></div>
+      <div class="swatch" style="background:#ffffff" title="card"></div>
+      <div class="swatch" style="background:#1f2a2e" title="ink"></div>
+      <div class="swatch" style="background:#7c8a78" title="accent"></div>
+      <div class="swatch" style="background:#b15c3d" title="pop"></div>
+    </div>
+    <p class="variant-note">Manhã toscana — linho mais frio, sage no acento, ink puxando pra azul-petróleo. Card branco mármore. Mais "limpo de revista", menos "rústico".</p>
+
+    <div class="frame-bezel">
+      <div class="frame" data-palette="C">
+        <div class="scroll">
+          <p class="label-cap">SEMANA 1 · CORTES</p>
+          <h1>Salada Mediterrânea de Abobrinha</h1>
+          <div class="meta-line">
+            <span>🍴 <strong>Almoço</strong></span>
+            <span>⏱ <strong>30 min</strong></span>
+            <span>👥 <strong>4 porções</strong></span>
+          </div>
+
+          <div class="hero-image">Abobrinha em julienne</div>
+
+          <div class="history">
+            <p class="lead">A julienne nasceu na cozinha clássica francesa do século XVIII como técnica para padronizar tempos de cocção. No Mediterrâneo, ganhou variação crua — abobrinhas finíssimas curtidas em limão e azeite, transformando o legume em algo entre salada e ceviche vegetal.</p>
+          </div>
+
+          <div class="concept-tags">
+            <span class="pill olive">Julienne</span>
+            <span class="pill">Mise en place</span>
+            <span class="pill">Mediterrânea</span>
+          </div>
+
+          <div class="ingredients-section">
+            <h2>Ingredientes</h2>
+            <ul class="ingredients-list">
+              <li><span>Abobrinha</span><span class="qty">3 unidades</span></li>
+              <li><span>Limão siciliano</span><span class="qty">1 unidade</span></li>
+              <li><span>Azeite de oliva</span><span class="qty">~60 ml</span></li>
+              <li><span>Manjericão fresco</span><span class="qty">1 maço</span></li>
+              <li><span>Sal e pimenta-do-reino</span><span class="qty">a gosto</span></li>
+            </ul>
+          </div>
+
+          <ol class="step-list">
+            <li data-step="1">Lave e seque as abobrinhas. Corte em julienne fina (3mm × 6cm).<span class="timer">⏱ 8 min</span></li>
+            <li data-step="2" class="current">Tempere com sumo de limão, sal e azeite. Deixe descansar.<span class="timer">⏱ 10 min</span></li>
+            <li data-step="3">Rasgue as folhas de manjericão e finalize com pimenta-do-reino.<span class="timer">⏱ 2 min</span></li>
+          </ol>
+
+          <div class="cta-cooking">
+            <button class="primary">✓ Passo 2 feito</button>
+            <button class="secondary">Pular</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<section class="breakdown">
+  <h2>Como cada variante se comporta</h2>
+  <table>
+    <tr>
+      <th></th>
+      <th>A — Mediterrâneo quente</th>
+      <th>B — Caiado neutro</th>
+      <th>C — Provence linho</th>
+    </tr>
+    <tr>
+      <td>Sensação</td>
+      <td>Bistrô à noite, prato fumegante, vinho tinto</td>
+      <td>Casa do campo de tarde, livro de receitas dos anos 70</td>
+      <td>Manhã toscana, fattoria ao sol, revista de design</td>
+    </tr>
+    <tr>
+      <td>Temperatura</td>
+      <td>Quente (76)</td>
+      <td>Morna (70)</td>
+      <td>Neutra (60)</td>
+    </tr>
+    <tr>
+      <td>Risco</td>
+      <td>Saturada demais ao longo do dia. Pode cansar a vista.</td>
+      <td>Pode parecer "sem identidade" se nada acentuar (use o pop terracota com parcimônia).</td>
+      <td>Pode parecer SaaS genérico — o sage é discreto demais sozinho.</td>
+    </tr>
+    <tr>
+      <td>Quem combina</td>
+      <td>Quem cozinha à noite, gosta de ambientes intensos.</td>
+      <td>Quem quer um app que parece um livro pessoal.</td>
+      <td>Quem prioriza limpeza visual, fotos protagonistas.</td>
+    </tr>
+  </table>
+
+  <div class="recommendation">
+    💡 <b>Minha aposta: Variante B.</b> A casa-do-campo é exatamente o que suas referências apontam (foto da pousada com pergolado, foto da cozinha doméstica com mármore + madeira clara). É forte o suficiente pra ter personalidade, suave o suficiente pra ser usada todo dia. A pop terracota fica reservada pra "lote ativo" e "próximo passo" — onde você quer atenção.
+    <br><br>
+    Se você abrir e achar B "sem graça demais" → vamos pra A. Se achar B "rústica demais" → vamos pra C. Mas comece testando B.
+  </div>
+</section>
+
+<section class="breakdown" style="margin-top: 24px">
+  <h2>Tipografia em par</h2>
+  <p style="font-size: 14px; color: #5b4f3e; line-height: 1.6; margin: 0 0 16px;">
+    Em todas as variantes uso <b>Fraunces</b> como serif (variável, suporta modo itálico de leitura) + <b>Inter</b> no corpo. Fraunces tem variant <em>SOFT</em> que dá um ar de "livro publicado" muito bonito em headings. No modo aprendizado, headings vão em itálico — convidam a ler. No modo cozinha, voltam ao reto — comunicam ação.
+  </p>
+  <p style="font-family: var(--serif); font-size: 32px; font-weight: 600; font-style: italic; margin: 12px 0; color: #2a221a">
+    Salada Mediterrânea de Abobrinha
+  </p>
+  <p style="font-size: 13px; color: #6f6f6f; font-family: var(--sans); margin: 0;">
+    Fraunces 600 italic, 32px — modo aprendizado
+  </p>
+  <p style="font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 20px 0 4px; color: #2a221a">
+    Salada Mediterrânea de Abobrinha
+  </p>
+  <p style="font-size: 13px; color: #6f6f6f; font-family: var(--sans); margin: 0;">
+    Fraunces 600 reta, 22px — modo cozinha
+  </p>
+</section>
+
+<section class="breakdown" style="margin-top: 24px">
+  <h2>Próximo passo</h2>
+  <p style="font-size: 14px; color: #5b4f3e; line-height: 1.6; margin: 0;">
+    Abre, alterna o modo umas 5x em cada variante, deixa quieto por 2min, volta. Decide qual sobreviveu. Me responde com:
+  </p>
+  <ol style="font-size: 14px; color: #5b4f3e; line-height: 1.8; margin: 12px 0 0; padding-left: 20px;">
+    <li>Variante escolhida (A, B ou C — ou "B mas com X de A")</li>
+    <li>Algo que te incomoda visualmente (ex: "verde tá vivo demais", "bege puxa pra amarelo")</li>
+    <li>Modo cozinha tá legível mesmo? (passos numerados grandes, contraste, etc.)</li>
+  </ol>
+  <p style="font-size: 14px; color: #5b4f3e; line-height: 1.6; margin: 16px 0 0;">
+    Aí eu refino e mando como PR <b>7.0.0</b> com <code>globals.css</code> + <code>next/font</code> (Fraunces + Inter) + toggle de modo automático por rota (cozinha em <code>/lote/[id]</code>, aprendizado no resto).
+  </p>
+</section>
+
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('[data-set-mode]');
+  const modeLabel = document.getElementById('current-mode');
+  function setMode(mode) {
+    document.querySelectorAll('.frame').forEach(f => f.dataset.mode = mode);
+    buttons.forEach(b => b.classList.toggle('on', b.dataset.setMode === mode));
+    modeLabel.textContent = mode === 'cooking' ? 'Cozinha' : 'Aprendizado';
+  }
+  buttons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.setMode)));
+  setMode('learning');
+</script>
+
+</body>
+</html>
