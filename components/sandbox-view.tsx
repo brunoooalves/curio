@@ -6,11 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   applyAsBatchAction,
+  estimateForLinesAction,
   previewShoppingListAction,
 } from "@/app/actions/shoppingActions";
 import { formatQuantity } from "@/lib/domain/shopping/formatQuantity";
+import { formatCents } from "@/lib/domain/format/money";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { ShoppingLine } from "@/lib/domain/shopping/aggregate";
+import type { EstimateSummary } from "@/lib/domain/receipt/priceService";
 
 interface RecipeOption {
   id: string;
@@ -40,6 +43,7 @@ export function SandboxView({
   const [preview, setPreview] = useState<ShoppingLine[] | null>(null);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [estimate, setEstimate] = useState<EstimateSummary | null>(null);
   const [applyError, setApplyError] = useState<string | null>(null);
   const [applying, startApplying] = useTransition();
 
@@ -72,6 +76,8 @@ export function SandboxView({
           setPreview(result);
           setPreviewError(null);
         }
+        const est = await estimateForLinesAction(result);
+        if (!cancelled) setEstimate(est);
       } catch (err) {
         if (!cancelled) {
           setPreviewError((err as Error).message ?? "Erro ao calcular lista.");
@@ -170,19 +176,41 @@ export function SandboxView({
             Selecione receitas para ver a lista.
           </p>
         )}
+        {preview && preview.length > 0 && estimate && (
+          <p className="text-sm">
+            Estimativa: <strong>{formatCents(estimate.total)}</strong>{" "}
+            <span className="text-xs text-muted-foreground">
+              {estimate.perLine.filter((l) => l.estimated !== null).length} de{" "}
+              {estimate.perLine.length} com histórico
+            </span>
+          </p>
+        )}
         {preview && preview.length > 0 && (
           <ul className="flex flex-col">
-            {preview.map((line) => (
-              <li
-                key={line.canonicalName}
-                className="flex justify-between gap-4 py-2 border-b text-sm"
-              >
-                <span className="font-medium">{line.canonicalName}</span>
-                <span className="text-muted-foreground">
-                  {formatQuantity(line.aggregatedQuantity)}
-                </span>
-              </li>
-            ))}
+            {preview.map((line) => {
+              const e = estimate?.perLine.find((l) => l.canonicalName === line.canonicalName) ?? null;
+              const estimateLabel = e?.estimated !== null && e?.estimated !== undefined
+                ? e.basis === "last"
+                  ? `≈ ${formatCents(e.estimated)} (último)`
+                  : `≈ ${formatCents(e.estimated)} (média)`
+                : "sem histórico";
+              return (
+                <li
+                  key={line.canonicalName}
+                  className="flex justify-between gap-4 py-2 border-b text-sm"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium">{line.canonicalName}</span>
+                    <span className="text-xs text-muted-foreground italic">
+                      {estimateLabel}
+                    </span>
+                  </div>
+                  <span className="text-muted-foreground">
+                    {formatQuantity(line.aggregatedQuantity)}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         )}
         <div className="flex items-center gap-2">

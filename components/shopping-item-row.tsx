@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { markShoppingItem } from "@/app/actions/shoppingActions";
 import { formatQuantity } from "@/lib/domain/shopping/formatQuantity";
+import { formatCents } from "@/lib/domain/format/money";
 import type { ShoppingItem, ShoppingItemStatus } from "@/lib/domain/shopping/types";
+import type { EstimateLine } from "@/lib/domain/receipt/priceService";
 
 const STATUS_LABEL: Record<ShoppingItemStatus, string> = {
   pending: "A comprar",
@@ -16,12 +18,21 @@ const STATUS_LABEL: Record<ShoppingItemStatus, string> = {
 
 const NEXT_STATUSES: ShoppingItemStatus[] = ["pending", "bought", "have_at_home", "ignored"];
 
+function estimateLabel(estimate: EstimateLine | null): string | null {
+  if (!estimate) return null;
+  if (estimate.basis === "unknown" || estimate.estimated === null) return "sem histórico";
+  if (estimate.basis === "last") return `≈ ${formatCents(estimate.estimated)} (último preço)`;
+  return `≈ ${formatCents(estimate.estimated)} (média)`;
+}
+
 export function ShoppingItemRow({
   batchId,
   item,
+  estimate,
 }: {
   batchId: string;
   item: ShoppingItem;
+  estimate?: EstimateLine | null;
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +60,11 @@ export function ShoppingItemRow({
             usado em {item.sourceRecipeIds.length}{" "}
             {item.sourceRecipeIds.length === 1 ? "receita" : "receitas"}
           </span>
+          {estimateLabel(estimate ?? null) && (
+            <span className="text-xs text-muted-foreground italic">
+              {estimateLabel(estimate ?? null)}
+            </span>
+          )}
         </div>
         <div className="flex flex-col items-end gap-1">
           <div className="flex flex-wrap gap-1 justify-end">

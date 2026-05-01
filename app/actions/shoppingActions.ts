@@ -11,10 +11,12 @@ import {
   previewReplacement,
   previewShoppingList,
 } from "@/lib/domain/shopping/sandboxService";
+import { estimateCostForLines, type EstimateSummary } from "@/lib/domain/receipt/priceService";
 import { listReplacementCandidates } from "@/lib/domain/batch/batchService";
 import {
   getBatchRepository,
   getIngredientNormalizer,
+  getReceiptRepository,
   getRecipeRepository,
   getShoppingListRepository,
   getUserStateRepository,
@@ -113,4 +115,11 @@ export async function getActiveShoppingList(
 ): Promise<ShoppingList | null> {
   const repo = await getShoppingListRepository();
   return repo.findByBatchId(batchId);
+}
+
+export async function estimateForLinesAction(
+  lines: ShoppingLine[],
+): Promise<EstimateSummary> {
+  const receiptRepo = await getReceiptRepository();
+  return estimateCostForLines({ receiptRepository: receiptRepo }, lines);
 }

@@ -14,6 +14,10 @@ import {
 import { ShoppingItemRow } from "@/components/shopping-item-row";
 import { RecomputeListButton } from "@/components/recompute-list-button";
 import type { ShoppingItem, ShoppingItemStatus } from "@/lib/domain/shopping/types";
+import { estimateCostForLines, type EstimateLine } from "@/lib/domain/receipt/priceService";
+import { getReceiptRepository } from "@/lib/persistence/mongo/factories";
+import { formatCents } from "@/lib/domain/format/money";
+import type { ShoppingLine } from "@/lib/domain/shopping/aggregate";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +84,22 @@ export default async function ListaPage() {
     ignored: grouped.get("ignored")?.length ?? 0,
   };
 
+  const pendingItems = grouped.get("pending") ?? [];
+  const pendingLines: ShoppingLine[] = pendingItems.map((item) => ({
+    canonicalName: item.canonicalName,
+    aggregatedQuantity: item.aggregatedQuantity,
+    sourceRecipeIds: item.sourceRecipeIds,
+  }));
+  const receiptRepo = await getReceiptRepository();
+  const estimate = await estimateCostForLines(
+    { receiptRepository: receiptRepo },
+    pendingLines,
+  );
+  const estimateByName = new Map<string, EstimateLine>();
+  for (const e of estimate.perLine) estimateByName.set(e.canonicalName, e);
+  const knownCount = estimate.perLine.filter((e) => e.estimated !== null).length;
+  const unknownCount = estimate.perLine.length - knownCount;
+
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
@@ -96,6 +116,23 @@ export default async function ListaPage() {
         >
           Simular variacoes →
         </Link>
+        {pendingItems.length > 0 && (
+          <div className="rounded-md border bg-muted/30 p-3 text-sm flex flex-col gap-1">
+            <p>
+              Estimativa: <strong>{formatCents(estimate.total)}</strong>{" "}
+              <span className="text-xs text-muted-foreground">
+                baseada em {knownCount}{" "}
+                {knownCount === 1 ? "item com histórico" : "itens com histórico"}
+              </span>
+            </p>
+            {unknownCount > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {unknownCount}{" "}
+                {unknownCount === 1 ? "item sem histórico" : "itens sem histórico"}
+              </p>
+            )}
+          </div>
+        )}
       </header>
 
       {list.items.length === 0 ? (
@@ -117,7 +154,16 @@ export default async function ListaPage() {
                     .slice()
                     .sort((a, b) => a.canonicalName.localeCompare(b.canonicalName))
                     .map((item) => (
-                      <ShoppingItemRow key={item.id} batchId={batch.id} item={item} />
+                      <ShoppingItemRow
+                        key={item.id}
+                        batchId={batch.id}
+                        item={item}
+                        estimate={
+                          group.status === "pending"
+                            ? estimateByName.get(item.canonicalName) ?? null
+                            : null
+                        }
+                      />
                     ))}
                 </ul>
               </section>
