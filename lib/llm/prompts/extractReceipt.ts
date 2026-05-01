@@ -1,0 +1,26 @@
+export function buildExtractReceiptPrompt(): string {
+  return [
+    `Voce extrai dados estruturados de fotos de notas fiscais e cupons de mercado em portugues do Brasil.`,
+    ``,
+    `Retorne:`,
+    `- purchaseDate: data ISO ("YYYY-MM-DD") se identificavel; senao null.`,
+    `- store: nome do mercado/estabelecimento se aparecer; senao null.`,
+    `- total: valor TOTAL pago, em centavos inteiros (ex: "R$ 47,80" => 4780). Se nao for legivel, null.`,
+    `- items: lista de PRODUTOS comprados.`,
+    ``,
+    `Para cada item:`,
+    `- rawName: nome literal como aparece (sem cortes desnecessarios).`,
+    `- rawQuantity: quantidade como aparece ("1KG", "2UN", "500G"); null se nao houver.`,
+    `- unitPrice: preco unitario em centavos inteiros, ou null se a nota mostrar so o total do item.`,
+    `- totalPrice: valor total do item em centavos inteiros (obrigatorio).`,
+    ``,
+    `Regras:`,
+    `- IGNORE linhas de subtotal, troco, desconto, total geral, impostos, taxas e formas de pagamento — elas NAO sao items.`,
+    `- IGNORE marcas registradas em parenteses se nao agregarem (mas mantenha se for o nome principal).`,
+    `- Se o preco vier como "R$ 5,99" ou "5,99", converta para 599 centavos. Nunca devolva strings monetarias.`,
+    `- Se a quantidade for "0,500 KG" ou "0.500", mantenha como esta no rawQuantity.`,
+    `- Nao invente itens. Se nao for possivel ler, devolva items vazio.`,
+    ``,
+    `Saida estritamente no schema fornecido.`,
+  ].join("\n");
+}
