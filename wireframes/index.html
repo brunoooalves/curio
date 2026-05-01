@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curio — Wireframes (redesign proposta)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --ink: #1a1a1a;
+    --muted: #5b5b5b;
+    --line: #e7e2da;
+    --line-strong: #cdc6bb;
+    --accent: #1a1a1a;
+    --accent-fg: #ffffff;
+    --warn: #b65a2c;
+    --ok: #2f6b3e;
+    --soft: #f1ecdf;
+  }
+  html, body { background: #ece8e0; color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  .frame {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 32px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.25), 0 0 0 1px rgba(0,0,0,.05);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .frame-bezel {
+    padding: 14px 14px 22px 14px;
+    background: #1a1a1a;
+    border-radius: 44px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.35);
+  }
+  .frame-bezel .frame {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .scrim {
+    position: absolute; inset: 0; background: rgba(20,16,10,.45); display: flex; align-items: flex-end; justify-content: center;
+  }
+  .serif { font-family: "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", serif; }
+  .ink { color: var(--ink); }
+  .muted { color: var(--muted); }
+  .hairline { border-color: var(--line); }
+  .hairline-strong { border-color: var(--line-strong); }
+  .pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11px; line-height: 1; background: var(--soft); color: var(--ink); }
+  .pill.outline { background: transparent; border: 1px solid var(--line-strong); }
+  .pill.warn { background: #fbe7d8; color: #7a3a14; }
+  .pill.ok { background: #dfeede; color: #234e2c; }
+  .btn { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; border-radius: 14px; font-weight: 500; font-size: 15px; }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--line-strong); }
+  .btn-ghost { background: transparent; color: var(--ink); }
+  .seg { display: inline-flex; padding: 3px; border-radius: 12px; background: white; border: 1px solid var(--line); }
+  .seg button { min-height: 38px; padding: 0 10px; border-radius: 9px; font-size: 13px; color: var(--muted); }
+  .seg button.on { background: var(--accent); color: white; }
+  .card { background: white; border: 1px solid var(--line); border-radius: 18px; padding: 14px; }
+  .card-soft { background: var(--soft); border-radius: 18px; padding: 14px; }
+  .nav-bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 76px; display: grid; grid-template-columns: repeat(5, 1fr); background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-top: 1px solid var(--line); padding-bottom: 14px; }
+  .nav-bottom a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; color: var(--muted); height: 100%; }
+  .nav-bottom a.on { color: var(--ink); }
+  .nav-bottom a svg { width: 22px; height: 22px; }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; }
+  .stepper button { width: 44px; height: 44px; font-size: 18px; }
+  .stepper input { width: 56px; height: 44px; text-align: center; border: none; background: transparent; font-size: 18px; }
+  .scroll { overflow-y: auto; flex: 1; }
+  .scroll::-webkit-scrollbar { width: 0; }
+  .label-caption { font-size: 12px; color: #6f6f6f; }
+  .frame-caption { font-size: 13px; color: #4b4b4b; margin-top: 14px; }
+  .frame-caption b { color: #1a1a1a; }
+  .annotation { font-size: 12px; padding: 6px 10px; border-radius: 10px; background: #fff7e6; border: 1px solid #f0d99a; color: #5a3a08; display: inline-block; margin-top: 8px; }
+  .meta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  .meta + .meta { margin-left: 10px; }
+  .toggle { width: 44px; height: 26px; border-radius: 999px; background: #d6d0c3; position: relative; flex-shrink: 0; }
+  .toggle.on { background: var(--accent); }
+  .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform .2s; }
+  .toggle.on::after { transform: translateX(18px); }
+  .row-hairline > * + * { border-top: 1px solid var(--line); }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background: white; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 13px; }
+  .chip .x { width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--soft); font-size: 10px; }
+  .legend { font-size: 12px; color: #555; }
+  .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 6px; }
+</style>
+</head>
+<body class="p-10">
+
+<header class="max-w-6xl mx-auto mb-10">
+  <h1 class="serif text-4xl font-semibold tracking-tight">Curio — wireframes da redesign</h1>
+  <p class="mt-2 muted max-w-2xl">Mobile-first (390 × 844). Aplicação das prioridades do critique: nav reduzida, touch targets ≥48px, acentos consistentes, hierarquia limpa em Hoje, fim das duplicidades em /lista, confirm+undo para ações de estado, fusão de Simular em Lote, Mercado unificando Notas+Preços.</p>
+
+  <div class="mt-6 flex flex-wrap gap-4 legend">
+    <span><span class="legend-dot" style="background:#1a1a1a"></span>CTA primário</span>
+    <span><span class="legend-dot" style="background:#dfeede"></span>Estado positivo</span>
+    <span><span class="legend-dot" style="background:#fbe7d8"></span>Estado de atenção</span>
+    <span><span class="legend-dot" style="background:#fff7e6;border:1px solid #f0d99a"></span>Anotação de design</span>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto grid gap-12" style="grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));">
+
+<!-- ========================== FRAME 1: HOJE — vazio ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <div class="flex items-center justify-between">
+        <span class="label-caption tracking-widest">SEMANA 1 · GASTRONOMIA</span>
+        <button class="pill outline">2 de 8 ✓</button>
+      </div>
+      <h1 class="serif text-3xl font-semibold leading-tight mt-2">Cortes e mise en place</h1>
+      <p class="mt-2 text-[15px] leading-relaxed" style="color:#3a3a3a">Antes de qualquer cocção, organização. Esta semana cobre a postura básica na cozinha, segurança no manejo da faca e os cortes fundamentais.</p>
+
+      <div class="mt-5 card flex items-start gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--soft)">
+          <span style="font-size:18px">🔪</span>
+        </div>
+        <div class="flex-1">
+          <p class="font-medium">Comece um lote desta semana</p>
+          <p class="muted text-[13px] mt-1">Você diz quantas refeições; o app monta a lista de compras.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary w-full mt-3">Criar lote</button>
+
+      <details class="mt-7" open>
+        <summary class="flex items-center justify-between">
+          <span class="serif text-lg font-medium">Conceitos da semana</span>
+          <span class="muted text-sm">3</span>
+        </summary>
+        <div class="mt-3 row-hairline card !p-0">
+          <div class="px-4 py-3 flex items-start gap-3">
+            <span class="pill" style="min-width:34px;justify-content:center">1</span>
+            <div class="flex-1">
+              <p class="font-medium">Mise en place</p>
+              <p class="text-[13px] muted mt-0.5">Organizar tudo antes de começar. Reduz erros e acelera execução.</p>
+            </div>
+          </div>
+          <div class="px-4 py-3 flex items-start gap-3">
+            <span class="pill" style="min-width:34px;justify-content:center">2</span>
+            <div class="flex-1">
+              <p class="font-medium">Segurança e ergonomia com faca</p>
+              <p class="text-[13px] muted mt-0.5">Pegada, posição da mão guia, afiação básica.</p>
+            </div>
+          </div>
+          <div class="px-4 py-3 flex items-start gap-3">
+            <span class="pill" style="min-width:34px;justify-content:center">3</span>
+            <div class="flex-1">
+              <p class="font-medium">Cortes clássicos</p>
+              <p class="text-[13px] muted mt-0.5">Brunoise, julienne, mirepoix, chiffonade.</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <div class="mt-6 flex items-center justify-between">
+        <div>
+          <p class="font-medium">Pronto para a próxima semana?</p>
+          <p class="text-[13px] muted">Avança para Fundos e caldos.</p>
+        </div>
+        <button class="btn btn-secondary">Avançar →</button>
+      </div>
+
+      <p class="mt-6 text-[12px] muted">Perfil: 1 restrição · 1 preferência · <a class="underline">editar</a></p>
+    </div>
+
+    <!-- bottom nav -->
+    <nav class="nav-bottom">
+      <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7v9a2 2 0 01-2 2h-4v-6h-6v6H5a2 2 0 01-2-2v-9z"/></svg>Hoje</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h7"/></svg>Lote</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 6h14l-1.5 12a2 2 0 01-2 2h-7a2 2 0 01-2-2L5 6z"/><path d="M9 6V4h6v2"/></svg>Lista</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h18l-2 12a2 2 0 01-2 2H7a2 2 0 01-2-2L3 7z"/><circle cx="9" cy="11" r="1.5"/><circle cx="15" cy="11" r="1.5"/></svg>Mercado</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Hoje — sem lote.</b> Hierarquia única: header de currículo → CTA primário → conceitos colapsáveis → "avançar". As 14 receitas soltas saíram da home — agora vivem dentro do fluxo de criar lote. Acentos restaurados.</p>
+</section>
+
+<!-- ========================== FRAME 2: HOJE — lote ativo ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <div class="flex items-center justify-between">
+        <span class="label-caption tracking-widest">SEMANA 1 · GASTRONOMIA</span>
+        <button class="pill outline">2 de 8 ✓</button>
+      </div>
+      <h1 class="serif text-3xl font-semibold leading-tight mt-2">Cortes e mise en place</h1>
+
+      <div class="mt-5 card">
+        <div class="flex items-center justify-between">
+          <span class="pill warn">Lote em andamento</span>
+          <span class="muted text-[13px]">2 de 7 feitos</span>
+        </div>
+        <div class="mt-3 h-1.5 rounded-full" style="background:var(--line)">
+          <div class="h-1.5 rounded-full" style="background:var(--accent);width:28%"></div>
+        </div>
+        <p class="mt-3 font-medium">Próxima sugestão</p>
+        <p class="text-[15px]">Salada de Abobrinha e Tomate Julienne</p>
+        <div class="mt-1">
+          <span class="meta">🍴 Almoço</span>
+          <span class="meta">⏱ 20 min</span>
+          <span class="meta">👥 2 porções</span>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <a class="btn btn-primary flex-1" href="#">Continuar lote</a>
+          <a class="btn btn-secondary" href="#">Lista</a>
+        </div>
+      </div>
+
+      <details class="mt-6">
+        <summary class="flex items-center justify-between">
+          <span class="serif text-lg font-medium">Conceitos da semana</span>
+          <span class="muted text-sm">3 ›</span>
+        </summary>
+      </details>
+
+      <div class="mt-4 flex items-center justify-between">
+        <p class="font-medium">Pronto para a próxima semana?</p>
+        <button class="btn btn-secondary">Avançar →</button>
+      </div>
+      <p class="text-[12px] muted mt-1">Você pode revisar a semana atual depois.</p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7v9a2 2 0 01-2 2h-4v-6h-6v6H5a2 2 0 01-2-2v-9z"/></svg>Hoje</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h7"/></svg>Lote</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 6h14l-1.5 12a2 2 0 01-2 2h-7a2 2 0 01-2-2L5 6z"/><path d="M9 6V4h6v2"/></svg>Lista</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h18l-2 12a2 2 0 01-2 2H7a2 2 0 01-2-2L3 7z"/></svg>Mercado</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Hoje — lote ativo.</b> Card de batch substitui a CTA: "Próxima sugestão" com tempo + porções (que sumiam no /lote antigo). "Avançar" virou ação secundária com nova copy explicando que dá pra revisar.</p>
+</section>
+
+<!-- ========================== FRAME 3: Confirm "Avançar" com undo ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="px-5 pt-6 pb-24" style="opacity:.5;pointer-events:none">
+      <span class="label-caption tracking-widest">SEMANA 1 · GASTRONOMIA</span>
+      <h1 class="serif text-3xl font-semibold leading-tight mt-2">Cortes e mise en place</h1>
+      <div class="mt-5 card">
+        <span class="pill warn">Lote em andamento</span>
+      </div>
+    </div>
+    <div class="scrim">
+      <div class="card !rounded-t-3xl !rounded-b-none w-full !p-5" style="background:white;border:none">
+        <div class="mx-auto w-10 h-1 rounded-full mb-4" style="background:var(--line-strong)"></div>
+        <p class="serif text-2xl font-semibold">Avançar para Semana 2?</p>
+        <p class="text-[14px] mt-2 muted">"Cortes e mise en place" será marcada como concluída. Você pode revisar quando quiser.</p>
+        <ul class="mt-4 text-[14px] space-y-2">
+          <li class="flex gap-2"><span>✓</span><span>Lote atual permanece — você pode terminar de cozinhar</span></li>
+          <li class="flex gap-2"><span>✓</span><span>Lista de compras permanece</span></li>
+          <li class="flex gap-2"><span>↻</span><span>Próximas sugestões usarão Semana 2</span></li>
+        </ul>
+        <div class="mt-5 grid grid-cols-2 gap-2">
+          <button class="btn btn-secondary">Cancelar</button>
+          <button class="btn btn-primary">Avançar</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+  <p class="frame-caption"><b>Confirm para "Avançar".</b> Substitui o "Concluir esta semana" silencioso. Lista o que muda e o que permanece. Undo segue por 30s via toast pós-ação (não mostrado).</p>
+</section>
+
+<!-- ========================== FRAME 4: Lote em andamento (cards ricos) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <div class="flex items-center justify-between">
+        <a class="muted text-[13px]" href="#">‹ Hoje</a>
+        <button class="pill outline">Reordenar</button>
+      </div>
+      <h1 class="serif text-3xl font-semibold mt-2">Lote em andamento</h1>
+      <p class="muted text-[13px] mt-1">2 de 7 feitos · sugestão de ordem; cozinhe quando quiser.</p>
+
+      <div class="mt-3 h-1.5 rounded-full" style="background:var(--line)">
+        <div class="h-1.5 rounded-full" style="background:var(--accent);width:28%"></div>
+      </div>
+
+      <!-- item 1 -->
+      <div class="card mt-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="pill outline" style="min-width:32px;justify-content:center">1</span>
+            <span class="meta">🍴 Almoço</span>
+          </div>
+          <span class="pill ok">Feito</span>
+        </div>
+        <p class="font-medium mt-2">Salada Mediterrânea de Abobrinha em Julienne</p>
+        <div class="mt-1">
+          <span class="meta">⏱ 30 min</span>
+          <span class="meta">👥 4 porções</span>
+          <span class="meta">●●○ Médio</span>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button class="btn btn-secondary flex-1">Reflexão</button>
+          <button class="btn btn-ghost">Reverter</button>
+        </div>
+      </div>
+
+      <!-- item 2 (próximo sugerido) -->
+      <div class="card mt-3" style="border:2px solid var(--accent)">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="pill" style="background:var(--accent);color:white;min-width:32px;justify-content:center">2</span>
+            <span class="meta">🍴 Almoço</span>
+            <span class="pill" style="background:var(--soft)">Próximo</span>
+          </div>
+        </div>
+        <p class="font-medium mt-2">Salada de Abobrinha ao Limão com Tomilho</p>
+        <div class="mt-1">
+          <span class="meta">⏱ 25 min</span>
+          <span class="meta">👥 2 porções</span>
+          <span class="meta">●○○ Fácil</span>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button class="btn btn-primary flex-1">Marcar feito</button>
+          <button class="btn btn-secondary" aria-label="Pular">Pular</button>
+          <button class="btn btn-secondary" aria-label="Trocar">Trocar</button>
+        </div>
+      </div>
+
+      <!-- item 3 -->
+      <div class="card mt-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="pill outline" style="min-width:32px;justify-content:center">3</span>
+            <span class="meta">🍴 Jantar</span>
+          </div>
+        </div>
+        <p class="font-medium mt-2">Sopa de Legumes em Mirepoix</p>
+        <div class="mt-1">
+          <span class="meta">⏱ 45 min</span>
+          <span class="meta">👥 4 porções</span>
+          <span class="meta">●●●Difícil</span>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button class="btn btn-secondary flex-1">Marcar feito</button>
+          <button class="btn btn-ghost">Pular</button>
+          <button class="btn btn-ghost">Trocar</button>
+        </div>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a class="on" href="#">Lote</a>
+      <a href="#">Lista</a>
+      <a href="#">Mercado</a>
+      <a href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Lote em andamento.</b> Cada item exibe meal type, tempo, porções e dificuldade ("●●○ Médio" no lugar de "Dif. 2"). Item "Próximo" destacado com borda. Estado "Feito" colapsa ações em "Reflexão / Reverter".</p>
+</section>
+
+<!-- ========================== FRAME 5: Novo lote (com Simular fundido) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <a class="muted text-[13px]" href="#">‹ Voltar</a>
+      <h1 class="serif text-3xl font-semibold mt-2">Novo lote</h1>
+      <p class="muted text-[13px] mt-1">Diga quantas refeições de cada tipo. O app sugere uma ordem; você cozinha como quiser.</p>
+
+      <div class="mt-5 space-y-3">
+        <div class="card flex items-center justify-between">
+          <div>
+            <p class="font-medium">Café da manhã</p>
+            <p class="muted text-[12px]">Sem ingredientes pesados</p>
+          </div>
+          <div class="stepper">
+            <button>−</button><input value="0" /><button>+</button>
+          </div>
+        </div>
+        <div class="card flex items-center justify-between">
+          <div>
+            <p class="font-medium">Almoço</p>
+          </div>
+          <div class="stepper"><button>−</button><input value="4" /><button>+</button></div>
+        </div>
+        <div class="card flex items-center justify-between">
+          <div>
+            <p class="font-medium">Jantar</p>
+          </div>
+          <div class="stepper"><button>−</button><input value="4" /><button>+</button></div>
+        </div>
+        <div class="card flex items-center justify-between">
+          <div>
+            <p class="font-medium">Lanche</p>
+          </div>
+          <div class="stepper"><button>−</button><input value="0" /><button>+</button></div>
+        </div>
+      </div>
+
+      <p class="muted text-[13px] mt-3">Total: 8 receitas · 6 desta semana, 2 de revisão</p>
+
+      <div class="card mt-5 flex items-center justify-between">
+        <div>
+          <p class="font-medium">Modo avançado</p>
+          <p class="muted text-[12px]">Escolher receitas manualmente e ver lista de compras antes</p>
+        </div>
+        <div class="toggle"></div>
+      </div>
+
+      <details class="mt-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-medium">Contexto desta geração</span>
+          <span class="muted text-[13px]">Nenhum ›</span>
+        </summary>
+      </details>
+
+      <button class="btn btn-primary w-full mt-6">Criar lote · 8 receitas</button>
+      <p class="muted text-[12px] mt-2 text-center">Receitas existentes serão usadas; só geramos as faltantes.</p>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a class="on" href="#">Lote</a>
+      <a href="#">Lista</a>
+      <a href="#">Mercado</a>
+      <a href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Novo lote.</b> Stepper por refeição (touch ≥44px). Total mostra quantas vêm do currículo vs revisão (transparência sobre o que o batch faz). "Simular" foi para um toggle "Modo avançado" — uma única tela com dois modos.</p>
+</section>
+
+<!-- ========================== FRAME 6: Lista (limpa) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <h1 class="serif text-3xl font-semibold">Lista de compras</h1>
+      <p class="muted text-[13px] mt-1">18 a comprar · 0 prontos</p>
+
+      <div class="mt-3 flex items-center gap-2">
+        <div class="seg">
+          <button class="on">Todos</button>
+          <button>A comprar</button>
+          <button>Prontos</button>
+        </div>
+        <button class="btn btn-secondary !min-h-[38px] !text-[13px] ml-auto">Recalcular</button>
+      </div>
+
+      <!-- itens -->
+      <div class="mt-3 space-y-2">
+        <div class="card !p-0">
+          <div class="px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex-1">
+              <p class="font-medium">Abobrinha</p>
+              <p class="text-[12px] muted">3 unidades médias · em 5 receitas</p>
+            </div>
+            <select class="seg !p-0">
+              <option>A comprar</option>
+              <option>Comprado</option>
+              <option>Tenho em casa</option>
+              <option>Ignorar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card !p-0">
+          <div class="px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex-1">
+              <p class="font-medium">Alho-poró</p>
+              <p class="text-[12px] muted">1 talo · em 1 receita</p>
+            </div>
+            <select class="seg !p-0">
+              <option>A comprar</option>
+              <option>Comprado</option>
+              <option>Tenho em casa</option>
+              <option>Ignorar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card !p-0" style="background:#f5f1e8">
+          <div class="px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex-1">
+              <p class="font-medium">Azeite de oliva</p>
+              <p class="text-[12px] muted">~150 ml · em 5 receitas</p>
+            </div>
+            <select class="seg !p-0">
+              <option selected>Tenho em casa</option>
+              <option>A comprar</option>
+              <option>Comprado</option>
+              <option>Ignorar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card !p-0">
+          <div class="px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex-1">
+              <p class="font-medium">Batata</p>
+              <p class="text-[12px] muted">500 g + 2 unidades · em 2 receitas</p>
+            </div>
+            <select class="seg !p-0">
+              <option>A comprar</option>
+              <option>Comprado</option>
+              <option>Tenho em casa</option>
+              <option>Ignorar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card !p-0">
+          <div class="px-4 py-3 flex items-center justify-between gap-3 opacity-70" style="text-decoration:line-through">
+            <div class="flex-1">
+              <p class="font-medium">Coentro</p>
+              <p class="text-[12px] muted">Ignorado por aversão do perfil</p>
+            </div>
+            <button class="btn btn-ghost !min-h-[36px] !text-[13px]">Reativar</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="muted text-[12px] mt-5 text-center">Estimativa de custo aparece quando houver pelo menos 1 nota processada.</p>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a href="#">Lote</a>
+      <a class="on" href="#">Lista</a>
+      <a href="#">Mercado</a>
+      <a href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Lista — limpa.</b> 4 botões por item viraram um único select de estado (ainda touch-friendly). Banner de estimativa só aparece com dados. "Sem histórico" sumiu da repetição. Quantidades canonicalizadas ("11 colheres de sopa" → "~150 ml"). Item ignorado fica visível mas riscado, fácil reativar.</p>
+</section>
+
+<!-- ========================== FRAME 7: Mercado (Notas + Preços fundidos) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <h1 class="serif text-3xl font-semibold">Mercado</h1>
+      <p class="muted text-[13px] mt-1">Suba notas fiscais para ver preços e estimar lotes futuros.</p>
+
+      <div class="mt-3 seg w-full">
+        <button class="on flex-1">Notas (3)</button>
+        <button class="flex-1">Preços (24)</button>
+      </div>
+
+      <button class="btn btn-primary w-full mt-3">📷 Nova nota fiscal</button>
+
+      <div class="mt-4 space-y-2">
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-medium">Pão de Açúcar · Vila Mariana</p>
+              <p class="text-[12px] muted">há 2 dias · 18 itens · R$ 142,30</p>
+            </div>
+            <span class="pill ok">Processada</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-medium">Hortifruti Saudali</p>
+              <p class="text-[12px] muted">há 9 dias · 7 itens · R$ 38,40</p>
+            </div>
+            <span class="pill ok">Processada</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-medium">Feira da Praça</p>
+              <p class="text-[12px] muted">há 16 dias · 5 itens · R$ 27,00</p>
+            </div>
+            <span class="pill warn">Revisar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a href="#">Lote</a>
+      <a href="#">Lista</a>
+      <a class="on" href="#">Mercado</a>
+      <a href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Mercado.</b> Notas e Preços fundidos em uma seção com tabs — derivada (preços) abaixo da fonte (notas). CTA "Nova nota" ao topo (visível). URLs literais ("/notas/nova") sumiram do empty state.</p>
+</section>
+
+<!-- ========================== FRAME 8: Mais (drawer) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <h1 class="serif text-3xl font-semibold">Mais</h1>
+
+      <div class="mt-5 card !p-0 row-hairline">
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span style="font-size:20px">📚</span>
+          <div class="flex-1">
+            <p class="font-medium">Módulos</p>
+            <p class="text-[12px] muted">Currículo completo, semanas e pré-requisitos</p>
+          </div>
+          <span class="muted">›</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span style="font-size:20px">🗂️</span>
+          <div class="flex-1">
+            <p class="font-medium">Histórico</p>
+            <p class="text-[12px] muted">Receitas concluídas, puladas e reflexões</p>
+          </div>
+          <span class="muted">›</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span style="font-size:20px">📦</span>
+          <div class="flex-1">
+            <p class="font-medium">Lotes anteriores</p>
+            <p class="text-[12px] muted">3 lotes</p>
+          </div>
+          <span class="muted">›</span>
+        </a>
+      </div>
+
+      <p class="text-[12px] muted uppercase tracking-widest mt-6 mb-2">Você</p>
+      <div class="card !p-0 row-hairline">
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span style="font-size:20px">👤</span>
+          <div class="flex-1">
+            <p class="font-medium">Perfil</p>
+            <p class="text-[12px] muted">Restrições, aversões, preferências, despensa, porções</p>
+          </div>
+          <span class="muted">›</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span style="font-size:20px">🎭</span>
+          <div class="flex-1">
+            <p class="font-medium">Contextos salvos</p>
+            <p class="text-[12px] muted">0 contextos · ex.: "jantar com visita vegana"</p>
+          </div>
+          <span class="muted">›</span>
+        </a>
+      </div>
+
+      <p class="text-[12px] muted uppercase tracking-widest mt-6 mb-2">Sobre</p>
+      <div class="card !p-0 row-hairline">
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span class="flex-1">Versão do currículo</span>
+          <span class="muted text-[13px]">gastronomia v1.0</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-4" href="#">
+          <span class="flex-1">Provider de IA</span>
+          <span class="muted text-[13px]">openai/gpt-4.1</span>
+        </a>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a href="#">Lote</a>
+      <a href="#">Lista</a>
+      <a href="#">Mercado</a>
+      <a class="on" href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Mais.</b> Móvel/desktop trocaram nav top de 11 itens por 5 itens fixos no rodapé + drawer "Mais" agrupado por intenção. Reduziu 90% do peso de navegação na home.</p>
+</section>
+
+<!-- ========================== FRAME 9: Perfil (chips legíveis) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <a class="muted text-[13px]" href="#">‹ Mais</a>
+      <h1 class="serif text-3xl font-semibold mt-2">Perfil</h1>
+      <p class="muted text-[13px] mt-1">Aplicado em toda geração de receitas.</p>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between">
+          <p class="font-medium">Restrições</p>
+          <span class="text-[12px] muted">Nunca aparecem</span>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <span class="chip">sem glúten <span class="x">×</span></span>
+          <button class="chip" style="border-style:dashed">+ adicionar</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between">
+          <p class="font-medium">Aversões</p>
+          <span class="text-[12px] muted">Evitar; pouca quantidade ok</span>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <span class="chip">coentro <span class="x">×</span></span>
+          <button class="chip" style="border-style:dashed">+ adicionar</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between">
+          <p class="font-medium">Preferências</p>
+          <span class="text-[12px] muted">Estilos / ingredientes que você prefere</span>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <span class="chip">mediterrânea <span class="x">×</span></span>
+          <button class="chip" style="border-style:dashed">+ adicionar</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="flex items-center justify-between">
+          <p class="font-medium">Despensa</p>
+          <span class="text-[12px] muted">Para aproveitar primeiro</span>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <span class="chip">abobrinha <span class="x">×</span></span>
+          <button class="chip" style="border-style:dashed">+ adicionar</button>
+        </div>
+      </div>
+
+      <div class="card mt-6 flex items-center justify-between">
+        <div>
+          <p class="font-medium">Porções padrão</p>
+          <p class="text-[12px] muted">Usado quando a receita não especifica</p>
+        </div>
+        <div class="stepper"><button>−</button><input value="2" /><button>+</button></div>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a><a href="#">Lote</a><a href="#">Lista</a><a href="#">Mercado</a><a class="on" href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Perfil.</b> Acentos restaurados em todos os labels e descrições. Subtítulo curto à direita explicando a diferença entre Restrições / Aversões / Preferências / Despensa (era a fonte de confusão). "Despensa" substitui "Ingredientes em abundância".</p>
+</section>
+
+<!-- ========================== FRAME 10: Módulos ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <a class="muted text-[13px]" href="#">‹ Mais</a>
+      <h1 class="serif text-3xl font-semibold mt-2">Módulos</h1>
+      <p class="muted text-[13px] mt-1">Gastronomia · Fundamentos</p>
+
+      <div class="mt-5 space-y-3">
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <span class="label-caption tracking-widest">SEMANA 1</span>
+            <span class="pill ok">Concluída</span>
+          </div>
+          <p class="font-medium serif text-lg mt-1">Cortes e mise en place</p>
+          <p class="text-[13px] muted mt-1">Concluída em 24 abr. 6 receitas feitas, 1 pulada.</p>
+          <div class="mt-3 flex gap-2">
+            <button class="btn btn-secondary flex-1">Revisar</button>
+            <button class="btn btn-ghost">Repetir semana</button>
+          </div>
+        </div>
+
+        <div class="card" style="border:2px solid var(--accent)">
+          <div class="flex items-center justify-between">
+            <span class="label-caption tracking-widest">SEMANA 2</span>
+            <span class="pill" style="background:var(--accent);color:white">Atual</span>
+          </div>
+          <p class="font-medium serif text-lg mt-1">Fundos e caldos</p>
+          <p class="text-[13px] muted mt-1">Como extrair sabor de ossos, vegetais e aromáticos.</p>
+          <button class="btn btn-primary w-full mt-3">Ir para esta semana</button>
+        </div>
+
+        <div class="card" style="opacity:.7">
+          <div class="flex items-center justify-between">
+            <span class="label-caption tracking-widest">SEMANA 3</span>
+            <span class="pill outline">🔒 Bloqueada</span>
+          </div>
+          <p class="font-medium serif text-lg mt-1">Molhos-mãe</p>
+          <p class="text-[13px] muted mt-1">Pré-requisito: concluir Semana 2.</p>
+        </div>
+
+        <div class="card" style="opacity:.5">
+          <div class="flex items-center justify-between">
+            <span class="label-caption tracking-widest">SEMANA 4</span>
+            <span class="pill outline">🔒 Bloqueada</span>
+          </div>
+          <p class="font-medium serif text-lg mt-1">Cocção em meio gorduroso</p>
+        </div>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a><a href="#">Lote</a><a href="#">Lista</a><a href="#">Mercado</a><a class="on" href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Módulos.</b> Três estados visualmente distintos: <i>Concluída</i> com data + ações específicas (Revisar / Repetir), <i>Atual</i> com borda preta e CTA primário, <i>Bloqueada</i> com cadeado e razão. Acabou a ambiguidade do "Ir para esta semana" idêntico para todos.</p>
+</section>
+
+<!-- ========================== FRAME 11: Empty state Lota / Lista (sem dado) ========================== -->
+<section>
+  <div class="frame-bezel"><div class="frame">
+    <div class="scroll px-5 pt-6 pb-24">
+      <h1 class="serif text-3xl font-semibold">Comece um lote</h1>
+      <p class="muted text-[13px] mt-1">Você ainda não tem nenhum lote desta semana.</p>
+
+      <div class="card-soft mt-5 text-center">
+        <div class="text-4xl">🥕</div>
+        <p class="serif text-xl font-medium mt-3">Sem lote em andamento</p>
+        <p class="muted text-[13px] mt-1 max-w-xs mx-auto">Diga quantas refeições você quer praticar; o app monta a lista de compras.</p>
+        <button class="btn btn-primary w-full mt-4">Criar lote</button>
+        <p class="muted text-[12px] mt-3">Ou abra <a class="underline" href="#">Histórico</a> para ver lotes anteriores.</p>
+      </div>
+    </div>
+    <nav class="nav-bottom">
+      <a href="#">Hoje</a>
+      <a class="on" href="#">Lote</a>
+      <a href="#">Lista</a>
+      <a href="#">Mercado</a>
+      <a href="#">Mais</a>
+    </nav>
+  </div></div>
+  <p class="frame-caption"><b>Lote — vazio.</b> Header agora reage ao estado: "Comece um lote" no lugar do antigo "Lote em andamento" mentindo. Empty state ilustrado, CTA primário grande, link secundário pra histórico em vez de URL literal.</p>
+</section>
+
+</main>
+
+<footer class="max-w-6xl mx-auto mt-16 mb-8 text-[13px] muted">
+  <p>Cobertura: priority fixes 1–8 do critique. <b>Não</b> incluído: histórico, receita detalhada, captura/edit de nota fiscal, fluxo de troca de receita com diff de lista — esses ficam para a próxima rodada se a direção colar.</p>
+</footer>
+
+</body>
+</html>

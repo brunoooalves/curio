@@ -101,11 +101,11 @@ export function BatchItemActions({
           <DialogHeader>
             <DialogTitle>Concluir &ldquo;{recipeTitle}&rdquo;</DialogTitle>
             <DialogDescription>
-              Registre uma reflexao curta. Opcional, mas ajuda no aprendizado.
+              Registre uma reflexão curta. Opcional, mas ajuda no aprendizado.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="reflection">Reflexao</Label>
+            <Label htmlFor="reflection">Reflexão</Label>
             <Textarea
               id="reflection"
               value={reflection}

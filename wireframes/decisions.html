@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curio — Decisões antes da implementação</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --ink: #1a1a1a;
+    --muted: #5b5b5b;
+    --line: #e7e2da;
+    --line-strong: #cdc6bb;
+    --accent: #1a1a1a;
+    --soft: #f1ecdf;
+    --ok: #2f6b3e;
+    --warn: #b65a2c;
+  }
+  html, body { background: #ece8e0; color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .serif { font-family: "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", serif; }
+  .muted { color: var(--muted); }
+
+  /* Phone frame */
+  .frame { width: 320px; height: 600px; background: var(--bg); border-radius: 28px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 20px 40px -16px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.06); }
+  .frame-bezel { padding: 10px 10px 18px 10px; background: #1a1a1a; border-radius: 38px; box-shadow: 0 24px 48px -16px rgba(0,0,0,.3); display: inline-block; }
+  .frame .scroll { overflow: hidden; flex: 1; padding: 16px 16px 70px 16px; }
+  .nav-bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 60px; display: grid; grid-template-columns: repeat(5,1fr); background: rgba(255,255,255,.95); border-top: 1px solid var(--line); padding-bottom: 12px; }
+  .nav-bottom a { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); gap: 2px; }
+  .nav-bottom a.on { color: var(--ink); font-weight: 500; }
+  .nav-bottom a svg { width: 18px; height: 18px; }
+
+  /* Desktop frame for D4 */
+  .desk { width: 540px; height: 360px; background: var(--bg); border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 18px 36px -14px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.06); display: flex; flex-direction: column; }
+  .desk .chrome { height: 26px; background: #ddd5c8; display: flex; align-items: center; gap: 5px; padding: 0 10px; }
+  .desk .chrome span { width: 8px; height: 8px; border-radius: 50%; background: #b9b0a1; }
+
+  .pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px; font-size: 10px; line-height: 1; background: var(--soft); }
+  .pill.ok { background: #dfeede; color: #234e2c; }
+  .pill.warn { background: #fbe7d8; color: #7a3a14; }
+  .pill.outline { background: transparent; border: 1px solid var(--line-strong); }
+  .pill.muted { background: #ebe5d9; color: #6a5e48; }
+
+  .seg { display: inline-flex; padding: 2px; border-radius: 10px; background: white; border: 1px solid var(--line); font-size: 11px; }
+  .seg button { padding: 5px 8px; border-radius: 7px; color: var(--muted); }
+  .seg button.on { background: var(--accent); color: white; }
+
+  .card { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  .btn { min-height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0 12px; border-radius: 10px; font-size: 12px; font-weight: 500; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-secondary { background: white; border: 1px solid var(--line-strong); }
+  .btn-ghost { background: transparent; }
+
+  .meta { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: var(--muted); }
+  .meta + .meta { margin-left: 7px; }
+
+  /* Decision cards */
+  .decision { background: white; border-radius: 18px; padding: 28px 28px 32px; box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+  .decision-no { font-size: 12px; letter-spacing: .15em; color: #94673f; text-transform: uppercase; font-weight: 600; }
+  .opt-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+  .opt-label.A { background: #1a1a1a; color: white; }
+  .opt-label.B { background: #efe6d4; color: #5a3a08; }
+  .opt-label.C { background: #d8e6dc; color: #234e2c; }
+  .lean { background: #fff7e6; border: 1px solid #f0d99a; color: #5a3a08; padding: 14px 16px; border-radius: 12px; font-size: 14px; }
+  .lean b { color: #2c1c00; }
+
+  table.tradeoff { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 14px; }
+  table.tradeoff th, table.tradeoff td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.tradeoff th { font-weight: 500; color: var(--muted); font-size: 12px; }
+  table.tradeoff td:first-child { width: 30%; color: var(--muted); }
+
+  .checkbox-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px dashed var(--line-strong); border-radius: 10px; }
+  .checkbox-row input { margin-top: 3px; }
+</style>
+</head>
+<body class="px-6 py-10">
+
+<header class="max-w-5xl mx-auto mb-10">
+  <p class="muted text-sm">Antes de implementar</p>
+  <h1 class="serif text-4xl font-semibold tracking-tight mt-1">4 decisões — uma escolha em cada</h1>
+  <p class="mt-3 muted max-w-2xl">Cada uma muda escopo, código e UX. Listei opções, mostrei a diferença visual, e marquei qual eu defenderia. Você decide; eu implemento na ordem que combinarmos.</p>
+</header>
+
+<main class="max-w-5xl mx-auto space-y-10">
+
+<!-- ============================ DECISION 1 ============================ -->
+<section class="decision">
+  <p class="decision-no">Decisão 1 de 4 · modelo de dados</p>
+  <h2 class="serif text-3xl font-semibold mt-1">O status <i>Revertido</i> existe?</h2>
+  <p class="muted mt-2 max-w-3xl">Hoje o /historico tem 4 filtros: <b>Todos · Concluídos · Rejeitados · Revertidos</b>. O CLAUDE.md diz "Status simples: pending / done / skipped". Então "Revertido" é uma 4ª categoria que ninguém combinou — provavelmente entrou como "feito que foi desmarcado". Precisa decidir: é um <i>estado</i> de primeira classe, ou é só uma transição que volta a <code>pending</code>?</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Option A: KILL -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label A">Opção A · matar</span>
+        <span class="text-xs muted">Alinha com CLAUDE.md</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="serif text-xl font-semibold">Histórico</p>
+          <p class="text-[11px] muted mt-0.5">Tudo que você praticou</p>
+          <div class="seg mt-3">
+            <button class="on">Todos</button>
+            <button>Concluídos</button>
+            <button>Pulados</button>
+          </div>
+          <div class="card mt-3">
+            <div class="flex items-center justify-between">
+              <p class="text-[12px] font-medium">Salada Mediterrânea</p>
+              <span class="pill ok">✓ feito</span>
+            </div>
+            <p class="text-[11px] muted mt-1">Semana 1 · há 2 dias</p>
+          </div>
+          <div class="card mt-2">
+            <div class="flex items-center justify-between">
+              <p class="text-[12px] font-medium">Sopa de Mirepoix</p>
+              <span class="pill muted">↺ pendente</span>
+            </div>
+            <p class="text-[11px] muted mt-1">Reaberta há 4 horas</p>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a>Lista</a><a>Mercado</a><a class="on">Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">"Reverter" volta a receita para <code>pending</code>. Sem 4º filtro. A timeline (data de feito, data de reabertura) registra a ação, mas não é um estado.</p>
+    </div>
+
+    <!-- Option B: KEEP -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label B">Opção B · manter</span>
+        <span class="text-xs muted">Audit trail explícito</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="serif text-xl font-semibold">Histórico</p>
+          <p class="text-[11px] muted mt-0.5">Tudo que você praticou</p>
+          <div class="seg mt-3" style="flex-wrap:wrap">
+            <button class="on">Todos</button>
+            <button>Concluídos</button>
+            <button>Pulados</button>
+            <button>Revertidos</button>
+          </div>
+          <div class="card mt-3">
+            <div class="flex items-center justify-between">
+              <p class="text-[12px] font-medium">Salada Mediterrânea</p>
+              <span class="pill ok">✓ feito</span>
+            </div>
+            <p class="text-[11px] muted mt-1">Semana 1 · há 2 dias</p>
+          </div>
+          <div class="card mt-2">
+            <div class="flex items-center justify-between">
+              <p class="text-[12px] font-medium">Sopa de Mirepoix</p>
+              <span class="pill warn">↺ revertida</span>
+            </div>
+            <p class="text-[11px] muted mt-1">Foi feita, depois reaberta</p>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a>Lista</a><a>Mercado</a><a class="on">Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">"Revertido" é um estado próprio. Filtro dedicado. Mais código (transições, UI, persistência), mais visibilidade de "vacilei e voltei atrás".</p>
+    </div>
+  </div>
+
+  <table class="tradeoff">
+    <tr><th>Tradeoff</th><th>A — matar</th><th>B — manter</th></tr>
+    <tr><td>Modelo</td><td>3 estados, alinhado ao CLAUDE.md</td><td>4 estados, divergente da doc</td></tr>
+    <tr><td>UI</td><td>3 chips de filtro</td><td>4 chips (já estoura largura mobile)</td></tr>
+    <tr><td>Pergunta que responde</td><td>"o que está pendente?"</td><td>"o que eu desmarquei depois?"</td></tr>
+    <tr><td>Tom</td><td>Neutro — reabrir é normal</td><td>Sutilmente culposo — destaca o "voltei atrás"</td></tr>
+  </table>
+
+  <div class="lean mt-6">💡 <b>Meu lean: A — matar.</b> O CLAUDE.md já estabeleceu o tom "pular não é falha". "Revertido" como filtro de primeira classe contraria isso e adiciona estado sem responder uma pergunta que importa. A timeline ainda registra que houve uma reabertura — só não vira categoria.</div>
+
+  <div class="mt-5 grid grid-cols-2 gap-3">
+    <label class="checkbox-row"><input type="checkbox"><span><b>A</b> — matar Revertido</span></label>
+    <label class="checkbox-row"><input type="checkbox"><span><b>B</b> — manter Revertido</span></label>
+  </div>
+</section>
+
+<!-- ============================ DECISION 2 ============================ -->
+<section class="decision">
+  <p class="decision-no">Decisão 2 de 4 · arquitetura de rotas</p>
+  <h2 class="serif text-3xl font-semibold mt-1">O que fazer com /simular?</h2>
+  <p class="muted mt-2 max-w-3xl">Hoje existem dois caminhos pra criar um lote: <b>/lote/novo</b> (você diz quantas refeições, app preenche) e <b>/simular</b> (você escolhe receitas manualmente, vê a lista, aplica). É uma duplicidade — mesma saída, dois UIs. Um link em /lista chamado "Simular variações" piora porque o nome também sugere simular preços. Decidir: redirecionar para /lote/novo?modo=avancado, ou manter /simular como ferramenta separada?</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Option A: REDIRECT -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label A">Opção A · fundir em /lote/novo</span>
+        <span class="text-xs muted">Um único entry point</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="text-[11px] muted">‹ Voltar</p>
+          <p class="serif text-xl font-semibold mt-1">Novo lote</p>
+
+          <div class="card mt-3 flex items-center justify-between">
+            <div>
+              <p class="text-[12px] font-medium">Modo avançado</p>
+              <p class="text-[10px] muted">Escolher receitas e ver a lista antes</p>
+            </div>
+            <div style="width:36px;height:20px;border-radius:999px;background:var(--accent);position:relative">
+              <div style="position:absolute;top:2px;left:18px;width:16px;height:16px;border-radius:50%;background:white"></div>
+            </div>
+          </div>
+
+          <p class="text-[11px] font-medium mt-4">Receitas (15)</p>
+          <div class="card mt-2 !p-2 flex items-center gap-2">
+            <input type="checkbox" checked>
+            <div class="flex-1">
+              <p class="text-[12px]">Salada de Julienne</p>
+              <p class="text-[10px] muted">Almoço · 30 min</p>
+            </div>
+          </div>
+          <div class="card mt-1 !p-2 flex items-center gap-2">
+            <input type="checkbox" checked>
+            <div class="flex-1">
+              <p class="text-[12px]">Sopa de Mirepoix</p>
+              <p class="text-[10px] muted">Jantar · 45 min</p>
+            </div>
+          </div>
+          <p class="text-[11px] muted mt-3">Resultado: 2 receitas → 9 itens na lista</p>
+          <button class="btn btn-primary w-full mt-3">Aplicar como lote</button>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a class="on">Lote</a><a>Lista</a><a>Mercado</a><a>Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">/simular vira <code>301 → /lote/novo?modo=avancado</code>. Um entry point, dois modos: rápido (steppers) e avançado (escolha manual + preview). Item do nav "Simular" sai.</p>
+    </div>
+
+    <!-- Option B: KEEP -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label B">Opção B · manter separado</span>
+        <span class="text-xs muted">Ferramenta exploratória</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="text-[11px] muted">‹ Mais</p>
+          <p class="serif text-xl font-semibold mt-1">Simular combinações</p>
+          <p class="text-[11px] muted mt-0.5">Escolha receitas e veja a lista. Nada é persistido até aplicar.</p>
+
+          <p class="text-[11px] font-medium mt-3">Receitas (15)</p>
+          <div class="card mt-2 !p-2 flex items-center gap-2">
+            <input type="checkbox" checked>
+            <div class="flex-1"><p class="text-[12px]">Salada de Julienne</p></div>
+          </div>
+          <div class="card mt-1 !p-2 flex items-center gap-2">
+            <input type="checkbox">
+            <div class="flex-1"><p class="text-[12px]">Sopa de Mirepoix</p></div>
+          </div>
+          <div class="card mt-1 !p-2 flex items-center gap-2">
+            <input type="checkbox" checked>
+            <div class="flex-1"><p class="text-[12px]">Bruschetta</p></div>
+          </div>
+
+          <p class="text-[11px] muted mt-3">2 receitas → 7 itens na lista</p>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-secondary flex-1">Ver lista</button>
+            <button class="btn btn-primary flex-1">Aplicar</button>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a>Lista</a><a>Mercado</a><a class="on">Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">/simular vive em "Mais" como ferramenta exploratória ("e se eu cozinhasse esses 3?"). /lote/novo continua simples. Mais código, mais decisão de "qual usar quando".</p>
+    </div>
+  </div>
+
+  <table class="tradeoff">
+    <tr><th>Tradeoff</th><th>A — fundir</th><th>B — manter</th></tr>
+    <tr><td>Rotas</td><td>1 (/lote/novo com toggle)</td><td>2 (/lote/novo + /simular)</td></tr>
+    <tr><td>Decisão do usuário</td><td>"crio lote rápido ou detalhado?"</td><td>"vou criar ou só simular?"</td></tr>
+    <tr><td>Risco</td><td>UI denso quando avançado liga</td><td>Confusão ("já não dava pra fazer no /lote/novo?")</td></tr>
+    <tr><td>Código</td><td>Componente reutilizado, menos rotas</td><td>Duas páginas, duas APIs paralelas</td></tr>
+  </table>
+
+  <div class="lean mt-6">💡 <b>Meu lean: A — fundir.</b> Para um app pessoal, dois caminhos pra mesma saída é peso morto. O toggle "Modo avançado" preserva a função sem o segundo entry point. /simular vira redirect; o link "Simular variações" em /lista é deletado (e quando preços fizer sentido, vira "Estimar custo deste lote" em outro lugar).</div>
+
+  <div class="mt-5 grid grid-cols-2 gap-3">
+    <label class="checkbox-row"><input type="checkbox"><span><b>A</b> — fundir em /lote/novo</span></label>
+    <label class="checkbox-row"><input type="checkbox"><span><b>B</b> — manter /simular separado</span></label>
+  </div>
+</section>
+
+<!-- ============================ DECISION 3 ============================ -->
+<section class="decision">
+  <p class="decision-no">Decisão 3 de 4 · domínio</p>
+  <h2 class="serif text-3xl font-semibold mt-1">Como expressar quantidades na lista de compras?</h2>
+  <p class="muted mt-2 max-w-3xl">Hoje a lista mostra a soma literal das receitas: <i>"11 colheres de sopa de azeite"</i>. Isso é honesto mas ridículo no mercado — você compra <i>uma garrafa</i>. A normalização tem 3 formas de existir; cada uma muda o prompt do LLM, a estrutura do <code>ShoppingItem</code>, e como você vai realmente usar isso comprando.</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+    <!-- Option A: literal -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label A">A · literal</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="serif text-lg font-semibold">Lista</p>
+          <div class="card mt-3">
+            <p class="text-[12px] font-medium">Azeite de oliva</p>
+            <p class="text-[11px] muted mt-0.5">11 colheres de sopa</p>
+            <p class="text-[10px] muted mt-0.5">em 5 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Sal</p>
+            <p class="text-[11px] muted mt-0.5">12 pitadas + 2 colheres de chá</p>
+            <p class="text-[10px] muted mt-0.5">em 7 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Abobrinha</p>
+            <p class="text-[11px] muted mt-0.5">2 unidades médias + 1 média + 1 pequena</p>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a class="on">Lista</a><a>Mercado</a><a>Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">Soma exata, sem conversão. Estado atual.</p>
+    </div>
+
+    <!-- Option B: normalized -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label B">B · normalizado</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="serif text-lg font-semibold">Lista</p>
+          <div class="card mt-3">
+            <p class="text-[12px] font-medium">Azeite de oliva</p>
+            <p class="text-[11px] muted mt-0.5">~150 ml</p>
+            <p class="text-[10px] muted mt-0.5">em 5 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Sal</p>
+            <p class="text-[11px] muted mt-0.5">~15 g</p>
+            <p class="text-[10px] muted mt-0.5">em 7 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Abobrinha</p>
+            <p class="text-[11px] muted mt-0.5">3 unidades médias</p>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a class="on">Lista</a><a>Mercado</a><a>Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">Tudo convertido pra unidades de mercado. Limpo, mas perde rastreabilidade.</p>
+    </div>
+
+    <!-- Option C: hybrid -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label C">C · híbrido</span>
+        <span class="text-xs muted">recomendado</span>
+      </div>
+      <div class="frame-bezel"><div class="frame">
+        <div class="scroll">
+          <p class="serif text-lg font-semibold">Lista</p>
+          <div class="card mt-3">
+            <p class="text-[12px] font-medium">Azeite de oliva</p>
+            <p class="text-[11px] mt-0.5"><b>~150 ml</b> <span class="muted">· 1 garrafa pequena</span></p>
+            <p class="text-[10px] muted mt-0.5">soma de 11 colheres em 5 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Sal</p>
+            <p class="text-[11px] mt-0.5"><b>~15 g</b> <span class="muted">· qualquer pacote</span></p>
+            <p class="text-[10px] muted mt-0.5">em 7 receitas</p>
+          </div>
+          <div class="card mt-2">
+            <p class="text-[12px] font-medium">Abobrinha</p>
+            <p class="text-[11px] mt-0.5"><b>3 unidades médias</b></p>
+            <p class="text-[10px] muted mt-0.5">em 4 receitas</p>
+          </div>
+        </div>
+        <nav class="nav-bottom"><a>Hoje</a><a>Lote</a><a class="on">Lista</a><a>Mercado</a><a>Mais</a></nav>
+      </div></div>
+      <p class="text-[13px] mt-3 muted">Quantidade no formato de mercado em destaque + sugestão de embalagem + soma original como nota. Mais código, melhor experiência.</p>
+    </div>
+  </div>
+
+  <table class="tradeoff">
+    <tr><th>Tradeoff</th><th>A — literal</th><th>B — normalizado</th><th>C — híbrido</th></tr>
+    <tr><td>Útil no mercado?</td><td>Não</td><td>Sim</td><td>Sim</td></tr>
+    <tr><td>Confiança</td><td>Total (não converti nada)</td><td>Depende do LLM converter direito</td><td>Total + sugestão</td></tr>
+    <tr><td>Prompt</td><td>Trivial</td><td>Médio (regras de unidade)</td><td>Médio (precisa retornar 2 campos)</td></tr>
+    <tr><td>Schema</td><td><code>{qty, unit}</code></td><td><code>{qty, unit, canonical}</code></td><td><code>{display, raw, packaging?}</code></td></tr>
+  </table>
+
+  <div class="lean mt-6">💡 <b>Meu lean: C — híbrido.</b> O custo extra é um campo no schema do <code>ShoppingItem</code> (<code>display</code> + <code>raw</code>) e duas linhas no prompt. Em troca, a lista fica útil no mercado <i>e</i> auditável quando algo parece estranho. Começar com B e depois adicionar a soma original ia ser refactor.</div>
+
+  <div class="mt-5 grid grid-cols-3 gap-3">
+    <label class="checkbox-row"><input type="checkbox"><span><b>A</b> — literal</span></label>
+    <label class="checkbox-row"><input type="checkbox"><span><b>B</b> — normalizado</span></label>
+    <label class="checkbox-row"><input type="checkbox"><span><b>C</b> — híbrido</span></label>
+  </div>
+</section>
+
+<!-- ============================ DECISION 4 ============================ -->
+<section class="decision">
+  <p class="decision-no">Decisão 4 de 4 · sistema de navegação</p>
+  <h2 class="serif text-3xl font-semibold mt-1">Bottom nav em todas as larguras, ou sidebar no desktop?</h2>
+  <p class="muted mt-2 max-w-3xl">No mobile a bottom nav é a melhor escolha — polegar alcança, padrão consagrado. No desktop ela é estranha (espaço sobrando, foco fica na borda inferior). A pergunta: o uso em desktop é raro o suficiente pra valer só uma versão, ou a gente investe num layout responsivo?</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- A: bottom everywhere -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label A">Opção A · bottom nav sempre</span>
+      </div>
+      <div class="desk">
+        <div class="chrome"><span></span><span></span><span></span></div>
+        <div style="flex:1;padding:18px 28px;position:relative">
+          <p class="text-[10px] muted">SEMANA 1 · GASTRONOMIA</p>
+          <p class="serif text-xl font-semibold mt-1">Cortes e mise en place</p>
+          <p class="text-[11px] muted mt-1 max-w-md">Antes de qualquer cocção, organização. Esta semana cobre a postura básica na cozinha.</p>
+          <div style="background:white;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:14px;max-width:380px">
+            <p class="text-[11px] font-medium">Comece um lote desta semana</p>
+            <p class="text-[10px] muted mt-0.5">Você diz quantas refeições.</p>
+            <button class="btn btn-primary mt-2" style="height:28px;font-size:11px">Criar lote</button>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:0;height:42px;display:grid;grid-template-columns:repeat(5,1fr);background:white;border-top:1px solid var(--line)">
+            <a class="text-[10px] flex items-center justify-center" style="font-weight:500">Hoje</a>
+            <a class="text-[10px] flex items-center justify-center muted">Lote</a>
+            <a class="text-[10px] flex items-center justify-center muted">Lista</a>
+            <a class="text-[10px] flex items-center justify-center muted">Mercado</a>
+            <a class="text-[10px] flex items-center justify-center muted">Mais</a>
+          </div>
+        </div>
+      </div>
+      <p class="text-[13px] mt-3 muted">Mesmo nav em qualquer largura. Estranho num monitor 27", mas zero código condicional. Conteúdo continua em coluna estreita centralizada.</p>
+    </div>
+
+    <!-- B: rail on desktop -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="opt-label B">Opção B · rail no desktop</span>
+      </div>
+      <div class="desk">
+        <div class="chrome"><span></span><span></span><span></span></div>
+        <div style="flex:1;display:flex">
+          <div style="width:140px;background:rgba(255,255,255,.6);border-right:1px solid var(--line);padding:14px 10px;display:flex;flex-direction:column;gap:4px">
+            <p class="serif text-[13px] font-semibold mb-2">Curio</p>
+            <a class="text-[11px]" style="padding:6px 8px;border-radius:8px;background:var(--accent);color:white">Hoje</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Lote</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Lista</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Mercado</a>
+            <div style="border-top:1px solid var(--line);margin:6px 0"></div>
+            <a class="text-[11px] muted" style="padding:6px 8px">Módulos</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Histórico</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Lotes</a>
+            <a class="text-[11px] muted" style="padding:6px 8px">Perfil</a>
+          </div>
+          <div style="flex:1;padding:18px 24px">
+            <p class="text-[10px] muted">SEMANA 1 · GASTRONOMIA</p>
+            <p class="serif text-xl font-semibold mt-1">Cortes e mise en place</p>
+            <p class="text-[11px] muted mt-1 max-w-md">Antes de qualquer cocção, organização.</p>
+            <div style="background:white;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:14px;max-width:380px">
+              <p class="text-[11px] font-medium">Comece um lote desta semana</p>
+              <button class="btn btn-primary mt-2" style="height:28px;font-size:11px">Criar lote</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-[13px] mt-3 muted">Sidebar no desktop, bottom nav no mobile. Aproveita largura, expande "Mais" inline (sem drawer). Mais CSS responsivo, dois layouts pra manter.</p>
+    </div>
+  </div>
+
+  <table class="tradeoff">
+    <tr><th>Tradeoff</th><th>A — bottom sempre</th><th>B — rail no desktop</th></tr>
+    <tr><td>Mobile (uso real)</td><td>Ótimo</td><td>Ótimo</td></tr>
+    <tr><td>Desktop</td><td>Funcional, parece app mobile</td><td>Natural, "Mais" expandido inline</td></tr>
+    <tr><td>Código</td><td>1 componente</td><td>2 componentes + breakpoint</td></tr>
+    <tr><td>Quando isso importa</td><td>Nunca, no fim das contas</td><td>Quando você abre no notebook pra editar perfil</td></tr>
+  </table>
+
+  <div class="lean mt-6">💡 <b>Meu lean: A — bottom sempre.</b> Você é o único usuário, e você usa na cozinha e no mercado. O desktop é um nice-to-have. Investir em layout responsivo é trocar 2 dias de trabalho por elegância em um cenário que acontece talvez 5% do tempo. Se um dia você compartilhar o app, B vira escopo de uma feature de "modo desktop" — não cobertura preventiva.</div>
+
+  <div class="mt-5 grid grid-cols-2 gap-3">
+    <label class="checkbox-row"><input type="checkbox"><span><b>A</b> — bottom nav em todas as larguras</span></label>
+    <label class="checkbox-row"><input type="checkbox"><span><b>B</b> — sidebar &gt;768px</span></label>
+  </div>
+</section>
+
+<!-- ============================ SUMMARY ============================ -->
+<section class="decision" style="background:#1a1a1a;color:white">
+  <p class="decision-no" style="color:#dcb88a">Resumo das minhas escolhas</p>
+  <h2 class="serif text-3xl font-semibold mt-1" style="color:white">Se você falar "manda ver na sua linha", isso é o que acontece</h2>
+
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px">
+      <p style="color:#dcb88a" class="text-xs uppercase tracking-widest">Decisão 1</p>
+      <p class="font-semibold mt-1">Matar Revertido</p>
+      <p style="color:#bdb5a3" class="text-[13px] mt-1">Histórico fica com 3 filtros. Reabrir uma receita volta a <code>pending</code>; a timeline registra a ação sem virar categoria.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px">
+      <p style="color:#dcb88a" class="text-xs uppercase tracking-widest">Decisão 2</p>
+      <p class="font-semibold mt-1">Fundir /simular</p>
+      <p style="color:#bdb5a3" class="text-[13px] mt-1">301 → /lote/novo?modo=avancado. "Simular" sai da nav. Link "Simular variações" em /lista é deletado.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px">
+      <p style="color:#dcb88a" class="text-xs uppercase tracking-widest">Decisão 3</p>
+      <p class="font-semibold mt-1">Híbrido para quantidades</p>
+      <p style="color:#bdb5a3" class="text-[13px] mt-1">Schema do ShoppingItem ganha <code>display</code> + <code>raw</code> + <code>packaging</code>. Prompt do LLM inclui regra de conversão.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px">
+      <p style="color:#dcb88a" class="text-xs uppercase tracking-widest">Decisão 4</p>
+      <p class="font-semibold mt-1">Bottom nav sempre</p>
+      <p style="color:#bdb5a3" class="text-[13px] mt-1">Um componente. Sem responsivo de nav. Conteúdo central fica em coluna estreita no desktop.</p>
+    </div>
+  </div>
+
+  <div class="mt-6" style="background:rgba(220,184,138,.12);border:1px solid rgba(220,184,138,.3);border-radius:12px;padding:14px">
+    <p class="text-[13px]" style="color:#f0e2c8">Me responda nos 4 (ex: <i>"A, A, C, A"</i>) e eu começo pela PR 1 (foundation pass: acentos, touch targets, contraste, plurais). As outras decisões só importam quando chegarmos nas PRs 3 e 4.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="max-w-5xl mx-auto mt-14 mb-10 text-[13px] muted">
+  <p>Dúvida em alguma? Pergunta antes de marcar — algumas têm consequências invisíveis no diff.</p>
+</footer>
+
+</body>
+</html>

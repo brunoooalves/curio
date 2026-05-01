@@ -21,8 +21,8 @@ import type { Recipe } from "@/lib/domain/recipe/types";
 import type { PreviewReplacementResult } from "@/lib/domain/shopping/sandboxService";
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };
@@ -176,7 +176,7 @@ function CandidatesList({
   if (!candidates || candidates.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Sem candidatas livres no modulo atual. Cancele e use a opcao de trocar do lote, que
+        Sem candidatas livres no módulo atual. Cancele e use a opção de trocar do lote, que
         gera uma nova receita.
       </p>
     );
@@ -245,7 +245,7 @@ function DiffSummary({ preview }: { preview: PreviewReplacementResult }) {
     diff.added.length === 0 && diff.removed.length === 0 && diff.changed.length === 0;
 
   if (empty) {
-    return <p className="text-sm text-muted-foreground">Nenhuma mudanca na lista de compras.</p>;
+    return <p className="text-sm text-muted-foreground">Nenhuma mudança na lista de compras.</p>;
   }
 
   return (

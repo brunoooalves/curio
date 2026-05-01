@@ -27,12 +27,13 @@ import { CompleteModuleButton } from "@/components/complete-module-button";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { Concept, Module } from "@/lib/domain/curriculum/types";
 import type { UserProfile } from "@/lib/domain/user/types";
+import { plural } from "@/lib/format/plural";
 
 export const dynamic = "force-dynamic";
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };
@@ -46,7 +47,7 @@ export default async function HomePage() {
   if (!mod) {
     return (
       <main className="p-6">
-        <p>Modulo &quot;{userState.currentModuleId}&quot; nao encontrado no curriculo.</p>
+        <p>Módulo &quot;{userState.currentModuleId}&quot; não encontrado no currículo.</p>
       </main>
     );
   }
@@ -92,7 +93,7 @@ export default async function HomePage() {
         href="/modulos"
         className="text-center text-sm text-muted-foreground hover:underline"
       >
-        Ver todos os modulos →
+        Ver todos os módulos →
       </Link>
     </main>
   );
@@ -101,7 +102,7 @@ export default async function HomePage() {
 function ModuleHeader({ mod }: { mod: Module }) {
   return (
     <header className="flex flex-col gap-2">
-      <p className="text-sm uppercase tracking-wider text-muted-foreground">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
         Semana {mod.weekNumber}
       </p>
       <h1 className="text-3xl font-semibold leading-tight">{mod.title}</h1>
@@ -134,8 +135,8 @@ function BatchSummary({
 
   return (
     <div className="rounded-md border bg-muted/30 p-4 flex flex-col gap-2">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">
-        Proxima sugestao
+      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+        Próxima sugestão
       </p>
       {nextOrder !== null && nextTitle ? (
         <p className="text-base">
@@ -188,8 +189,8 @@ function ProfileSummary({
   return (
     <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
       <span>
-        Perfil: {profile.restrictions.length} restricoes, {profile.preferences.length}{" "}
-        preferencias
+        Perfil: {plural(profile.restrictions.length, "restrição", "restrições")},{" "}
+        {plural(profile.preferences.length, "preferência", "preferências")}
       </span>
       <Link href="/perfil" className="underline">
         editar
@@ -244,7 +245,7 @@ function RecipesList({ recipes }: { recipes: Recipe[] }) {
                   <CardContent className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                     <Badge variant="secondary">{MEAL_LABEL[recipe.mealType]}</Badge>
                     <span>~{recipe.estimatedMinutes} min</span>
-                    <span>{recipe.servings} porc.</span>
+                    <span>{plural(recipe.servings, "porção", "porções")}</span>
                   </CardContent>
                 </Card>
               </Link>

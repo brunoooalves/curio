@@ -18,7 +18,7 @@ export default async function LotesPage() {
           ← Voltar
         </Link>
         <h1 className="text-3xl font-semibold leading-tight">Lotes</h1>
-        <p className="text-sm text-muted-foreground">Historico de lotes em ordem reversa.</p>
+        <p className="text-sm text-muted-foreground">Histórico de lotes em ordem reversa.</p>
       </header>
 
       {batches.length === 0 ? (

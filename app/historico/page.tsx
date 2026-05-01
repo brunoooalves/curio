@@ -15,13 +15,13 @@ type FilterValue = "all" | PracticeEventType;
 
 const FILTER_TABS: { value: FilterValue; label: string }[] = [
   { value: "all", label: "Todos" },
-  { value: "completed", label: "Concluidos" },
+  { value: "completed", label: "Concluídos" },
   { value: "rejected", label: "Rejeitados" },
   { value: "reverted", label: "Revertidos" },
 ];
 
 const TYPE_LABEL: Record<PracticeEventType, string> = {
-  completed: "Concluido",
+  completed: "Concluído",
   rejected: "Rejeitado",
   reverted: "Revertido",
 };
@@ -36,8 +36,8 @@ const TYPE_VARIANT: Record<
 };
 
 const MEAL_LABEL = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 } as const;
@@ -66,9 +66,9 @@ export default async function HistoricoPage({
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold leading-tight">Historico</h1>
+        <h1 className="text-3xl font-semibold leading-tight">Histórico</h1>
         <p className="text-sm text-muted-foreground">
-          Tudo que voce praticou, em ordem cronologica reversa.
+          Tudo que você praticou, em ordem cronológica reversa.
         </p>
       </header>
 
@@ -76,7 +76,7 @@ export default async function HistoricoPage({
 
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nada por aqui ainda. Marque uma receita como feita ou rejeitada para comecar.
+          Nada por aqui ainda. Marque uma receita como feita ou rejeitada para começar.
         </p>
       ) : (
         <ul className="flex flex-col gap-3">

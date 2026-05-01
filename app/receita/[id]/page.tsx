@@ -13,15 +13,15 @@ import type { PracticeEvent } from "@/lib/domain/practice/types";
 export const dynamic = "force-dynamic";
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };
 
 const STATUS_LABEL: Record<Recipe["status"], string> = {
   sugerida: "Sugerida",
-  feita: "Concluida",
+  feita: "Concluída",
   rejeitada: "Rejeitada",
 };
 
@@ -49,7 +49,9 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           <Badge variant="secondary">{MEAL_LABEL[recipe.mealType]}</Badge>
           <Badge variant="outline">Dif. {recipe.difficulty}</Badge>
           <Badge variant="outline">~{recipe.estimatedMinutes} min</Badge>
-          <Badge variant="outline">{recipe.servings} porc.</Badge>
+          <Badge variant="outline">
+            {recipe.servings} {recipe.servings === 1 ? "porção" : "porções"}
+          </Badge>
           <Badge variant={recipe.status === "rejeitada" ? "destructive" : "default"}>
             {STATUS_LABEL[recipe.status]}
           </Badge>
@@ -92,7 +94,7 @@ function CompletionSummary({ event }: { event: PracticeEvent }) {
   return (
     <div className="rounded-md border border-muted-foreground/20 bg-muted/30 p-3 flex flex-col gap-1">
       <p className="text-sm">
-        ✓ Concluida {formatRelativeTime(event.createdAt)}
+        ✓ Concluída {formatRelativeTime(event.createdAt)}
       </p>
       {event.reflection && (
         <p className="text-sm text-muted-foreground italic">&ldquo;{event.reflection}&rdquo;</p>

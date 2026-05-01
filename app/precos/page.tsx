@@ -22,9 +22,9 @@ export default async function PrecosPage() {
       </header>
       {stats.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Sem notas processadas ainda. Suba uma nota em{" "}
+          Sem notas processadas ainda.{" "}
           <Link href="/notas/nova" className="underline">
-            /notas/nova
+            Subir uma nota
           </Link>{" "}
           para começar a ver preços aqui.
         </p>

@@ -14,7 +14,7 @@ export function CompleteModuleButton({ moduleId }: { moduleId: string }) {
       try {
         await completeCurrentModule(moduleId);
       } catch (err) {
-        setError((err as Error).message ?? "Nao foi possivel concluir o modulo.");
+        setError((err as Error).message ?? "Não foi possível concluir o módulo.");
       }
     });
   }

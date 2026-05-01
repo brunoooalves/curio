@@ -17,7 +17,7 @@ export default async function PerfilPage() {
         </Link>
         <h1 className="text-3xl font-semibold leading-tight">Perfil</h1>
         <p className="text-sm text-muted-foreground">
-          Restricoes e preferencias permanentes. Sao aplicadas em toda geracao de receitas.
+          Restrições e preferências permanentes. São aplicadas em toda geração de receitas.
         </p>
       </header>
       <ProfileForm initial={state.profile} />

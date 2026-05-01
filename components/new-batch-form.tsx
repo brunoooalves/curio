@@ -16,10 +16,10 @@ import type { MealsByType } from "@/lib/domain/batch/types";
 const NONE = "__none__";
 
 const MEAL_LABEL: Record<keyof MealsByType, string> = {
-  cafe: "Cafes",
-  almoco: "Almocos",
-  jantar: "Jantares",
-  lanche: "Lanches",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
+  jantar: "Jantar",
+  lanche: "Lanche",
 };
 
 export function NewBatchForm({
@@ -71,7 +71,7 @@ export function NewBatchForm({
   function submit() {
     setError(null);
     if (total <= 0) {
-      setError("Adicione pelo menos uma refeicao.");
+      setError("Adicione pelo menos uma refeição.");
       return;
     }
     const servingsNum = servings.trim() === "" ? null : Number.parseInt(servings, 10);
@@ -105,7 +105,7 @@ export function NewBatchForm({
       className="flex flex-col gap-6"
     >
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Refeicoes</h2>
+        <h2 className="text-lg font-medium">Refeições</h2>
         <div className="grid grid-cols-2 gap-3">
           {(Object.keys(MEAL_LABEL) as Array<keyof MealsByType>).map((key) => (
             <Card key={key}>
@@ -123,7 +123,9 @@ export function NewBatchForm({
             </Card>
           ))}
         </div>
-        <p className="text-sm text-muted-foreground">Total: {total} receitas</p>
+        <p className="text-sm text-muted-foreground">
+          Total: {total} {total === 1 ? "receita" : "receitas"}
+        </p>
       </section>
 
       <section className="flex flex-col gap-4">
@@ -135,7 +137,7 @@ export function NewBatchForm({
             id="ctxsel"
             value={contextId}
             onChange={(e) => setContextId(e.target.value)}
-            className="border rounded-md h-9 px-2 text-sm bg-transparent"
+            className="border rounded-md h-11 px-3 text-sm bg-transparent"
           >
             <option value={NONE}>Nenhum</option>
             {contexts.map((c) => (
@@ -147,27 +149,27 @@ export function NewBatchForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label>Restricoes adicionais</Label>
+          <Label>Restrições adicionais</Label>
           <TagInput value={restrictions} onChange={setRestrictions} />
         </div>
         <div className="flex flex-col gap-2">
-          <Label>Aversoes adicionais</Label>
+          <Label>Aversões adicionais</Label>
           <TagInput value={dislikes} onChange={setDislikes} />
         </div>
         <div className="flex flex-col gap-2">
-          <Label>Preferencias adicionais</Label>
+          <Label>Preferências adicionais</Label>
           <TagInput value={preferences} onChange={setPreferences} />
         </div>
 
         <div className="flex flex-col gap-2 max-w-[200px]">
-          <Label htmlFor="srv">Porcoes</Label>
+          <Label htmlFor="srv">Porções</Label>
           <Input
             id="srv"
             type="number"
             min={1}
             value={servings}
             onChange={(e) => setServings(e.target.value)}
-            placeholder={`Padrao: ${profile.servingsDefault}`}
+            placeholder={`Padrão: ${profile.servingsDefault}`}
           />
         </div>
 
@@ -175,7 +177,7 @@ export function NewBatchForm({
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <Checkbox checked={saveAs} onCheckedChange={(v) => setSaveAs(v === true)} />
-              Salvar como contexto reutilizavel
+              Salvar como contexto reutilizável
             </label>
             {saveAs && (
               <Input
@@ -190,9 +192,13 @@ export function NewBatchForm({
 
       <section className="flex flex-col gap-2 border-t pt-4">
         <p className="text-sm">
-          Vai gerar respeitando: {preview.restrictions.length} restricoes,{" "}
-          {preview.dislikes.length} aversoes, {preview.preferences.length} preferencias;{" "}
-          {preview.servings} porcoes por receita.
+          Vai gerar respeitando: {preview.restrictions.length}{" "}
+          {preview.restrictions.length === 1 ? "restrição" : "restrições"},{" "}
+          {preview.dislikes.length}{" "}
+          {preview.dislikes.length === 1 ? "aversão" : "aversões"},{" "}
+          {preview.preferences.length}{" "}
+          {preview.preferences.length === 1 ? "preferência" : "preferências"};{" "}
+          {preview.servings} {preview.servings === 1 ? "porção" : "porções"} por receita.
         </p>
         <p className="text-xs text-muted-foreground">
           Cozinhe quando quiser, na ordem que preferir.

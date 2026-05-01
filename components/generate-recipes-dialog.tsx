@@ -104,7 +104,7 @@ export function GenerateRecipesDialog({ moduleId, profile, contexts }: Props) {
           <DialogHeader>
             <DialogTitle>Gerar receitas</DialogTitle>
             <DialogDescription>
-              Restricoes do perfil sao sempre aplicadas. Adicione contexto situacional se quiser.
+              Restrições do perfil são sempre aplicadas. Adicione contexto situacional se quiser.
             </DialogDescription>
           </DialogHeader>
 
@@ -115,7 +115,7 @@ export function GenerateRecipesDialog({ moduleId, profile, contexts }: Props) {
                 id="ctxsel"
                 value={contextId}
                 onChange={(e) => setContextId(e.target.value)}
-                className="border rounded-md h-9 px-2 text-sm bg-transparent"
+                className="border rounded-md h-11 px-3 text-sm bg-transparent"
               >
                 <option value={NONE}>Nenhum</option>
                 {contexts.map((c) => (
@@ -127,36 +127,40 @@ export function GenerateRecipesDialog({ moduleId, profile, contexts }: Props) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label>Restricoes adicionais</Label>
+              <Label>Restrições adicionais</Label>
               <TagInput value={restrictions} onChange={setRestrictions} />
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label>Aversoes adicionais</Label>
+              <Label>Aversões adicionais</Label>
               <TagInput value={dislikes} onChange={setDislikes} />
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label>Preferencias adicionais</Label>
+              <Label>Preferências adicionais</Label>
               <TagInput value={preferences} onChange={setPreferences} />
             </div>
 
             <div className="flex flex-col gap-2 max-w-[200px]">
-              <Label htmlFor="srv">Porcoes</Label>
+              <Label htmlFor="srv">Porções</Label>
               <Input
                 id="srv"
                 type="number"
                 min={1}
                 value={servings}
                 onChange={(e) => setServings(e.target.value)}
-                placeholder={`Padrao: ${profile.servingsDefault}`}
+                placeholder={`Padrão: ${profile.servingsDefault}`}
               />
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Vai gerar respeitando: {preview.restrictions.length} restricao(oes),{" "}
-              {preview.dislikes.length} aversao(oes), {preview.preferences.length} preferencia(s);{" "}
-              {preview.servings} porcao(oes).
+              Vai gerar respeitando: {preview.restrictions.length}{" "}
+              {preview.restrictions.length === 1 ? "restrição" : "restrições"},{" "}
+              {preview.dislikes.length}{" "}
+              {preview.dislikes.length === 1 ? "aversão" : "aversões"},{" "}
+              {preview.preferences.length}{" "}
+              {preview.preferences.length === 1 ? "preferência" : "preferências"};{" "}
+              {preview.servings} {preview.servings === 1 ? "porção" : "porções"}.
             </p>
 
             {hasAdHocTags && (
@@ -166,7 +170,7 @@ export function GenerateRecipesDialog({ moduleId, profile, contexts }: Props) {
                     checked={saveAs}
                     onCheckedChange={(v) => setSaveAs(v === true)}
                   />
-                  Salvar como contexto reutilizavel
+                  Salvar como contexto reutilizável
                 </label>
                 {saveAs && (
                   <Input

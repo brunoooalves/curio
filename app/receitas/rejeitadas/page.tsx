@@ -12,8 +12,8 @@ import type { Recipe } from "@/lib/domain/recipe/types";
 export const dynamic = "force-dynamic";
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };
@@ -44,8 +44,8 @@ export default async function RejeitadasPage({
         <h1 className="text-3xl font-semibold leading-tight">Receitas rejeitadas</h1>
         <p className="text-sm text-muted-foreground">
           {showAll
-            ? "Todas as receitas que voce rejeitou."
-            : "Rejeitadas no modulo atual."}
+            ? "Todas as receitas que você rejeitou."
+            : "Rejeitadas no módulo atual."}
         </p>
         <ScopeToggle showAll={showAll} />
       </header>
@@ -83,7 +83,7 @@ export default async function RejeitadasPage({
 
 function ScopeToggle({ showAll }: { showAll: boolean }) {
   const href = showAll ? "/receitas/rejeitadas" : "/receitas/rejeitadas?all=true";
-  const label = showAll ? "Mostrar so do modulo atual" : "Mostrar de todos os modulos";
+  const label = showAll ? "Mostrar só do módulo atual" : "Mostrar de todos os módulos";
   return (
     <Link href={href} className="text-xs text-muted-foreground hover:underline w-fit">
       {label}

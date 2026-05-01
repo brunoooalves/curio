@@ -12,22 +12,22 @@ describe("formatRelativeTime", () => {
   it("formats minutes (singular and plural)", () => {
     expect(
       formatRelativeTime(new Date(now.getTime() - 60_000).toISOString(), now),
-    ).toBe("ha 1 minuto");
+    ).toBe("há 1 minuto");
     expect(
       formatRelativeTime(new Date(now.getTime() - 5 * 60_000).toISOString(), now),
-    ).toBe("ha 5 minutos");
+    ).toBe("há 5 minutos");
   });
 
   it("formats hours, days, and weeks", () => {
     expect(
       formatRelativeTime(new Date(now.getTime() - 60 * 60_000).toISOString(), now),
-    ).toBe("ha 1 hora");
+    ).toBe("há 1 hora");
     expect(
       formatRelativeTime(new Date(now.getTime() - 26 * 60 * 60_000).toISOString(), now),
-    ).toBe("ha 1 dia");
+    ).toBe("há 1 dia");
     expect(
       formatRelativeTime(new Date(now.getTime() - 8 * 24 * 60 * 60_000).toISOString(), now),
-    ).toBe("ha 1 semana");
+    ).toBe("há 1 semana");
   });
 
   it("returns 'agora' for future dates (clock skew)", () => {
@@ -36,7 +36,7 @@ describe("formatRelativeTime", () => {
     ).toBe("agora");
   });
 
-  it("returns 'data invalida' for unparseable input", () => {
-    expect(formatRelativeTime("nope", now)).toBe("data invalida");
+  it("returns 'data inválida' for unparseable input", () => {
+    expect(formatRelativeTime("nope", now)).toBe("data inválida");
   });
 });

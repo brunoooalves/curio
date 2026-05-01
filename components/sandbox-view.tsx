@@ -24,8 +24,8 @@ interface RecipeOption {
 }
 
 const MEAL_LABEL: Record<Recipe["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };

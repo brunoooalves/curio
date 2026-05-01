@@ -25,7 +25,7 @@ export default async function NovoLotePage() {
         </Link>
         <h1 className="text-3xl font-semibold leading-tight">Novo lote</h1>
         <p className="text-sm text-muted-foreground">
-          Diga quantas refeicoes de cada tipo. O app sugere uma ordem; voce cozinha como quiser.
+          Diga quantas refeições de cada tipo. O app sugere uma ordem; você cozinha como quiser.
         </p>
       </header>
       <NewBatchForm profile={state.profile} contexts={contexts} />

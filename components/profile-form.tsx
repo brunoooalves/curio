@@ -40,7 +40,7 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
       }}
       className="flex flex-col gap-6"
     >
-      <Field label="Restricoes" hint="Itens que nunca devem aparecer (ex: lactose, gluten).">
+      <Field label="Restrições" hint="Itens que nunca devem aparecer (ex: lactose, glúten).">
         <TagInput
           value={profile.restrictions}
           onChange={(v) => update("restrictions", v)}
@@ -48,7 +48,10 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
         />
       </Field>
 
-      <Field label="Aversoes" hint="Itens que voce prefere evitar mas pode aparecer em pouca quantidade.">
+      <Field
+        label="Aversões"
+        hint="Itens que você prefere evitar mas podem aparecer em pouca quantidade."
+      >
         <TagInput
           value={profile.dislikes}
           onChange={(v) => update("dislikes", v)}
@@ -56,17 +59,17 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
         />
       </Field>
 
-      <Field label="Preferencias" hint="Estilos ou ingredientes que voce prefere.">
+      <Field label="Preferências" hint="Estilos ou ingredientes que você prefere.">
         <TagInput
           value={profile.preferences}
           onChange={(v) => update("preferences", v)}
-          placeholder="Ex: mediterranea"
+          placeholder="Ex: mediterrânea"
         />
       </Field>
 
       <Field
-        label="Ingredientes em abundancia"
-        hint="Itens que voce tem em casa e quer aproveitar."
+        label="Despensa"
+        hint="Itens que você tem em casa e quer aproveitar primeiro."
       >
         <TagInput
           value={profile.abundantIngredients}
@@ -76,7 +79,7 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
       </Field>
 
       <div className="flex flex-col gap-2 max-w-[160px]">
-        <Label htmlFor="servings">Porcoes padrao</Label>
+        <Label htmlFor="servings">Porções padrão</Label>
         <Input
           id="servings"
           type="number"

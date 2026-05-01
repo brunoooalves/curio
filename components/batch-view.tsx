@@ -10,8 +10,8 @@ import { BatchReorder } from "@/components/batch-reorder";
 import type { Batch, BatchItem } from "@/lib/domain/batch/types";
 
 const MEAL_LABEL: Record<BatchItem["mealType"], string> = {
-  cafe: "Cafe da manha",
-  almoco: "Almoco",
+  cafe: "Café da manhã",
+  almoco: "Almoço",
   jantar: "Jantar",
   lanche: "Lanche",
 };

@@ -20,7 +20,7 @@ export function SwitchModuleButton({
       try {
         await switchToModule(moduleId);
       } catch (err) {
-        setError((err as Error).message ?? "Nao foi possivel trocar de modulo.");
+        setError((err as Error).message ?? "Não foi possível trocar de módulo.");
       }
     });
   }

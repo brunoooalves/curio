@@ -25,14 +25,14 @@ export default async function ContextosPage() {
           </Link>
         </div>
         <p className="text-sm text-muted-foreground">
-          Restricoes/preferencias situacionais reutilizaveis. Aplicadas sob demanda na geracao.
+          Restrições/preferências situacionais reutilizáveis. Aplicadas sob demanda na geração.
         </p>
       </header>
 
       {contexts.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nenhum contexto salvo. Crie um para reutilizar quando cozinhar para visitas ou ocasioes
-          especificas.
+          Nenhum contexto salvo. Crie um para reutilizar quando cozinhar para visitas ou ocasiões
+          específicas.
         </p>
       ) : (
         <ul className="flex flex-col gap-3">
@@ -63,7 +63,7 @@ export default async function ContextosPage() {
                       ))
                     )}
                     {ctx.servingsOverride != null && (
-                      <Badge variant="outline">Porcoes: {ctx.servingsOverride}</Badge>
+                      <Badge variant="outline">Porções: {ctx.servingsOverride}</Badge>
                     )}
                   </CardContent>
                 </Card>

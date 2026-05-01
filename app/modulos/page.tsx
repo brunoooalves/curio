@@ -15,9 +15,9 @@ import type { Module } from "@/lib/domain/curriculum/types";
 export const dynamic = "force-dynamic";
 
 const STATUS_LABEL: Record<ModuleStatus, string> = {
-  completed: "Concluido",
+  completed: "Concluído",
   current: "Atual",
-  available: "Disponivel",
+  available: "Disponível",
   locked: "Bloqueado",
 };
 
@@ -48,7 +48,7 @@ export default async function ModulosPage() {
         <Link href="/" className="text-sm text-muted-foreground hover:underline">
           ← Voltar
         </Link>
-        <h1 className="text-3xl font-semibold leading-tight">Todos os modulos</h1>
+        <h1 className="text-3xl font-semibold leading-tight">Todos os módulos</h1>
         <p className="text-sm text-muted-foreground">
           {curriculum.title}
         </p>
@@ -85,7 +85,7 @@ function ModuleCard({
       <CardHeader className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
               Semana {mod.weekNumber}
             </p>
             <CardTitle className="text-base">{mod.title}</CardTitle>
@@ -97,7 +97,7 @@ function ModuleCard({
         <p className="text-sm text-muted-foreground">{mod.description}</p>
         {status === "locked" && missing.length > 0 && (
           <p className="text-xs text-muted-foreground">
-            Pre-requisitos pendentes:{" "}
+            Pré-requisitos pendentes:{" "}
             {missing.map((m) => `Semana ${m.weekNumber} — ${m.title}`).join("; ")}.
           </p>
         )}

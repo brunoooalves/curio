@@ -69,7 +69,7 @@ export default async function SimularPage({
         </Link>
         <h1 className="text-3xl font-semibold leading-tight">Simular</h1>
         <p className="text-sm text-muted-foreground">
-          Combine receitas e veja a lista resultante. Nada e persistido ate aplicar como lote.
+          Combine receitas e veja a lista resultante. Nada é persistido até aplicar como lote.
         </p>
       </header>
       <SandboxView

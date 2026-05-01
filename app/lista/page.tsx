@@ -114,7 +114,7 @@ export default async function ListaPage() {
           href={`/simular?fromBatch=${batch.id}`}
           className="text-sm text-muted-foreground hover:underline w-fit"
         >
-          Simular variacoes →
+          Simular variações →
         </Link>
         {pendingItems.length > 0 && (
           <div className="rounded-md border bg-muted/30 p-3 text-sm flex flex-col gap-1">

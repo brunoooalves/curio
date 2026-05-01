@@ -72,41 +72,41 @@ export function ContextForm({
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Visita Ana e Joao"
+          placeholder="Ex: Visita Ana e João"
           required
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Restricoes</Label>
+        <Label>Restrições</Label>
         <TagInput value={restrictions} onChange={setRestrictions} placeholder="Ex: vegetariano" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Aversoes</Label>
+        <Label>Aversões</Label>
         <TagInput value={dislikes} onChange={setDislikes} placeholder="Ex: pimenta" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Preferencias</Label>
+        <Label>Preferências</Label>
         <TagInput value={preferences} onChange={setPreferences} placeholder="Ex: italiana" />
       </div>
 
       <div className="flex flex-col gap-2 max-w-[200px]">
-        <Label htmlFor="so">Porcoes (opcional)</Label>
+        <Label htmlFor="so">Porções (opcional)</Label>
         <Input
           id="so"
           type="number"
           min={1}
           value={servingsOverride}
           onChange={(e) => setServingsOverride(e.target.value)}
-          placeholder="Vazio = usa padrao"
+          placeholder="Vazio = usa padrão"
         />
       </div>
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={pending}>
-          {pending ? "Salvando..." : mode === "edit" ? "Salvar alteracoes" : "Criar contexto"}
+          {pending ? "Salvando..." : mode === "edit" ? "Salvar alterações" : "Criar contexto"}
         </Button>
         {error && <p className="text-sm text-destructive">{error}</p>}
       </div>

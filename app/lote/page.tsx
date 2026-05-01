@@ -18,9 +18,13 @@ export default async function LotePage() {
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold leading-tight">Lote em andamento</h1>
+        <h1 className="text-3xl font-semibold leading-tight">
+          {batch ? "Lote em andamento" : "Comece um lote"}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Sugestao de ordem; cozinhe quando quiser.
+          {batch
+            ? "Sugestão de ordem; cozinhe quando quiser."
+            : "Você ainda não tem nenhum lote desta semana."}
         </p>
       </header>
 
@@ -40,7 +44,7 @@ export default async function LotePage() {
             href="/lotes"
             className="text-center text-sm text-muted-foreground hover:underline"
           >
-            Ver historico de lotes →
+            Ver histórico de lotes →
           </Link>
         </>
       )}

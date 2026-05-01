@@ -95,11 +95,11 @@ function SuggestedActions({ recipeId }: { recipeId: string }) {
           <DialogHeader>
             <DialogTitle>Concluir receita</DialogTitle>
             <DialogDescription>
-              Registre uma reflexao curta. Opcional, mas ajuda no aprendizado.
+              Registre uma reflexão curta. Opcional, mas ajuda no aprendizado.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="reflection">Reflexao</Label>
+            <Label htmlFor="reflection">Reflexão</Label>
             <Textarea
               id="reflection"
               value={reflection}
@@ -128,7 +128,7 @@ function SuggestedActions({ recipeId }: { recipeId: string }) {
 }
 
 function DoneActions({ recipeId }: { recipeId: string }) {
-  return <RevertButton recipeId={recipeId} hint="Concluida" />;
+  return <RevertButton recipeId={recipeId} hint="Concluída" />;
 }
 
 function RejectedActions({ recipeId }: { recipeId: string }) {

@@ -17,7 +17,7 @@ const TREND_ICON: Record<PriceTrend, string> = {
 const TREND_LABEL: Record<PriceTrend, string> = {
   up: "Subindo",
   down: "Caindo",
-  stable: "Estavel",
+  stable: "Estável",
   unknown: "Sem dados",
 };
 

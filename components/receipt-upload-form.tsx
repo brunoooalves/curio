@@ -74,7 +74,7 @@ export function ReceiptUploadForm() {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={previewUrl}
-          alt="Pre-visualizacao da nota"
+          alt="Pré-visualização da nota"
           className="max-h-[60vh] rounded-md border"
         />
       )}
