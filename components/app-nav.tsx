@@ -5,6 +5,8 @@ const links = [
   { href: "/lote", label: "Lote" },
   { href: "/lista", label: "Lista" },
   { href: "/simular", label: "Simular" },
+  { href: "/notas", label: "Notas" },
+  { href: "/precos", label: "Preços" },
   { href: "/lotes", label: "Lotes" },
   { href: "/modulos", label: "Modulos" },
   { href: "/historico", label: "Historico" },

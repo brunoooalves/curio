@@ -46,7 +46,7 @@ Quando em dúvida sobre o tom de uma string nova, pergunte: isso pressionaria o 
 - **React Query** — cache, revalidação e sincronização de dados de servidor; substitui `useEffect` para fetching.
 - **MongoDB driver oficial (`mongodb`)** — sem ODM. Zod já valida; driver oficial dá controle total sobre queries e índices.
 - **Atlas free tier** como banco padrão; `MONGODB_URI` no `.env.local`.
-- **Vercel AI SDK** com providers **OpenAI (default)** e **Anthropic** — `generateObject` com schema Zod. Provider escolhido via `LLM_PROVIDER` (default `openai`). Modelo "rich" pra geração (gpt-4o / claude-sonnet-4-5) e "light" pra tarefas leves (gpt-4o-mini / claude-haiku-4-5). Provider abstraído em `lib/llm/provider.ts` — features chamam `getRichModel()` / `getLightModel()`, nunca o SDK do provider direto.
+- **Vercel AI SDK** com providers **OpenAI (default)** e **Anthropic** — `generateObject` com schema Zod. Provider escolhido via `LLM_PROVIDER` (default `openai`). Granularidade por **tarefa**: cada chamada usa `getModel(task)` onde `task ∈ { "recipe_generation", "ingredient_normalization", "receipt_vision" }`; tabela `MODELS_BY_PROVIDER` em `lib/llm/provider/config.ts` mapeia (provider, task) → modelId. `getCurrentProviderTag(task)` devolve `"provider/modelId"` para auditoria (gravado em `Receipt.modelUsed`, etc.).
 - **`yaml`** — parsing dos currículos.
 - **Zod** — validação de toda fronteira: LLM, YAML, request body, fs, documentos lidos do Mongo.
 - **next-pwa** — instalável no celular.
@@ -62,7 +62,7 @@ Quando em dúvida sobre o tom de uma string nova, pergunte: isso pressionaria o 
 - **Server Components por padrão.** `"use client"` só para interatividade ou APIs de browser.
 - **Não usar `useEffect` para data fetching.** Server Component faz o fetch ou React Query no client.
 - **Saídas de LLM via `generateObject`** com schema Zod; nunca parsear texto livre.
-- **Modelos vêm de `lib/llm/provider.ts`** (`getRichModel`/`getLightModel`). Não importar `@ai-sdk/openai` ou `@ai-sdk/anthropic` direto em código de feature.
+- **Modelos vêm de `lib/llm/provider/sdk.ts`** (`getModel(task)`). Nenhum código fora de `lib/llm/` importa SDK de provider (`@ai-sdk/openai` / `@ai-sdk/anthropic`) diretamente. Trocar provider é uma alteração de env (`LLM_PROVIDER`), nunca de código.
 - **Conexão MongoDB é singleton no server**, com cache em `globalThis` em desenvolvimento para sobreviver ao HMR sem reconectar.
 - **Repositories expõem tipos do domínio**, nunca tipos do driver Mongo. `ObjectId`, `WithId<T>`, `Document`, etc. ficam internos a `lib/persistence/mongo/`.
 - **IDs são strings (uuid v4).** Não `ObjectId`. Facilita serialização para client e desacopla do Mongo.
