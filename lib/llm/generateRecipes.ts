@@ -7,7 +7,7 @@ import type { Module } from "@/lib/domain/curriculum/types";
 import type { Recipe } from "@/lib/domain/recipe/types";
 import type { GenerationContext } from "@/lib/domain/generation/types";
 import { buildGenerateRecipesPrompt } from "@/lib/llm/prompts/generateRecipes";
-import { getRichModel } from "@/lib/llm/provider";
+import { getModel } from "@/lib/llm/provider/sdk";
 
 const generatedRecipeSchema = z.object({
   title: z.string().min(1),
@@ -46,7 +46,7 @@ export async function generateRecipesForModule(
   const prompt = buildGenerateRecipesPrompt(module, count, ctx);
 
   const { object } = await generateObject({
-    model: getRichModel(),
+    model: getModel("recipe_generation"),
     schema: responseSchema,
     prompt,
   });

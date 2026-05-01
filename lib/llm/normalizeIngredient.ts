@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { generateObject } from "ai";
-import { getLightModel } from "@/lib/llm/provider";
+import { getModel } from "@/lib/llm/provider/sdk";
 import type { IngredientRepository } from "@/lib/persistence/repositories/ingredientRepository";
 import { buildNormalizeIngredientsPrompt } from "@/lib/llm/prompts/normalizeIngredient";
 
@@ -47,7 +47,7 @@ export function createNormalizer(repository: IngredientRepository): NormalizeIng
 
     const prompt = buildNormalizeIngredientsPrompt(queue);
     const { object } = await generateObject({
-      model: getLightModel(),
+      model: getModel("ingredient_normalization"),
       schema: responseSchema,
       prompt,
     });
