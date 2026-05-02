@@ -18,7 +18,7 @@ export interface ShoppingListServiceDeps {
 
 export class ShoppingListNotFoundError extends Error {
   constructor(batchId: string) {
-    super(`Lista de compras nao encontrada para o lote "${batchId}".`);
+    super(`Lista de compras não encontrada para o plano "${batchId}".`);
     this.name = "ShoppingListNotFoundError";
   }
 }
@@ -51,7 +51,7 @@ export async function buildOrUpdateForBatch(
 ): Promise<ShoppingList> {
   const recipes = await loadPendingRecipes(deps, batchId);
   if (recipes === null) {
-    throw new Error(`Lote "${batchId}" nao encontrado.`);
+    throw new Error(`Plano "${batchId}" não encontrado.`);
   }
 
   const lines = await computeShoppingLines(recipes, deps.normalize);

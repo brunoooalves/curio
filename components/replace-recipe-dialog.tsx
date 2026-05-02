@@ -176,7 +176,7 @@ function CandidatesList({
   if (!candidates || candidates.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Sem candidatas livres no módulo atual. Cancele e use a opção de trocar do lote, que
+        Sem candidatas livres no módulo atual. Cancele e use a opção de trocar do plano, que
         gera uma nova receita.
       </p>
     );

@@ -38,7 +38,7 @@ function toOption(recipe: Recipe): RecipeOption {
   };
 }
 
-export default async function NovoLotePage({
+export default async function NovoPlanoPage({
   searchParams,
 }: {
   searchParams: Promise<{ modo?: string; fromBatch?: string }>;
@@ -56,10 +56,10 @@ export default async function NovoLotePage({
   return (
     <main className="flex flex-1 flex-col gap-5 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <Link href="/lote" className="text-sm text-muted-foreground hover:underline">
+        <Link href="/plano" className="text-sm text-muted-foreground hover:underline">
           ← Voltar
         </Link>
-        <h1 className="text-3xl font-semibold leading-tight">Novo lote</h1>
+        <h1 className="text-3xl font-semibold leading-tight">Novo plano</h1>
         <p className="text-sm text-muted-foreground">
           {mode === "avancado"
             ? "Escolha receitas manualmente e veja a lista de compras antes de aplicar."
@@ -98,7 +98,7 @@ function ModeTabs({
         if (item.mode === "avancado") params.set("modo", "avancado");
         if (fromBatch) params.set("fromBatch", fromBatch);
         const query = params.toString();
-        const href = `/lote/novo${query ? `?${query}` : ""}`;
+        const href = `/plano/novo${query ? `?${query}` : ""}`;
         return (
           <Link
             key={item.mode}

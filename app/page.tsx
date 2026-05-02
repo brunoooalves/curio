@@ -116,14 +116,14 @@ function EmptyBatchCard() {
         <div className="flex items-start gap-3">
           <span className="text-2xl shrink-0" aria-hidden>🥕</span>
           <div className="flex flex-col">
-            <p className="font-medium">Comece um lote desta semana</p>
+            <p className="font-medium">Comece um plano desta semana</p>
             <p className="text-sm text-muted-foreground">
               Diga quantas refeições; o app monta a lista de compras.
             </p>
           </div>
         </div>
-        <Link href="/lote/novo" className="contents">
-          <Button type="button" className="w-full">Criar lote</Button>
+        <Link href="/plano/novo" className="contents">
+          <Button type="button" className="w-full">Criar plano</Button>
         </Link>
       </CardContent>
     </Card>
@@ -148,7 +148,7 @@ function ActiveBatchCard({
     <Card>
       <CardContent className="flex flex-col gap-4 py-5">
         <div className="flex items-center justify-between">
-          <Badge variant="secondary">Lote em andamento</Badge>
+          <Badge variant="secondary">Plano em andamento</Badge>
           <span className="text-sm text-muted-foreground">
             {done} de {total} feitos
           </span>
@@ -175,9 +175,9 @@ function ActiveBatchCard({
           </div>
         </div>
         <div className="flex gap-2">
-          <Link href="/lote" className="flex-1">
+          <Link href="/plano" className="flex-1">
             <Button type="button" className="w-full">
-              Continuar lote
+              Continuar plano
             </Button>
           </Link>
           <Link href="/lista">

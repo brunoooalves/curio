@@ -41,11 +41,11 @@ export default async function ListaPage() {
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-semibold leading-tight">Lista de compras</h1>
           <p className="text-sm text-muted-foreground">
-            Sem lote em andamento. Crie um lote para gerar a lista.
+            Sem plano em andamento. Crie um plano para gerar a lista.
           </p>
         </header>
-        <Link href="/lote/novo">
-          <Button type="button">Criar lote</Button>
+        <Link href="/plano/novo">
+          <Button type="button">Criar plano</Button>
         </Link>
       </main>
     );
@@ -110,7 +110,7 @@ export default async function ListaPage() {
           <RecomputeListButton batchId={batch.id} />
         </div>
         <Link
-          href={`/lote/novo?modo=avancado&fromBatch=${batch.id}`}
+          href={`/plano/novo?modo=avancado&fromBatch=${batch.id}`}
           className="text-sm text-muted-foreground hover:underline w-fit"
         >
           Editar receitas (modo avançado) →
@@ -134,7 +134,7 @@ export default async function ListaPage() {
 
       {list.items.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Lista vazia. Adicione receitas ao lote para ver os itens aqui.
+          Lista vazia. Adicione receitas ao plano para ver os itens aqui.
         </p>
       ) : (
         <div className="flex flex-col gap-6">

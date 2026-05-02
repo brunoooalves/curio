@@ -3,10 +3,10 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const COOKING_PREFIXES = ["/lote", "/lista", "/receita/"];
+const COOKING_PREFIXES = ["/plano", "/lista", "/receita/"];
 
 function isCookingRoute(pathname: string): boolean {
-  if (pathname === "/lote/novo") return false;
+  if (pathname === "/plano/novo") return false;
   return COOKING_PREFIXES.some((prefix) =>
     prefix.endsWith("/") ? pathname.startsWith(prefix) : pathname === prefix || pathname.startsWith(`${prefix}/`),
   );

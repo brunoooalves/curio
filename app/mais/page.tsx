@@ -24,9 +24,9 @@ const sections: Section[] = [
         emoji: "🗂️",
       },
       {
-        href: "/lotes",
-        label: "Lotes anteriores",
-        hint: "Lotes que você criou",
+        href: "/planos",
+        label: "Planos anteriores",
+        hint: "Planos que você criou",
         emoji: "📦",
       },
     ],

@@ -32,7 +32,7 @@ export default async function MercadoPage({
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold leading-tight">Mercado</h1>
         <p className="text-sm text-muted-foreground">
-          Suba notas fiscais para ver preços e estimar lotes futuros.
+          Suba notas fiscais para ver preços e estimar planos futuros.
         </p>
       </header>
 

@@ -78,11 +78,11 @@ export async function applyAsBatchAction(recipeIds: string[]): Promise<void> {
     recipeIds,
     generationContext,
   );
-  revalidatePath("/lote");
-  revalidatePath("/lotes");
+  revalidatePath("/plano");
+  revalidatePath("/planos");
   revalidatePath("/");
   revalidatePath("/lista");
-  redirect("/lote");
+  redirect("/plano");
 }
 
 export async function loadReplacementCandidates(

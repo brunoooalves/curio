@@ -88,7 +88,7 @@ export function NewBatchForm({
               : null,
         });
       } catch (err) {
-        const message = (err as Error).message ?? "Erro ao criar lote.";
+        const message = (err as Error).message ?? "Erro ao criar plano.";
         if (!message.includes("NEXT_REDIRECT")) {
           setError(message);
         }
@@ -205,7 +205,7 @@ export function NewBatchForm({
         </p>
         <div className="flex items-center gap-3">
           <Button type="submit" size="lg" disabled={pending || total <= 0}>
-            {pending ? "Criando..." : "Criar lote"}
+            {pending ? "Criando..." : "Criar plano"}
           </Button>
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>

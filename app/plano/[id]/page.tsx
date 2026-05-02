@@ -11,7 +11,7 @@ import { formatRelativeTime } from "@/lib/domain/practice/formatRelativeTime";
 
 export const dynamic = "force-dynamic";
 
-export default async function LoteByIdPage({
+export default async function PlanoByIdPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -27,10 +27,10 @@ export default async function LoteByIdPage({
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <Link href="/lotes" className="text-sm text-muted-foreground hover:underline">
+        <Link href="/planos" className="text-sm text-muted-foreground hover:underline">
           ← Voltar
         </Link>
-        <h1 className="text-3xl font-semibold leading-tight">Lote</h1>
+        <h1 className="text-3xl font-semibold leading-tight">Plano</h1>
         <p className="text-sm text-muted-foreground">
           Criado {formatRelativeTime(batch.createdAt)}
         </p>

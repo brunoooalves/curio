@@ -75,7 +75,7 @@ export function AdvanceWeekDialog({
           <ul className="flex flex-col gap-2 text-sm">
             <li className="flex gap-2">
               <span aria-hidden>✓</span>
-              <span>Lote atual permanece — você pode terminar de cozinhar.</span>
+              <span>Plano atual permanece — você pode terminar de cozinhar.</span>
             </li>
             <li className="flex gap-2">
               <span aria-hidden>✓</span>

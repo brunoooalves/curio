@@ -24,14 +24,14 @@ const DEFAULT_REVIEW_RATIO = 0.25;
 
 export class BatchNotFoundError extends Error {
   constructor(id: string) {
-    super(`Lote "${id}" nao encontrado.`);
+    super(`Plano "${id}" não encontrado.`);
     this.name = "BatchNotFoundError";
   }
 }
 
 export class BatchItemNotFoundError extends Error {
   constructor(id: string) {
-    super(`Item "${id}" nao encontrado no lote.`);
+    super(`Item "${id}" não encontrado no plano.`);
     this.name = "BatchItemNotFoundError";
   }
 }
@@ -102,7 +102,7 @@ export async function createBatch(
   const meals = fillMealsByType(input.mealsByType);
   const total = meals.cafe + meals.almoco + meals.jantar + meals.lanche;
   if (total <= 0) {
-    throw new Error("Lote precisa de pelo menos uma refeicao.");
+    throw new Error("Plano precisa de pelo menos uma refeição.");
   }
 
   const requests = expandRequests(meals);
@@ -308,7 +308,7 @@ export async function replaceItemRecipe(
 
   if (candidateRecipeId) {
     if (usedIds.has(candidateRecipeId) && candidateRecipeId !== item.recipeId) {
-      throw new Error("Receita ja esta em uso neste lote.");
+      throw new Error("Receita já está em uso neste plano.");
     }
     const candidate = await deps.recipeRepository.findById(candidateRecipeId);
     if (!candidate) {
@@ -331,7 +331,7 @@ export async function replaceItemRecipe(
     } else {
       const ctx = batch.generationContextSnapshot;
       if (!ctx) {
-        throw new Error("Lote sem contexto de geracao salvo; nao e possivel gerar substituta.");
+        throw new Error("Plano sem contexto de geração salvo; não é possível gerar substituta.");
       }
       const currentModule = findModule(deps.curriculum, deps.currentModuleId);
       const generated = await deps.recipeGenerator.generateRecipesForModule(

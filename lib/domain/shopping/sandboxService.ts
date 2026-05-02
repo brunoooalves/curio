@@ -54,7 +54,7 @@ export async function applyAsBatch(
 ): Promise<Batch> {
   const recipes = await loadRecipes(deps.recipeRepository, recipeIds);
   if (recipes.length === 0) {
-    throw new Error("Selecione ao menos uma receita para aplicar como lote.");
+    throw new Error("Selecione ao menos uma receita para aplicar como plano.");
   }
   const mealsByType: Record<MealType, number> = {
     cafe: 0,
@@ -91,9 +91,9 @@ export async function previewReplacement(
   candidateRecipeId: string,
 ): Promise<PreviewReplacementResult> {
   const batch = await deps.batchRepository.findById(batchId);
-  if (!batch) throw new Error(`Lote "${batchId}" nao encontrado.`);
+  if (!batch) throw new Error(`Plano "${batchId}" não encontrado.`);
   const item = batch.items.find((i) => i.id === itemId);
-  if (!item) throw new Error(`Item "${itemId}" nao encontrado no lote.`);
+  if (!item) throw new Error(`Item "${itemId}" não encontrado no plano.`);
 
   const pendingRecipeIds = batch.items
     .filter((i) => i.status === "pending")

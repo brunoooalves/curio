@@ -12,7 +12,7 @@ interface NavItem {
 
 const primary: NavItem[] = [
   { href: "/", label: "Hoje", match: (p) => p === "/" },
-  { href: "/lote", label: "Lote", match: (p) => p.startsWith("/lote") },
+  { href: "/plano", label: "Plano", match: (p) => p.startsWith("/plano") },
   { href: "/lista", label: "Lista", match: (p) => p.startsWith("/lista") },
   {
     href: "/mercado",
@@ -25,7 +25,7 @@ const primary: NavItem[] = [
 const secondary: NavItem[] = [
   { href: "/modulos", label: "Módulos", match: (p) => p.startsWith("/modulos") },
   { href: "/historico", label: "Histórico", match: (p) => p.startsWith("/historico") },
-  { href: "/lotes", label: "Lotes anteriores", match: (p) => p === "/lotes" },
+  { href: "/planos", label: "Planos anteriores", match: (p) => p === "/planos" },
   { href: "/perfil", label: "Perfil", match: (p) => p.startsWith("/perfil") },
   { href: "/contextos", label: "Contextos", match: (p) => p.startsWith("/contextos") },
 ];

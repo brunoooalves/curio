@@ -21,9 +21,9 @@ import type { MealsByType } from "@/lib/domain/batch/types";
 
 function revalidateAll(batchId?: string): void {
   revalidatePath("/");
-  revalidatePath("/lote");
-  revalidatePath("/lotes");
-  if (batchId) revalidatePath(`/lote/${batchId}`);
+  revalidatePath("/plano");
+  revalidatePath("/planos");
+  if (batchId) revalidatePath(`/plano/${batchId}`);
 }
 
 export interface CreateBatchActionInput {
@@ -71,7 +71,7 @@ export async function createBatchAction(
     generationContext,
   });
   revalidateAll();
-  redirect("/lote");
+  redirect("/plano");
 }
 
 export async function markBatchItemDone(

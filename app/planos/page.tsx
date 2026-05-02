@@ -7,22 +7,22 @@ import { formatRelativeTime } from "@/lib/domain/practice/formatRelativeTime";
 
 export const dynamic = "force-dynamic";
 
-export default async function LotesPage() {
+export default async function PlanosPage() {
   const batchRepo = await getBatchRepository();
   const batches = await listBatches({ batchRepository: batchRepo });
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6 max-w-2xl mx-auto w-full">
       <header className="flex flex-col gap-2">
-        <Link href="/" className="text-sm text-muted-foreground hover:underline">
-          ← Voltar
+        <Link href="/mais" className="text-sm text-muted-foreground hover:underline">
+          ← Mais
         </Link>
-        <h1 className="text-3xl font-semibold leading-tight">Lotes</h1>
-        <p className="text-sm text-muted-foreground">Histórico de lotes em ordem reversa.</p>
+        <h1 className="text-3xl font-semibold leading-tight">Planos anteriores</h1>
+        <p className="text-sm text-muted-foreground">Histórico de planos em ordem reversa.</p>
       </header>
 
       {batches.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Nenhum lote ainda.</p>
+        <p className="text-sm text-muted-foreground">Nenhum plano ainda.</p>
       ) : (
         <ul className="flex flex-col gap-3">
           {batches.map((b) => {
@@ -32,7 +32,7 @@ export default async function LotesPage() {
             const pending = total - done - skipped;
             return (
               <li key={b.id}>
-                <Link href={`/lote/${b.id}`} className="block">
+                <Link href={`/plano/${b.id}`} className="block">
                   <Card className="hover:bg-accent/40 transition-colors">
                     <CardHeader className="flex flex-row items-start justify-between gap-3">
                       <CardTitle className="text-base">

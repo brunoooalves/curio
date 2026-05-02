@@ -214,7 +214,7 @@ describe("buildOrUpdateForBatch", () => {
         },
         "ghost",
       ),
-    ).rejects.toThrowError(/nao encontrado/i);
+    ).rejects.toThrowError(/não encontrado/i);
   });
 });
 

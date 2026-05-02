@@ -5,7 +5,7 @@
 Curio transforma um currículo real em um loop de prática diária. O primeiro
 domínio é **gastronomia**: você está numa "semana" do currículo (cortes,
 fundos, molhos-mãe, cocção), o app gera receitas que treinam os conceitos
-daquela semana, você forma um lote do que vai cozinhar, leva uma lista de
+daquela semana, você forma um plano do que vai cozinhar, leva uma lista de
 compras pro mercado, fotografa a nota fiscal, e vai construindo um histórico
 de preços ao longo do tempo. A arquitetura é genérica — o mesmo motor pode
 servir física, história, administração, qualquer matéria que tenha conceitos
@@ -51,10 +51,10 @@ novo mostra as mesmas receitas. Existe ação explícita pra gerar mais.
 - Combinação: profile + contexto + tags ad-hoc são mesclados; restrições
   unem (a mais conservadora vence), preferências combinam.
 
-### 4. Lote (batch)
+### 4. Plano
 Você diz quantas refeições de cada tipo (café/almoço/jantar/lanche). O app
 seleciona receitas alinhadas ao módulo + revisão de módulos concluídos,
-gera o que faltar via LLM (uma chamada só), e persiste o lote com um
+gera o que faltar via LLM (uma chamada só), e persiste o plano com um
 **snapshot do contexto de geração** — assim trocas/substituições futuras
 são determinísticas. Tem dois modos:
 
@@ -63,13 +63,13 @@ são determinísticas. Tem dois modos:
   lista de compras antes de aplicar.
 
 ### 5. Cozinhar
-Abre o lote, vê itens em ordem sugerida com tempo, porções e dificuldade.
+Abre o plano, vê itens em ordem sugerida com tempo, porções e dificuldade.
 O próximo item está destacado. Marca **Feito** (com reflexão opcional),
 **Pular**, ou **Trocar** (abre dialog mostrando candidatas e o diff de
 como a lista de compras muda).
 
 ### 6. Lista de compras
-Auto-recomputada quando o lote muda (criar, marcar feito, pular, trocar).
+Auto-recomputada quando o plano muda (criar, marcar feito, pular, trocar).
 Status de cada item (a comprar / comprado / tenho em casa / ignorar) é
 preservado entre recálculos via reconciliação por `canonicalName`.
 
@@ -85,7 +85,7 @@ tendência (subindo / caindo / estável).
 
 ### 8. PWA / offline
 Instalável no celular. Leitura funciona offline. Mutações de status em
-`/lista` e `/lote` enfileiram em IndexedDB e sincronizam quando volta
+`/lista` e `/plano` enfileiram em IndexedDB e sincronizam quando volta
 conexão. Ações que dependem de LLM (gerar receitas, ler nota) são
 explicitamente online-only com controles desabilitados.
 
@@ -109,7 +109,7 @@ reto (modo cozinha, comunica ação).
 - **Aprendizado** (default) — leitura, espaço, serif itálico. Aplica em
   todas as rotas exceto execução.
 - **Cozinha** — execução. Bg um pouco mais firme, contraste maior,
-  serif reto. Aplica em `/lote`, `/lote/[id]`, `/lista`, `/receita/[id]`.
+  serif reto. Aplica em `/plano`, `/plano/[id]`, `/lista`, `/receita/[id]`.
 
 A lógica vive em `components/mode-controller.tsx` que define
 `data-mode="learning|cooking"` no `<html>` baseado no `usePathname()`.
@@ -179,7 +179,8 @@ A tabela `MODELS_BY_PROVIDER` em `lib/llm/provider/config.ts` mapeia
 app/                          Rotas Next.js (App Router)
   layout.tsx                  Shell global: BottomNav + Sidebar + ModeController
   page.tsx                    Hoje
-  lote/                       Lote ativo + criação (rápido + avançado)
+  plano/                      Plano ativo + criação (rápido + avançado)
+  planos/                     Histórico de planos
   lista/                      Lista de compras
   mercado/                    Notas + Preços (tabs)
   modulos/                    Currículo completo
@@ -191,7 +192,7 @@ components/                   React (UI)
   bottom-nav.tsx              Mobile (<md)
   desktop-sidebar.tsx         Desktop (≥md)
   mode-controller.tsx         Auto-switch aprendizado/cozinha por rota
-  batch-view.tsx              Cards de receita no lote
+  batch-view.tsx              Cards de receita no plano
   shopping-item-row.tsx       Item da lista (display híbrido)
   ...
 lib/
@@ -199,7 +200,7 @@ lib/
     curriculum/               Currículo, módulos, conceitos
     recipe/                   Receitas
     user/                     Perfil, progressão, estado
-    batch/                    Lotes, seleção, ordem sugerida
+    batch/                    Planos (nome técnico interno: Batch), seleção, ordem
     shopping/                 Lista de compras, agregação, hybrid quantities
     receipt/                  Notas fiscais, preços, estatísticas
     practice/                 Eventos de prática (completed/rejected/reverted)
@@ -363,7 +364,7 @@ Detalhes em [`wireframes/decisions.html`](wireframes/decisions.html).
 Funcional ponta-a-ponta. Tem:
 - Currículo de gastronomia em 4 semanas.
 - Geração e persistência de receitas via LLM.
-- Lotes com sugestão de ordem, marcação feito/pular/trocar, reordenação.
+- Planos com sugestão de ordem, marcação feito/pular/trocar, reordenação.
 - Lista de compras auto-recomputada com hybrid quantities.
 - Captura de notas fiscais via vision + estatísticas de preços.
 - Identidade visual Variante C aplicada com auto-switch entre modos.

@@ -111,7 +111,7 @@ export function SandboxView({
       try {
         await applyAsBatchAction(selectedIds);
       } catch (err) {
-        const message = (err as Error).message ?? "Erro ao aplicar lote.";
+        const message = (err as Error).message ?? "Erro ao aplicar plano.";
         if (!message.includes("NEXT_REDIRECT")) setApplyError(message);
       }
     });
@@ -232,7 +232,7 @@ export function SandboxView({
             onClick={applyAsBatchClick}
             disabled={applying || selectedIds.length === 0}
           >
-            {applying ? "Aplicando..." : "Aplicar como lote"}
+            {applying ? "Aplicando..." : "Aplicar como plano"}
           </Button>
           <Button type="button" variant="ghost" onClick={clear} disabled={selected.size === 0}>
             Limpar
